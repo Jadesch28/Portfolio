@@ -1,0 +1,201 @@
+---
+// Styleguide (dev uniquement, injecté par astro.config.ts) : les vrais composants et leurs états,
+// d'après design-reference/Site-Composants.dc.html.
+import DymoButton from '../components/DymoButton.astro';
+import Footer from '../components/Footer.astro';
+import Placeholder from '../components/Placeholder.astro';
+import Base from '../layouts/Base.astro';
+---
+
+<Base title="Styleguide — Jade Deschuyteneer">
+  <meta slot="head" name="robots" content="noindex" />
+
+  <div class="intro">
+    <div class="titre">
+      <DymoButton size="sm" variant="rouille">
+        Design system
+      </DymoButton>
+      <h1 class="stencil">COMPOSANTS &amp; TOKENS</h1>
+    </div>
+    <p>
+      Les vrais composants du site et leurs états. Survolez les éléments interactifs pour voir leurs
+      états.
+    </p>
+  </div>
+
+  <section class="sec">
+    <div class="sh">
+      <DymoButton size="sm" variant="rouille">
+        04 · Étiquettes Dymo
+      </DymoButton>
+      <span class="cname">
+        &lt;DymoButton variant="noir | rouille | ghost | ghost-encre" size="md | sm"&gt;
+      </span>
+    </div>
+    <div class="rangee rangee--large">
+      <div class="cell">
+        <span class="cname">Noir</span>
+        <div class="rangee">
+          <DymoButton>Défaut</DymoButton>
+          <DymoButton current>Actif</DymoButton>
+          <DymoButton disabled>Envoi…</DymoButton>
+        </div>
+      </div>
+      <div class="cell">
+        <span class="cname">Rouille — action principale</span>
+        <div class="rangee">
+          <DymoButton variant="rouille">Défaut</DymoButton>
+        </div>
+      </div>
+      <div class="cell">
+        <span class="cname">Petites (nav, tags)</span>
+        <div class="rangee">
+          <DymoButton size="sm" href="#">
+            Mes projets
+          </DymoButton>
+          <DymoButton size="sm" variant="rouille" href="#">
+            Contact
+          </DymoButton>
+          <DymoButton size="sm" variant="ghost" href="#">
+            ← Retour
+          </DymoButton>
+        </div>
+      </div>
+      <div class="cell">
+        <span class="cname">Sur papier</span>
+        <div class="papier rangee">
+          <DymoButton size="sm" variant="ghost-encre" href="#">
+            Rituel
+          </DymoButton>
+          <DymoButton size="sm" variant="ghost-encre" href="#">
+            NogoZone
+          </DymoButton>
+        </div>
+      </div>
+      <div class="cell">
+        <span class="cname">Animation « impression »</span>
+        <DymoButton typeIn delay={0.5}>
+          Graphiste · motion designer
+        </DymoButton>
+      </div>
+    </div>
+  </section>
+
+  <section class="sec">
+    <div class="sh">
+      <DymoButton size="sm" variant="rouille">
+        05 · Matières
+      </DymoButton>
+      <span class="cname">&lt;Placeholder label tone="clair | sombre"&gt;</span>
+    </div>
+    <div class="cell">
+      <span class="cname">Visuel en attente (clair / sombre)</span>
+      <div class="rangee">
+        <Placeholder label="visuel" style="width: 150px; height: 110px" />
+        <Placeholder label="visuel" tone="sombre" style="width: 150px; height: 110px" />
+      </div>
+    </div>
+  </section>
+
+  <section class="sec">
+    <div class="sh">
+      <DymoButton size="sm" variant="rouille">
+        07 · Navigation
+      </DymoButton>
+      <span class="cname">&lt;Header&gt; · &lt;MobileMenu&gt; · &lt;Footer&gt;</span>
+    </div>
+    <div class="cell">
+      <span class="cname">
+        En-tête : voir le haut de cette page (sous 760 px : « Menu ☰ » ouvre le menu carnet)
+      </span>
+      <span class="cname">Pied de page</span>
+      <div class="cadre">
+        <Footer />
+      </div>
+    </div>
+  </section>
+</Base>
+
+<style>
+  .intro {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: flex-end;
+    justify-content: space-between;
+    gap: 24px;
+    padding: 110px 64px 40px;
+  }
+
+  .titre {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 8px;
+  }
+
+  h1 {
+    font-size: clamp(56px, 8vw, 110px);
+    line-height: 0.85;
+  }
+
+  .intro p {
+    max-width: 470px;
+    font-size: 17px;
+    line-height: 1.55;
+  }
+
+  .sec {
+    padding: 56px 64px;
+    border-top: 1px dashed var(--dashed);
+  }
+
+  .sh {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: baseline;
+    gap: 16px;
+    margin-bottom: 30px;
+  }
+
+  .cname {
+    font-size: 14px;
+    font-weight: 700;
+    letter-spacing: 0.06em;
+    color: var(--mustard);
+  }
+
+  .cell {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 12px;
+  }
+
+  .rangee {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+  }
+
+  .rangee--large {
+    gap: 56px;
+  }
+
+  .papier {
+    padding: 18px;
+    background: var(--paper);
+    --focus-color: var(--rust);
+  }
+
+  .cadre {
+    width: 100%;
+    border: 1px dashed rgba(237, 230, 211, 0.35);
+  }
+
+  @media (max-width: 759.98px) {
+    .intro,
+    .sec {
+      padding-inline: 16px;
+    }
+  }
+</style>

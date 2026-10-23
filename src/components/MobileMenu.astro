@@ -1,0 +1,293 @@
+---
+// Menu plein écran (< 760 px) : une page de carnet qui tombe du haut.
+// <dialog> modal : focus piégé et Échap natifs ; le bouton « Menu » de l'en-tête l'ouvre.
+import DymoButton from './DymoButton.astro';
+import { menuMobile, navigation, site, type NavId } from '../data/site';
+
+interface Props {
+  current?: NavId | 'accueil';
+  projets?: ReadonlyArray<{ titre: string; href: string }>;
+}
+
+const { current, projets = [] } = Astro.props;
+
+const liens = [{ id: 'accueil', label: menuMobile.accueil, href: '/' }, ...navigation].map(
+  (lien, i) => ({ ...lien, num: String(i + 1).padStart(2, '0'), delay: 0.25 + i * 0.075 }),
+);
+---
+
+<dialog class="menu mat" id="menu-mobile" aria-labelledby="menu-mobile-titre">
+  <div class="page">
+    <div class="rings" aria-hidden="true">
+      {Array.from({ length: 9 }, () => (
+        <span />
+      ))}
+    </div>
+    <div class="sheet">
+      <div class="top">
+        <p class="hand titre" id="menu-mobile-titre">
+          {menuMobile.titre}
+        </p>
+        <DymoButton size="sm" data-menu-close>
+          {menuMobile.fermer} <span aria-hidden="true">✕</span>
+        </DymoButton>
+      </div>
+
+      <nav aria-label="Menu principal">
+        <ol class="liens">
+          {liens.map((lien) => (
+            <li style={`--d: ${lien.delay}s`}>
+              <a
+                class="lien"
+                href={lien.href}
+                aria-current={current === lien.id ? 'page' : undefined}
+              >
+                <span class="stencil num" aria-hidden="true">
+                  {lien.num}
+                </span>
+                <span class="stencil label">{lien.label}</span>
+              </a>
+              {lien.id === 'projets' && projets.length > 0 && (
+                <ul class="projets">
+                  {projets.map((p) => (
+                    <li>
+                      <a href={p.href}>{p.titre}</a>
+                    </li>
+                  ))}
+                </ul>
+              )}
+            </li>
+          ))}
+        </ol>
+      </nav>
+
+      <div class="bas">
+        <div class="reseaux">
+          <DymoButton href={site.reseaux.instagram} size="sm">
+            Instagram
+          </DymoButton>
+          <DymoButton href={site.reseaux.linkedin} size="sm">
+            LinkedIn
+          </DymoButton>
+        </div>
+        <svg class="feuille" width="60" height="60" viewBox="0 0 100 100" aria-hidden="true">
+          <path
+            d="M50 98 C50 90 50 86 50 80 C40 82 30 78 32 70 C22 70 16 62 22 56 C12 52 12 42 22 40 C14 32 18 22 28 24 C26 14 36 8 42 14 C44 6 56 6 58 14 C64 8 74 14 72 24 C82 22 86 32 78 40 C88 42 88 52 78 56 C84 62 78 70 68 70 C70 78 60 82 50 80"
+            fill="var(--leaf)"
+          ></path>
+        </svg>
+      </div>
+    </div>
+  </div>
+</dialog>
+
+<script>
+  const dialog = document.querySelector<HTMLDialogElement>('#menu-mobile');
+  const openers = document.querySelectorAll<HTMLElement>('[data-menu-open]');
+
+  if (dialog) {
+    openers.forEach((btn) => {
+      btn.addEventListener('click', () => {
+        dialog.showModal();
+        btn.setAttribute('aria-expanded', 'true');
+      });
+    });
+
+    dialog.addEventListener('close', () => {
+      openers.forEach((btn) => btn.setAttribute('aria-expanded', 'false'));
+    });
+
+    // Fermer aussi en suivant un lien : indispensable pour les ancres de la page courante.
+    dialog.querySelectorAll('[data-menu-close], a').forEach((el) => {
+      el.addEventListener('click', () => dialog.close());
+    });
+  }
+</script>
+
+<style>
+  .menu {
+    position: fixed;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    max-width: none;
+    max-height: none;
+    margin: 0;
+    padding: 0;
+    border: 0;
+    overflow: hidden;
+    color: var(--ink);
+  }
+
+  .menu::backdrop {
+    background: transparent;
+  }
+
+  :global(html:has(.menu[open])) {
+    overflow: hidden;
+  }
+
+  .page {
+    position: absolute;
+    inset: 22px 12px 16px;
+    box-shadow: 0 24px 40px rgba(0, 0, 0, 0.45);
+    transform: rotate(-0.6deg);
+    animation: menu-page-in 0.6s cubic-bezier(0.2, 0.9, 0.3, 1.05) both;
+    --focus-color: var(--rust);
+  }
+
+  .rings {
+    position: absolute;
+    left: 20px;
+    right: 20px;
+    top: -14px;
+    z-index: 1;
+    display: flex;
+    justify-content: space-between;
+  }
+
+  .rings span {
+    display: block;
+    width: 12px;
+    height: 28px;
+    border: 3px solid #3a3631;
+    border-radius: 6px;
+  }
+
+  .sheet {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    flex-direction: column;
+    padding: 46px 22px 22px 46px;
+    overflow-y: auto;
+    background-color: var(--paper);
+    background-image:
+      linear-gradient(90deg, transparent 32px, var(--paper-margin) 32px 34px, transparent 34px),
+      repeating-linear-gradient(180deg, transparent 0 47px, var(--paper-line) 47px 48px);
+    background-position:
+      0 0,
+      0 30px;
+    background-attachment: local;
+  }
+
+  .top {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 18px;
+  }
+
+  .titre {
+    font-size: 28px;
+    line-height: 1.2;
+    color: var(--rust);
+  }
+
+  .liens,
+  .projets {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  .liens > li {
+    animation: menu-fade-up 0.5s ease var(--d, 0s) both;
+  }
+
+  .lien {
+    display: flex;
+    align-items: baseline;
+    gap: 12px;
+    min-height: 56px;
+    color: var(--ink);
+    text-decoration: none;
+  }
+
+  .lien:hover {
+    color: var(--rust);
+  }
+
+  .num {
+    font-size: 20px;
+    color: var(--rust);
+  }
+
+  .label {
+    font-size: 50px;
+    line-height: 1;
+    text-transform: uppercase;
+  }
+
+  .projets {
+    display: flex;
+    flex-direction: column;
+    padding-left: 34px;
+  }
+
+  .projets a {
+    display: flex;
+    align-items: center;
+    min-height: 44px;
+    font-size: 17px;
+    font-weight: 600;
+    color: var(--ink-soft);
+    text-decoration: none;
+  }
+
+  .projets a:hover {
+    color: var(--rust);
+  }
+
+  .bas {
+    display: flex;
+    align-items: flex-end;
+    justify-content: space-between;
+    gap: 10px;
+    margin-top: auto;
+    padding-top: 24px;
+  }
+
+  .reseaux {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+
+  .feuille {
+    flex: none;
+    transform: rotate(24deg);
+  }
+
+  @keyframes menu-page-in {
+    from {
+      transform: translateY(-110%) rotate(-4deg);
+    }
+    to {
+      transform: rotate(-0.6deg);
+    }
+  }
+
+  @keyframes menu-fade-up {
+    from {
+      opacity: 0;
+      transform: translateY(12px);
+    }
+  }
+
+  @keyframes menu-fade {
+    from {
+      opacity: 0;
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .page {
+      animation: menu-fade 0.2s ease both;
+    }
+
+    .liens > li {
+      animation: none;
+    }
+  }
+</style>

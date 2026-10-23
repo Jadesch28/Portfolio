@@ -1,0 +1,49 @@
+---
+import { Font } from 'astro:assets';
+import '../styles/tokens.css';
+import '../styles/base.css';
+import Footer from '../components/Footer.astro';
+import Header from '../components/Header.astro';
+import type { NavId } from '../data/site';
+
+interface Props {
+  title: string;
+  description?: string;
+  /** Lien actif de la navigation. */
+  current?: NavId;
+  header?: 'complet' | 'minimal';
+  footer?: boolean;
+}
+
+const { title, description, current, header = 'complet', footer = true } = Astro.props;
+// Avec build.format 'file', le chemin finit par « .html » au build : on garde l'URL propre servie par Vercel.
+const canonical = new URL(Astro.url.pathname.replace(/(index)?\.html$/, ''), Astro.site);
+---
+
+<!doctype html>
+<html lang="fr">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>{title}</title>
+    {description && <meta name="description" content={description} />}
+    <link rel="canonical" href={canonical} />
+    <meta name="theme-color" content="#24503D" />
+    <Font cssVariable="--font-stencil" preload />
+    <Font cssVariable="--font-text" preload />
+    <Font cssVariable="--font-hand" />
+    <slot name="head" />
+  </head>
+  <body>
+    <a class="skip-link" href="#contenu">
+      Aller au contenu
+    </a>
+    <div class="site">
+      <Header current={current} variant={header} />
+      <main id="contenu" tabindex="-1">
+        <slot />
+      </main>
+      {footer && <Footer />}
+    </div>
+  </body>
+</html>

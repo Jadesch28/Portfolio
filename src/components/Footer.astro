@@ -1,0 +1,85 @@
+---
+import { footer, site } from '../data/site';
+
+const annee = new Date().getFullYear();
+---
+
+<footer class="footer">
+  <div class="inner">
+    <span class="stencil marque">JADE D.</span>
+    <ul class="reseaux">
+      <li>
+        <a href={site.reseaux.instagram}>Instagram</a>
+      </li>
+      <li>
+        <a href={site.reseaux.linkedin}>LinkedIn</a>
+      </li>
+    </ul>
+    <p>
+      © {annee} {site.nom}
+    </p>
+    <a class="hand haut" href="#top">
+      {footer.retourEnHaut} <span aria-hidden="true">↑</span>
+    </a>
+  </div>
+</footer>
+
+<style>
+  .footer {
+    padding: 34px var(--gutter) 40px;
+    border-top: 1px dashed var(--dashed);
+  }
+
+  .inner {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: 18px;
+    max-width: var(--container);
+    margin: 0 auto;
+    font-size: 14px;
+    letter-spacing: 0.08em;
+  }
+
+  .marque {
+    font-size: 28px;
+    line-height: 1;
+    letter-spacing: 0.04em;
+  }
+
+  .reseaux {
+    display: flex;
+    gap: 22px;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  .reseaux a,
+  .haut {
+    display: inline-flex;
+    align-items: center;
+    min-height: 44px;
+  }
+
+  .haut {
+    gap: 6px;
+    font-size: 22px;
+    letter-spacing: 0;
+  }
+
+  @media (max-width: 759.98px) {
+    .footer {
+      padding: 24px 16px 34px;
+    }
+
+    .inner {
+      font-size: 13px;
+    }
+
+    .marque {
+      font-size: 24px;
+    }
+  }
+</style>

@@ -1,0 +1,24 @@
+---
+// Accueil provisoire (étape 1) : le vrai contenu arrive à l'étape 4.
+import Placeholder from '../components/Placeholder.astro';
+import Base from '../layouts/Base.astro';
+---
+
+<Base title="Jade Deschuyteneer — Graphiste & motion designer">
+  <section class="provisoire">
+    <h1 class="visually-hidden">Jade Deschuyteneer</h1>
+    <Placeholder label="accueil — étape 4" tone="sombre" class="bloc" />
+  </section>
+</Base>
+
+<style>
+  .provisoire {
+    padding: 110px var(--gutter) 80px;
+  }
+
+  .provisoire :global(.bloc) {
+    max-width: var(--container);
+    height: 60vh;
+    margin: 0 auto;
+  }
+</style>

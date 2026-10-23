@@ -1,0 +1,70 @@
+/* Design tokens — valeurs relevées dans design-reference/Site-Composants.dc.html */
+
+:root {
+  /* Couleurs */
+  --mat: #24503d; /* fond de toutes les pages */
+  --mat-line: rgba(214, 229, 203, 0.2); /* grille 190 px */
+  --mat-line-soft: rgba(214, 229, 203, 0.07); /* grille 38 px */
+  --cream: #ede6d3; /* texte sur le tapis */
+  --mustard: #f3c979; /* annotations, catégories, focus */
+  --paper: #f6f0e2; /* carnet, fiches, formulaires */
+  --photo: #fbf8f1; /* bords de polaroïds / tirages */
+  --ink: #2a2118; /* texte sur papier */
+  --ink-soft: #5a4a38; /* labels sur papier */
+  --rust: #8e3a22;
+  --rust-hover: #a4492a;
+  --dymo: #171614;
+  --dymo-hover: #2a2724;
+  --dymo-text: #f2eee6;
+  --amber: rgba(214, 138, 42, 0.58);
+  --amber-border: rgba(255, 212, 150, 0.55);
+  --washi: rgba(211, 164, 58, 0.82);
+  --washi-sage: rgba(143, 162, 122, 0.85);
+  --kraft: #d6c7a8; /* visuels en attente */
+  --kraft-dark: #2b2421;
+  --sticky: #e2b655;
+  --sticky-edge: #c99b3a;
+  --leaf: #b4612f;
+  --leaf-olive: #7c7a3a;
+  --paper-line: rgba(110, 140, 120, 0.3);
+  --paper-margin: rgba(196, 92, 70, 0.5);
+  --card-redline: #c66b4a;
+  --dashed: rgba(237, 230, 211, 0.3); /* séparateurs pointillés sur le tapis */
+
+  /* Typo — les familles et leurs polices de secours viennent de la config `fonts` d'Astro */
+  --f-stencil: var(--font-stencil); /* Big Shoulders Stencil 900 */
+  --f-text: var(--font-text); /* Archivo Narrow 400–700 */
+  --f-hand: var(--font-hand); /* Gochi Hand 400 */
+
+  /* Ombres */
+  --sh-sm: 0 2px 3px rgba(0, 0, 0, 0.4);
+  --sh-md: 0 16px 26px rgba(0, 0, 0, 0.35);
+  --sh-lg: 0 30px 40px rgba(0, 0, 0, 0.45);
+
+  /* Espacements */
+  --s-1: 4px;
+  --s-2: 8px;
+  --s-3: 12px;
+  --s-4: 16px;
+  --s-5: 24px;
+  --s-6: 32px;
+  --s-7: 48px;
+  --s-8: 56px;
+  --s-9: 80px;
+  --s-10: 110px;
+
+  /* Marges latérales */
+  --gutter: clamp(16px, 5vw, 80px); /* sections */
+  --gutter-header: clamp(16px, 4vw, 56px); /* étiquettes de l'en-tête */
+  --container: 1240px;
+
+  /* Mouvement */
+  --e-drop: cubic-bezier(0.25, 1.25, 0.45, 1); /* 800 ms — objets qui tombent */
+  --e-slide: cubic-bezier(0.2, 0.9, 0.25, 1.05); /* 1000 ms — règle du hero */
+  --e-flip: cubic-bezier(0.5, 0.05, 0.25, 1); /* 800 ms — photo retournable */
+  --e-stick: cubic-bezier(0.3, 1.6, 0.5, 1); /* 500 ms — washi qui se colle */
+  --e-reveal: cubic-bezier(0.2, 0.9, 0.3, 1); /* 800–900 ms — grands titres */
+  --e-lift: cubic-bezier(0.3, 1.4, 0.5, 1); /* 350–400 ms — survols */
+  --e-fly: cubic-bezier(0.7, 0, 0.2, 1); /* 850 ms — vol de la photo */
+  --e-out: cubic-bezier(0.6, 0, 0.3, 1); /* sorties */
+}

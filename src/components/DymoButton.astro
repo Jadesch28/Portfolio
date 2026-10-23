@@ -1,0 +1,173 @@
+---
+// Étiquette Dymo : plastique embossé, lettres capitales espacées.
+// Toujours un vrai <a> (avec href) ou <button> (sans href).
+import type { HTMLAttributes } from 'astro/types';
+
+type Variant = 'noir' | 'rouille' | 'ghost' | 'ghost-encre';
+
+interface Props extends Omit<HTMLAttributes<'a'> & HTMLAttributes<'button'>, 'type' | 'style'> {
+  href?: string;
+  variant?: Variant;
+  size?: 'md' | 'sm';
+  /** Animation « impression » (clip-path en escalier). */
+  typeIn?: boolean;
+  /** Délai de l'animation, en secondes. */
+  delay?: number;
+  /** Lien de la page courante : anneau moutarde + aria-current. */
+  current?: boolean;
+  type?: 'button' | 'submit' | 'reset';
+  style?: string;
+}
+
+const {
+  href,
+  variant = 'noir',
+  size = 'md',
+  typeIn = false,
+  delay,
+  current = false,
+  type = 'button',
+  class: className,
+  style,
+  ...rest
+} = Astro.props;
+
+const Tag = href ? 'a' : 'button';
+const delayStyle = delay === undefined ? undefined : `--dymo-delay: ${delay}s`;
+---
+
+<Tag
+  href={href}
+  type={href ? undefined : type}
+  class:list={['dymo', `dymo--${variant}`, `dymo--${size}`, { 'dymo--type-in': typeIn }, className]}
+  style={[delayStyle, style].filter(Boolean).join('; ') || undefined}
+  aria-current={current ? 'page' : undefined}
+  {...rest}
+>
+  <slot />
+</Tag>
+
+<style>
+  .dymo {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    min-height: 44px;
+    margin: 0;
+    padding: 8px 18px;
+    border: 0;
+    border-radius: 3px;
+    background-color: var(--dymo);
+    background-image: linear-gradient(
+      180deg,
+      rgba(255, 255, 255, 0.1),
+      rgba(255, 255, 255, 0) 40%,
+      rgba(0, 0, 0, 0.2)
+    );
+    color: var(--dymo-text);
+    font-family: var(--f-text);
+    font-weight: 700;
+    font-size: 20px;
+    line-height: 1.2;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    text-decoration: none;
+    text-shadow:
+      0 1px 0 rgba(0, 0, 0, 0.7),
+      0 -1px 0 rgba(255, 255, 255, 0.18);
+    box-shadow: var(--sh-sm);
+    white-space: nowrap;
+    cursor: pointer;
+    transition:
+      transform 0.15s ease,
+      background-color 0.15s ease;
+  }
+
+  .dymo:hover {
+    color: #fff;
+    background-color: var(--dymo-hover);
+    transform: translateY(-1px);
+  }
+
+  .dymo--sm {
+    padding: 6px 14px;
+    font-size: 14px;
+    letter-spacing: 0.16em;
+  }
+
+  .dymo--rouille {
+    background-color: var(--rust);
+  }
+
+  .dymo--rouille:hover {
+    background-color: var(--rust-hover);
+  }
+
+  .dymo--ghost,
+  .dymo--ghost:hover {
+    background: transparent;
+    box-shadow: inset 0 0 0 1.5px rgba(237, 230, 211, 0.55);
+    text-shadow: none;
+  }
+
+  .dymo--ghost-encre,
+  .dymo--ghost-encre:hover {
+    background: transparent;
+    color: var(--ink);
+    box-shadow: inset 0 0 0 1.5px rgba(42, 33, 24, 0.5);
+    text-shadow: none;
+  }
+
+  .dymo[aria-current='page'] {
+    box-shadow:
+      var(--sh-sm),
+      0 0 0 2px var(--mustard);
+  }
+
+  .dymo:disabled {
+    cursor: progress;
+    opacity: 0.75;
+    transform: none;
+  }
+
+  /* Étiquette qui « s'imprime » */
+  .dymo--type-in {
+    animation: dymo-type-in 1s steps(24, end) var(--dymo-delay, 0s) both;
+  }
+
+  @keyframes dymo-type-in {
+    from {
+      clip-path: inset(0 100% 0 0);
+    }
+    to {
+      clip-path: inset(0);
+    }
+  }
+
+  @keyframes dymo-fade {
+    from {
+      opacity: 0;
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .dymo--type-in {
+      animation: dymo-fade 0.2s ease both;
+    }
+  }
+
+  @media (max-width: 759.98px) {
+    .dymo {
+      padding: 8px 16px;
+      font-size: 16px;
+      letter-spacing: 0.16em;
+    }
+
+    .dymo--sm {
+      padding: 6px 12px;
+      font-size: 13px;
+      letter-spacing: 0.14em;
+    }
+  }
+</style>
