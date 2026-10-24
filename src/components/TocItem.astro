@@ -15,6 +15,8 @@ const { projet, actif = false } = Astro.props;
   class:list={['toc', { 'is-active': actif }]}
   aria-current={actif ? 'true' : undefined}
   data-toc={projet.id}
+  data-toc-numero={deuxChiffres(projet.data.numero)}
+  data-toc-libelle={`${deuxChiffres(projet.data.numero)} · ${projet.data.titre}`}
 >
   <span class="stencil num">{deuxChiffres(projet.data.numero)}</span>
   <span class="textes">

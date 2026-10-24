@@ -74,9 +74,35 @@ const cartes = images.map((visuel, i) => {
     transform: translateY(-14px) rotate(0deg);
   }
 
+  /* Distribution : les cartes arrivent une à une quand le bloc entre à l'écran */
+  :global(.js [data-reveal]:not(.is-in)) .deal {
+    opacity: 0;
+  }
+
+  :global(.is-in) .deal {
+    animation: deal 0.7s cubic-bezier(0.2, 0.9, 0.3, 1.1) var(--delai) backwards;
+  }
+
+  @keyframes deal {
+    from {
+      opacity: 0;
+      transform: translate(-260px, 60px) rotate(-30deg);
+    }
+  }
+
+  @keyframes deal-fondu {
+    from {
+      opacity: 0;
+    }
+  }
+
   @media (prefers-reduced-motion: reduce) {
     .gcard {
       transition: none;
+    }
+
+    :global(.is-in) .deal {
+      animation: deal-fondu 0.2s ease backwards;
     }
   }
 

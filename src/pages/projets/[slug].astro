@@ -47,7 +47,7 @@ const f = pageProjet.fiche;
   <section class="hero">
     <div class="hero-inner">
       <div class="hero-texte">
-        <div class="etiquettes">
+        <div class="etiquettes anim-fade" style="--delai: 0.1s">
           <DymoButton href={retour} size="sm" variant="ghost" class="retour">
             {pageProjet.retour}
           </DymoButton>
@@ -55,16 +55,27 @@ const f = pageProjet.fiche;
             {`${pageProjet.projet} ${deuxChiffres(d.numero)} / ${deuxChiffres(projets.length)}`}
           </DymoButton>
         </div>
-        <h1 class="stencil titre" style={`--len: ${motLePlusLong}; --k: ${debord}`}>
+        <h1
+          class="stencil titre anim-reveal"
+          style={`--len: ${motLePlusLong}; --k: ${debord}; --delai: 0.3s`}
+        >
           {d.titre}
         </h1>
-        <p class="categorie">{d.categorie}</p>
-        <p class="intro">{d.intro}</p>
-        {d.annotation && <p class="hand annotation">{d.annotation}</p>}
+        <p class="categorie anim-fade" style="--delai: 0.6s">
+          {d.categorie}
+        </p>
+        <p class="intro anim-fade" style="--delai: 0.75s">
+          {d.intro}
+        </p>
+        {d.annotation && (
+          <p class="hand annotation anim-fade" style="--delai: 1.1s">
+            {d.annotation}
+          </p>
+        )}
       </div>
 
-      <div class="hero-visuel">
-        <div class="cadre">
+      <div class="hero-visuel" data-parallax-hero>
+        <div class="cadre anim-land" style="--delai: 0.15s">
           {d.video ? (
             <ProjectVideo
               mp4={d.video.mp4}
@@ -82,11 +93,28 @@ const f = pageProjet.fiche;
             />
           )}
         </div>
-        <WashiTape class="w1" left="-24px" top="18px" width={120} rotate={-36} />
-        <WashiTape class="w2" color="sauge" right="-26px" top="14px" width={120} rotate={34} />
-        <WashiTape class="w3" right="60px" bottom="-12px" width={110} rotate={-6} />
+        <WashiTape class="w1" left="-24px" top="18px" width={120} rotate={-36} stick delay={0.9} />
+        <WashiTape
+          class="w2"
+          color="sauge"
+          right="-26px"
+          top="14px"
+          width={120}
+          rotate={34}
+          stick
+          delay={1}
+        />
+        <WashiTape
+          class="w3"
+          right="60px"
+          bottom="-12px"
+          width={110}
+          rotate={-6}
+          stick
+          delay={1.1}
+        />
         {detail && (
-          <div class="detail">
+          <div class="detail anim-land" style="--delai: 0.6s">
             <Polaroid
               visuel={detail}
               tone="sombre"
@@ -104,17 +132,17 @@ const f = pageProjet.fiche;
     </div>
   </section>
 
-  <section class="sec">
+  <section class="sec" data-reveal>
     <div class="wrap le-projet">
       <div class="presentation">
-        <h2>
+        <h2 class="rv3">
           <DymoButton as="span">{pageProjet.leProjet}</DymoButton>
         </h2>
-        <div class="contenu">
+        <div class="contenu rv4">
           <Content />
         </div>
       </div>
-      <div class="fiche">
+      <div class="fiche rv2">
         <FactSheet
           lignes={[
             { label: f.projet, valeur: d.titre },
@@ -132,12 +160,16 @@ const f = pageProjet.fiche;
 
   <Blocs projet={projet} />
 
-  <section class="sec sec--suivant">
+  <section class="sec sec--suivant" data-reveal>
     <div class="wrap">
       <NextProject projet={projetSuivant(projets, projet)} />
     </div>
   </section>
 </Base>
+
+<script>
+  import '../../scripts/parallax';
+</script>
 
 <style>
   .hero {

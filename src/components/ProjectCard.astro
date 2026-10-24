@@ -23,10 +23,11 @@ const secondaire = d.visuelSecondaire ?? (import.meta.env.DEV ? { alt: 'visuel 2
   class="card"
   id={`projet-${projet.id}`}
   data-projet={projet.id}
+  data-reveal
   style={`--r1: ${pair ? -1.2 : 1.2}deg; --r2: ${pair ? 6 : -5}deg; --rm: ${pair ? -1 : 1}deg`}
 >
   <div class="visuels">
-    <a href={href} class="lien-photo" aria-label={`${sectionProjets.ouvrirProjet} ${d.titre}`}>
+    <a href={href} class="lien-photo rv1" aria-label={`${sectionProjets.ouvrirProjet} ${d.titre}`}>
       <div class="photo">
         <Visuel
           visuel={d.visuelPrincipal}
@@ -38,9 +39,11 @@ const secondaire = d.visuelSecondaire ?? (import.meta.env.DEV ? { alt: 'visuel 2
     </a>
     {secondaire && (
       <div class="parallaxe" data-parallax="-60">
-        <div class="pola">
-          <div class="pola-photo">
-            <Visuel visuel={secondaire} tone="clair" widths={[200, 400]} sizes="170px" />
+        <div class="rv2">
+          <div class="pola">
+            <div class="pola-photo">
+              <Visuel visuel={secondaire} tone="clair" widths={[200, 400]} sizes="170px" />
+            </div>
           </div>
         </div>
       </div>
@@ -48,17 +51,21 @@ const secondaire = d.visuelSecondaire ?? (import.meta.env.DEV ? { alt: 'visuel 2
   </div>
 
   <div class="textes">
-    <DymoButton as="span" size="sm">
+    <DymoButton as="span" size="sm" class="rv3">
       {deuxChiffres(d.numero)} · {d.titreCourt}
     </DymoButton>
-    <h3 class="stencil">{d.titre}</h3>
-    <p class="categorie">{d.categorie}</p>
-    <p class="resume">{d.resume}</p>
-    <DymoButton href={href} size="sm" variant="rouille">
+    <h3 class="stencil rv4">{d.titre}</h3>
+    <p class="categorie rv4">{d.categorie}</p>
+    <p class="resume rv4">{d.resume}</p>
+    <DymoButton href={href} size="sm" variant="rouille" class="rv4">
       {sectionProjets.voirProjet}
     </DymoButton>
   </div>
 </article>
+
+<script>
+  import '../scripts/parallax';
+</script>
 
 <style>
   .card {

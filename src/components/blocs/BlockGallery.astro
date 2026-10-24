@@ -25,8 +25,8 @@ const washis = [
   {images.map((visuel, i) => {
     const w = washis[i % washis.length] ?? washis[0];
     return (
-      <figure class="item">
-        <div class="tirage">
+      <figure class:list={['item', i % 2 ? 'rv2' : 'rv1']}>
+        <div class="tirage" data-parallax={i === 0 && images.length > 1 ? '-40' : undefined}>
           <FramedPrint
             visuel={visuel}
             rotate={rotations[i % rotations.length]}

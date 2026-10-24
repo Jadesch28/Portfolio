@@ -12,8 +12,10 @@ const { texte, etiquette = pageProjet.ceQueJenRetiens } = Astro.props;
 ---
 
 <figure class="quote">
-  <DymoButton as="span">{etiquette}</DymoButton>
-  <blockquote>
+  <DymoButton as="span" class="rv3">
+    {etiquette}
+  </DymoButton>
+  <blockquote class="rv4">
     <p class="hand">« {texte} »</p>
   </blockquote>
 </figure>

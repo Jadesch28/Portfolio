@@ -17,21 +17,60 @@ type Objet = {
   type: 'crayon' | 'rouleau' | 'gomme' | 'post-it' | 'trombone' | 'feuille' | 'feuille-olive';
   s0: Pose;
   s1: Pose;
+  /** Délai de la chute sur le bureau, en secondes. */
+  delai: number;
 };
 
 // Ordre = index de décalage (0,03 de progression par objet).
 const objets: Objet[] = [
-  { id: 'crayon', type: 'crayon', s0: { x: 60, y: 90, r: -12 }, s1: { x: 67, y: 92, r: 0 } },
-  { id: 'rouleau', type: 'rouleau', s0: { x: 91, y: 36, r: 0 }, s1: { x: 88.5, y: 24, r: 0 } },
-  { id: 'gomme', type: 'gomme', s0: { x: 55, y: 79, r: 24 }, s1: { x: 88.5, y: 42, r: 0 } },
-  { id: 'post-it', type: 'post-it', s0: { x: 92, y: 73, r: 9 }, s1: { x: 88.5, y: 61, r: 0 } },
-  { id: 'trombone', type: 'trombone', s0: { x: 82, y: 20, r: 50 }, s1: { x: 88.5, y: 80, r: 0 } },
-  { id: 'feuille', type: 'feuille', s0: { x: 52, y: 30, r: 30 }, s1: { x: 60, y: 12.5, r: 0 } },
+  {
+    id: 'crayon',
+    type: 'crayon',
+    s0: { x: 60, y: 90, r: -12 },
+    s1: { x: 67, y: 92, r: 0 },
+    delai: 1,
+  },
+  {
+    id: 'rouleau',
+    type: 'rouleau',
+    s0: { x: 91, y: 36, r: 0 },
+    s1: { x: 88.5, y: 24, r: 0 },
+    delai: 0.9,
+  },
+  {
+    id: 'gomme',
+    type: 'gomme',
+    s0: { x: 55, y: 79, r: 24 },
+    s1: { x: 88.5, y: 42, r: 0 },
+    delai: 1.1,
+  },
+  {
+    id: 'post-it',
+    type: 'post-it',
+    s0: { x: 92, y: 73, r: 9 },
+    s1: { x: 88.5, y: 61, r: 0 },
+    delai: 1.25,
+  },
+  {
+    id: 'trombone',
+    type: 'trombone',
+    s0: { x: 82, y: 20, r: 50 },
+    s1: { x: 88.5, y: 80, r: 0 },
+    delai: 1.45,
+  },
+  {
+    id: 'feuille',
+    type: 'feuille',
+    s0: { x: 52, y: 30, r: 30 },
+    s1: { x: 60, y: 12.5, r: 0 },
+    delai: 1.2,
+  },
   {
     id: 'feuille-olive',
     type: 'feuille-olive',
     s0: { x: 84, y: 88, r: -40 },
     s1: { x: 74, y: 12.5, r: 0 },
+    delai: 1.35,
   },
 ];
 const portrait = { s0: { x: 67, y: 52, r: -4 }, s1: { x: 67, y: 51, r: 0 } };
@@ -45,7 +84,7 @@ const poses = (o: { s0: Pose; s1: Pose }) =>
     <RulerNumbers />
 
     <div class="texte">
-      <div class="h-regle">
+      <div class="h-regle anim-slide" style="--delai: 0.1s">
         <StencilRuler
           as="h1"
           title={hero.prenom}
@@ -56,13 +95,17 @@ const poses = (o: { s0: Pose; s1: Pose }) =>
         />
       </div>
       <div class="h-roles">
-        <DymoButton as="span">{hero.role}</DymoButton>
-        <DymoButton as="span" variant="rouille">
+        <DymoButton as="span" typeIn delay={1}>
+          {hero.role}
+        </DymoButton>
+        <DymoButton as="span" variant="rouille" typeIn delay={1.9}>
           {hero.roleSuite}
         </DymoButton>
       </div>
-      <p class="h-paragraphe">{hero.texte}</p>
-      <div class="h-boutons">
+      <p class="h-paragraphe anim-fade" style="--delai: 2.3s">
+        {hero.texte}
+      </p>
+      <div class="h-boutons anim-fade" style="--delai: 2.5s">
         <DymoButton href="#projets" variant="rouille">
           {hero.boutonProjets}
         </DymoButton>
@@ -72,22 +115,26 @@ const poses = (o: { s0: Pose; s1: Pose }) =>
 
     {objets.map((o, i) => (
       <div class="ko deco-o" style={`${poses(o)}; --i: ${i}`} data-objet={o.id}>
-        {o.type === 'post-it' ? (
-          <div class="lift">
-            <StickyNote width="130px" size="24px" rotate={0}>
-              {hero.postIt[0]}
-              <br />
-              {hero.postIt[1]}
-            </StickyNote>
-          </div>
-        ) : (
-          <DecoItem type={o.type} lift />
-        )}
+        <div class="anim-drop" style={`--delai: ${o.delai}s`}>
+          {o.type === 'post-it' ? (
+            <div class="lift">
+              <StickyNote width="130px" size="24px" rotate={0}>
+                {hero.postIt[0]}
+                <br />
+                {hero.postIt[1]}
+              </StickyNote>
+            </div>
+          ) : (
+            <DecoItem type={o.type} lift />
+          )}
+        </div>
       </div>
     ))}
 
     <div class="ko ko--portrait" style={poses(portrait)} data-objet="portrait">
-      <FlipPhoto front={photos.portrait} priority />
+      <div class="anim-drop" style="--delai: 0.35s">
+        <FlipPhoto front={photos.portrait} priority />
+      </div>
       <div class="deco-mobile" aria-hidden="true">
         <DecoItem type="feuille" size={70} rotate={-20} class="feuille-mobile" />
         <StickyNote width="92px" size="17px" rotate={8} class="postit-mobile">
@@ -104,6 +151,10 @@ const poses = (o: { s0: Pose; s1: Pose }) =>
     </a>
   </div>
 </section>
+
+<script>
+  import '../scripts/hero-tidy';
+</script>
 
 <style>
   .scene {

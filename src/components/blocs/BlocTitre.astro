@@ -13,13 +13,13 @@ const { etiquette, note, noteMobile } = Astro.props;
 ---
 
 <div class="bloc-titre">
-  <h2>
+  <h2 class="rv3">
     <DymoButton as="span" variant="rouille">
       {etiquette}
     </DymoButton>
   </h2>
-  {note && <p class="hand note">{note}</p>}
-  {noteMobile && <p class="hand note note--mobile">{noteMobile}</p>}
+  {note && <p class="hand note rv4">{note}</p>}
+  {noteMobile && <p class="hand note note--mobile rv4">{noteMobile}</p>}
 </div>
 
 <style>

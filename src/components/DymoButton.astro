@@ -142,7 +142,7 @@ const delayStyle = delay === undefined ? undefined : `--dymo-delay: ${delay}s`;
 
   /* Étiquette qui « s'imprime » */
   .dymo--type-in {
-    animation: dymo-type-in 1s steps(24, end) var(--dymo-delay, 0s) both;
+    animation: dymo-type-in 1s steps(24, end) var(--dymo-delay, 0s) backwards;
   }
 
   @keyframes dymo-type-in {
@@ -162,7 +162,7 @@ const delayStyle = delay === undefined ? undefined : `--dymo-delay: ${delay}s`;
 
   @media (prefers-reduced-motion: reduce) {
     .dymo--type-in {
-      animation: dymo-fade 0.2s ease both;
+      animation: dymo-fade 0.2s ease backwards;
     }
   }
 

@@ -33,10 +33,10 @@ const projets = await getProjets();
     </div>
   </section>
 
-  <section class="apropos" aria-labelledby="apropos-titre">
+  <section class="apropos" aria-labelledby="apropos-titre" data-reveal>
     <div class="apropos-inner">
       <div class="apropos-photo">
-        <div class="polaroid-atelier">
+        <div class="polaroid-atelier rv1">
           <Polaroid
             visuel={photos.atelier}
             width="320px"
@@ -55,10 +55,10 @@ const projets = await getProjets();
         </div>
       </div>
       <div class="apropos-texte">
-        <DymoButton as="span" class="etiquette">
+        <DymoButton as="span" class="etiquette rv3">
           {aProposCourt.etiquette}
         </DymoButton>
-        <div class="fiche">
+        <div class="fiche rv4">
           <h2 class="hand" id="apropos-titre">
             {aProposCourt.titre}
           </h2>
@@ -66,22 +66,22 @@ const projets = await getProjets();
             <p>{p}</p>
           ))}
         </div>
-        <DymoButton href="/a-propos" class="suite">
+        <DymoButton href="/a-propos" class="suite rv4">
           {aProposCourt.lireLaSuite}
         </DymoButton>
       </div>
     </div>
   </section>
 
-  <section class="contact" aria-labelledby="contact-titre">
+  <section class="contact" aria-labelledby="contact-titre" data-reveal>
     <div class="contact-inner">
-      <DymoButton as="span" variant="rouille">
+      <DymoButton as="span" variant="rouille" class="rv3">
         {contactCourt.etiquette}
       </DymoButton>
-      <h2 class="hand" id="contact-titre">
+      <h2 class="hand rv4" id="contact-titre">
         {contactCourt.phrase}
       </h2>
-      <div class="contact-liens">
+      <div class="contact-liens rv4">
         <DymoButton href="/contact" variant="rouille" class="ecrire">
           {contactCourt.bouton}
         </DymoButton>

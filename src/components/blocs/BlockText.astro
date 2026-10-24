@@ -27,20 +27,20 @@ const rotationsImages = [1, -2, 1.5, -1];
   <div class="colonne">
     <BlocTitre etiquette={etiquette} />
     {paragraphes.map((p) => (
-      <p>{p}</p>
+      <p class="rv4">{p}</p>
     ))}
   </div>
   {aside && (
     <div class="aside">
       {couleurs.length > 0 && (
-        <div class="nuancier">
+        <div class="nuancier rv1">
           {couleurs.map((c, i) => (
             <PaintChip nom={c.nom} hex={c.hex} rotate={rotationsChips[i % rotationsChips.length]} />
           ))}
         </div>
       )}
       {images.length > 0 && (
-        <div class="visuels">
+        <div class="visuels rv2">
           {images.map((visuel, i) => (
             <div class="visuel">
               <FramedPrint

@@ -65,6 +65,8 @@ const total = deuxChiffres(projets.length);
 </aside>
 
 <script>
+  import '../scripts/notebook';
+
   document.querySelectorAll<HTMLElement>('[data-notebook]').forEach((carnet) => {
     const bouton = carnet.querySelector<HTMLButtonElement>('.bouton');
     const liste = carnet.querySelector<HTMLElement>('.liste-mobile');

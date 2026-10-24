@@ -1,0 +1,141 @@
+/* Animations partagées. Règle d'or : uniquement transform, opacity, clip-path (et stroke-dashoffset).
+   Les images clés ne fixent que l'état de départ : l'arrivée est la pose normale de l'élément
+   (rotation comprise), et `backwards` laisse ensuite la main au survol et aux scripts.
+   Avec prefers-reduced-motion, toute entrée devient un fondu de 200 ms. */
+
+/* ---------- Entrées au chargement ---------- */
+
+.anim-drop {
+  animation: anim-drop 0.8s var(--e-drop) var(--delai, 0s) backwards;
+}
+
+.anim-slide {
+  animation: anim-slide 1s var(--e-slide) var(--delai, 0s) backwards;
+}
+
+.anim-fade {
+  animation: anim-fade-up 0.8s ease var(--delai, 0s) backwards;
+}
+
+.anim-type {
+  animation: anim-type 1s steps(24, end) var(--delai, 0s) backwards;
+}
+
+.anim-land {
+  animation: anim-land 1s cubic-bezier(0.25, 1.2, 0.45, 1) var(--delai, 0s) backwards;
+}
+
+.anim-reveal {
+  animation: anim-reveal 0.9s var(--e-reveal) var(--delai, 0s) backwards;
+}
+
+/* ---------- Apparitions au scroll (reveal.ts ajoute .is-in une seule fois) ----------
+   Le contenu n'est masqué que si le JavaScript tourne (.js) et que le bloc n'est pas encore entré. */
+
+.js [data-reveal]:not(.is-in) :is(.rv1, .rv2, .rv4) {
+  opacity: 0;
+}
+
+.js [data-reveal]:not(.is-in) .rv3 {
+  clip-path: inset(0 100% 0 0);
+}
+
+.is-in .rv1 {
+  animation: anim-drop-in 0.9s cubic-bezier(0.25, 1.2, 0.45, 1) backwards;
+}
+
+.is-in .rv2 {
+  animation: anim-drop-in 0.9s cubic-bezier(0.25, 1.2, 0.45, 1) 0.2s backwards;
+}
+
+.is-in .rv3 {
+  animation: anim-type 1s steps(22, end) 0.1s backwards;
+}
+
+.is-in .rv4 {
+  animation: anim-fade-up 0.8s ease 0.35s backwards;
+}
+
+/* ---------- Images clés (état de départ seulement) ---------- */
+
+@keyframes anim-drop {
+  0% {
+    opacity: 0;
+    transform: translateY(-90px) scale(1.4) rotate(-7deg);
+  }
+  55% {
+    opacity: 1;
+  }
+}
+
+@keyframes anim-drop-in {
+  0% {
+    opacity: 0;
+    transform: translateY(-60px) scale(1.18) rotate(-5deg);
+  }
+  60% {
+    opacity: 1;
+  }
+}
+
+@keyframes anim-slide {
+  from {
+    opacity: 0;
+    transform: translateX(-50%) rotate(-5deg);
+  }
+}
+
+@keyframes anim-fade-up {
+  from {
+    opacity: 0;
+    transform: translateY(16px);
+  }
+}
+
+@keyframes anim-type {
+  from {
+    clip-path: inset(0 100% 0 0);
+  }
+  to {
+    clip-path: inset(0);
+  }
+}
+
+@keyframes anim-land {
+  0% {
+    opacity: 0;
+    transform: translateY(-50px) scale(1.12) rotate(-4deg);
+  }
+  60% {
+    opacity: 1;
+  }
+}
+
+@keyframes anim-reveal {
+  from {
+    clip-path: inset(100% 0 0 0);
+    transform: translateY(30px);
+  }
+  to {
+    clip-path: inset(0);
+  }
+}
+
+@keyframes anim-fondu {
+  from {
+    opacity: 0;
+  }
+}
+
+/* ---------- Mouvement réduit : fondu de 200 ms, sans délai ---------- */
+
+@media (prefers-reduced-motion: reduce) {
+  :is(.anim-drop, .anim-slide, .anim-fade, .anim-type, .anim-land, .anim-reveal),
+  .is-in :is(.rv1, .rv2, .rv3, .rv4) {
+    animation: anim-fondu 0.2s ease backwards;
+  }
+
+  .js [data-reveal]:not(.is-in) .rv3 {
+    clip-path: none;
+  }
+}

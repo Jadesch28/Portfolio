@@ -10,12 +10,16 @@ import Base from '../layouts/Base.astro';
   <section class="contact">
     <div class="inner">
       <div class="texte">
-        <DymoButton as="span" variant="rouille">
+        <DymoButton as="span" variant="rouille" class="anim-fade" style="--delai: 0.1s">
           {contactCourt.etiquette}
         </DymoButton>
-        <h1 class="hand">{contact.phrase}</h1>
-        <p class="sous-titre">{contact.sousTitre}</p>
-        <div class="ailleurs">
+        <h1 class="hand anim-fade" style="--delai: 0.25s">
+          {contact.phrase}
+        </h1>
+        <p class="sous-titre anim-fade" style="--delai: 0.4s">
+          {contact.sousTitre}
+        </p>
+        <div class="ailleurs anim-fade" style="--delai: 0.55s">
           <h2 class="label">{contact.ailleurs}</h2>
           <div class="reseaux">
             <DymoButton href={site.reseaux.instagram} size="sm">
@@ -29,9 +33,11 @@ import Base from '../layouts/Base.astro';
             {contact.emailDirect} <a href={`mailto:${site.email}`}>{site.email}</a>
           </p>
         </div>
-        <DecoItem type="feuille" size={120} rotate={-20} class="feuille" />
+        <div class="anim-fade" style="--delai: 0.8s">
+          <DecoItem type="feuille" size={120} rotate={-20} class="feuille" />
+        </div>
       </div>
-      <div class="carnet">
+      <div class="carnet anim-land" style="--delai: 0.2s">
         <ContactForm />
       </div>
     </div>

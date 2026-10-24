@@ -13,6 +13,7 @@ const parSlug = new Map(projets.map((p) => [p.id, p]));
 const cartes = aPropos.ceQueJeFais.cartes.map((carte, i) => ({
   ...carte,
   rotation: [-1.5, 1, -0.5][i % 3],
+  rv: i % 3 === 1 ? 'rv2' : 'rv1',
   liens: carte.projets.flatMap((slug) => {
     const p = parSlug.get(slug);
     return p ? [{ titre: p.data.titre, href: projetHref(p) }] : [];
@@ -38,12 +39,18 @@ const segments = (paragraphe: string) =>
   <section class="hero">
     <div class="wrap hero-inner">
       <div class="hero-texte">
-        <DymoButton as="span">{aPropos.etiquette}</DymoButton>
+        <DymoButton as="span" typeIn delay={0.2}>
+          {aPropos.etiquette}
+        </DymoButton>
         <h1>
-          <span class="stencil salut">{aPropos.salut}</span>
-          <span class="hand moi">{aPropos.moi}</span>
+          <span class="stencil salut anim-fade" style="--delai: 0.3s">
+            {aPropos.salut}
+          </span>
+          <span class="hand moi anim-fade" style="--delai: 0.55s">
+            {aPropos.moi}
+          </span>
         </h1>
-        <div class="etiquettes">
+        <div class="etiquettes anim-fade" style="--delai: 0.8s">
           <DymoButton as="span" size="sm" variant="rouille">
             {site.age}
           </DymoButton>
@@ -53,7 +60,7 @@ const segments = (paragraphe: string) =>
         </div>
       </div>
       <div class="hero-photo">
-        <div class="photo-cadre">
+        <div class="photo-cadre anim-land" style="--delai: 0.2s">
           <Polaroid
             visuel={photos.portrait}
             width="400px"
@@ -66,7 +73,7 @@ const segments = (paragraphe: string) =>
             priority
           />
           <WashiTape left="34%" top="-12px" width={130} rotate={-4} />
-          <div class="post-it">
+          <div class="post-it anim-land" style="--delai: 0.7s">
             <StickyNote width="180px" size="22px" rotate={-8} lifted>
               {aPropos.postIt}
             </StickyNote>
@@ -76,9 +83,9 @@ const segments = (paragraphe: string) =>
     </div>
   </section>
 
-  <section class="sec">
+  <section class="sec" data-reveal>
     <div class="wrap wrap--bio">
-      <div class="bio">
+      <div class="bio rv1">
         <WashiTape color="sauge" left="44%" top="-12px" width={120} rotate={3} />
         {aPropos.bio.map((paragraphe) => (
           <p>{segments(paragraphe).map((s) => (s.mark ? <mark>{s.texte}</mark> : s.texte))}</p>
@@ -87,19 +94,19 @@ const segments = (paragraphe: string) =>
     </div>
   </section>
 
-  <section class="sec" aria-labelledby="ce-que-je-fais">
+  <section class="sec" aria-labelledby="ce-que-je-fais" data-reveal>
     <div class="wrap">
       <div class="titre-section">
-        <h2 id="ce-que-je-fais">
+        <h2 id="ce-que-je-fais" class="rv3">
           <DymoButton as="span" variant="rouille">
             {aPropos.ceQueJeFais.titre}
           </DymoButton>
         </h2>
-        <p class="hand note">{aPropos.ceQueJeFais.note}</p>
+        <p class="hand note rv4">{aPropos.ceQueJeFais.note}</p>
       </div>
       <div class="competences">
         {cartes.map((c) => (
-          <article class="competence" style={`--r: ${c.rotation}deg`}>
+          <article class:list={['competence', c.rv]} style={`--r: ${c.rotation}deg`}>
             <WashiTape left="40%" top="-12px" width={90} rotate={-4} />
             <h3 class="stencil">{c.titre}</h3>
             <p>{c.texte}</p>
@@ -119,17 +126,17 @@ const segments = (paragraphe: string) =>
     </div>
   </section>
 
-  <section class="sec" aria-labelledby="parcours">
+  <section class="sec" aria-labelledby="parcours" data-reveal>
     <div class="wrap">
       <div class="titre-section">
-        <h2 id="parcours">
+        <h2 id="parcours" class="rv3">
           <DymoButton as="span" variant="rouille">
             {aPropos.parcours.titre}
           </DymoButton>
         </h2>
-        <p class="hand note">{aPropos.parcours.note}</p>
+        <p class="hand note rv4">{aPropos.parcours.note}</p>
       </div>
-      <div class="regle">
+      <div class="regle rv1">
         <span class="graduations" aria-hidden="true"></span>
         <ol class="etapes">
           {aPropos.parcours.etapes.map((e) => (
@@ -154,15 +161,15 @@ const segments = (paragraphe: string) =>
     </div>
   </section>
 
-  <section class="sec">
+  <section class="sec" data-reveal>
     <div class="wrap outils">
       <div class="groupe">
-        <h2>
+        <h2 class="rv3">
           <DymoButton as="span" variant="rouille">
             {aPropos.logiciels.titre}
           </DymoButton>
         </h2>
-        <ul class="tags">
+        <ul class="tags rv4">
           {aPropos.logiciels.liste.map((l) => (
             <li>
               <DymoButton as="span" size="sm">
@@ -173,12 +180,12 @@ const segments = (paragraphe: string) =>
         </ul>
       </div>
       <div class="groupe">
-        <h2>
+        <h2 class="rv3">
           <DymoButton as="span" variant="rouille">
             {aPropos.langues.titre}
           </DymoButton>
         </h2>
-        <ul class="tags">
+        <ul class="tags rv4">
           {aPropos.langues.liste.map((l) => (
             <li>
               <DymoButton as="span" size="sm" variant="ghost">
@@ -193,10 +200,10 @@ const segments = (paragraphe: string) =>
     </div>
   </section>
 
-  <section class="sec sec--cta">
+  <section class="sec sec--cta" data-reveal>
     <div class="wrap cta">
-      <h2 class="hand">{contactCourt.phrase}</h2>
-      <div class="liens">
+      <h2 class="hand rv4">{contactCourt.phrase}</h2>
+      <div class="liens rv4">
         <DymoButton href="/contact" variant="rouille">
           {contactCourt.bouton}
         </DymoButton>
@@ -330,8 +337,13 @@ const segments = (paragraphe: string) =>
     margin-top: 34px;
   }
 
-  /* Surligneur : plein par défaut, animé au scroll quand le JS est là (étape animations) */
+  /* Surligneur : plein sans JavaScript ; sinon il se trace quand la bio entre à l'écran */
+  :global(.js) [data-reveal]:not(.is-in) mark {
+    background-size: 0% 62%;
+  }
+
   mark {
+    transition: background-size 1.1s cubic-bezier(0.6, 0.05, 0.3, 1) 0.6s;
     color: inherit;
     background-color: transparent;
     background-image: linear-gradient(rgba(226, 182, 85, 0.75), rgba(226, 182, 85, 0.75));
@@ -501,7 +513,8 @@ const segments = (paragraphe: string) =>
   }
 
   @media (prefers-reduced-motion: reduce) {
-    .competence {
+    .competence,
+    mark {
       transition: none;
     }
   }

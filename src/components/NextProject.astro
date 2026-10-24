@@ -17,14 +17,18 @@ const numero = deuxChiffres(d.numero);
 
 <div class="suivant">
   <div class="entete">
-    <DymoButton as="span" variant="rouille">
+    <DymoButton as="span" variant="rouille" class="rv3">
       {pageProjet.projetSuivant}
     </DymoButton>
-    <DymoButton href="/#projets" size="sm" variant="ghost">
+    <DymoButton href="/#projets" size="sm" variant="ghost" class="rv4">
       {pageProjet.tousLesProjets}
     </DymoButton>
   </div>
-  <a href={projetHref(projet)} class="next" aria-label={`${pageProjet.projetSuivant} : ${d.titre}`}>
+  <a
+    href={projetHref(projet)}
+    class="next rv4"
+    aria-label={`${pageProjet.projetSuivant} : ${d.titre}`}
+  >
     <div class="pol">
       <div class="cadre">
         <div class="photo">

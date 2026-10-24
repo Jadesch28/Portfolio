@@ -83,7 +83,7 @@ const style = [
   }
 
   .washi--stick {
-    animation: washi-stick 0.5s var(--e-stick) var(--washi-delay, 0s) both;
+    animation: washi-stick 0.5s var(--e-stick) var(--washi-delay, 0s) backwards;
   }
 
   @keyframes washi-stick {
@@ -101,7 +101,7 @@ const style = [
 
   @media (prefers-reduced-motion: reduce) {
     .washi--stick {
-      animation: washi-fade 0.2s ease both;
+      animation: washi-fade 0.2s ease backwards;
     }
   }
 
