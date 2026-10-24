@@ -232,6 +232,8 @@ export const pageProjet = {
   // Absents des maquettes : à valider par Jade.
   videoPause: 'Pause',
   videoLecture: 'Lecture',
+  videoSonActiver: 'Activer le son',
+  videoSonCouper: 'Couper le son',
   ceQueJenRetiens: 'Ce que j’en retiens',
   projetSuivant: 'Projet suivant',
   tousLesProjets: '← Tous les projets',

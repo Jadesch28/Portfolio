@@ -1,6 +1,6 @@
 ---
-// Vidéo de projet : muette, en boucle, preload="none", lancée quand elle est visible (scripts/videos.ts).
-// L'image d'attente est le poster de la vidéo ou, à défaut, le visuel principal.
+// Vidéo de projet : muette au départ, en boucle, preload="none", lancée quand elle est visible
+// (scripts/videos.ts). L'image d'attente est le poster de la vidéo ou, à défaut, le visuel principal.
 import type { ImageMetadata } from 'astro';
 import { getImage } from 'astro:assets';
 import { pageProjet } from '../data/site';
@@ -9,12 +9,14 @@ interface Props {
   mp4: string;
   webm?: string;
   poster?: ImageMetadata;
+  /** La vidéo a une bande son : ajoute un bouton « Activer le son ». */
+  son?: boolean;
   /** Description de la vidéo pour les lecteurs d'écran. */
   label: string;
   class?: string;
 }
 
-const { mp4, webm, poster, label, class: className } = Astro.props;
+const { mp4, webm, poster, son = false, label, class: className } = Astro.props;
 const image = poster ? await getImage({ src: poster, width: 1600, format: 'webp' }) : undefined;
 ---
 
@@ -23,15 +25,28 @@ const image = poster ? await getImage({ src: poster, width: 1600, format: 'webp'
     {webm && <source src={webm} type="video/webm" />}
     <source src={mp4} type="video/mp4" />
   </video>
-  <button
-    type="button"
-    class="bascule"
-    data-video-toggle
-    data-pause={pageProjet.videoPause}
-    data-lecture={pageProjet.videoLecture}
-  >
-    {pageProjet.videoLecture}
-  </button>
+  <div class="commandes">
+    {son && (
+      <button
+        type="button"
+        class="bascule"
+        data-video-son
+        data-activer={pageProjet.videoSonActiver}
+        data-couper={pageProjet.videoSonCouper}
+      >
+        {pageProjet.videoSonActiver}
+      </button>
+    )}
+    <button
+      type="button"
+      class="bascule"
+      data-video-toggle
+      data-pause={pageProjet.videoPause}
+      data-lecture={pageProjet.videoLecture}
+    >
+      {pageProjet.videoLecture}
+    </button>
+  </div>
 </div>
 
 <script>
@@ -53,12 +68,22 @@ const image = poster ? await getImage({ src: poster, width: 1600, format: 'webp'
     object-fit: cover;
   }
 
-  /* Petite étiquette Dymo dans le coin */
-  .bascule {
+  /* Petites étiquettes Dymo dans le coin */
+  .commandes {
     position: absolute;
     right: 10px;
     bottom: 10px;
+    left: 10px;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: flex-end;
+    gap: 6px;
+    pointer-events: none;
+  }
+
+  .bascule {
     min-width: 44px;
+    pointer-events: auto;
     min-height: 44px;
     padding: 6px 12px;
     border: 0;

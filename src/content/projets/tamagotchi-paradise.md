@@ -14,6 +14,7 @@ visuelPrincipal:
   alt: Un Tamagotchi Paradise rose et turquoise flotte dans un décor bleu étoilé, entouré de ses petits personnages.
 video:
   mp4: /videos/tamagotchi-paradise.mp4
+  son: true
 blocs:
   - type: galerie
     titre: Galerie

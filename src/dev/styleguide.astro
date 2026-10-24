@@ -645,7 +645,7 @@ const mouvements = [
                 <dt>Outils</dt>
                 <dd>{d.outils?.join(', ') ?? <ACompleter />}</dd>
                 <dt>Vidéo</dt>
-                <dd>{d.video?.mp4 ?? '—'}</dd>
+                <dd>{d.video ? `${d.video.mp4}${d.video.son ? ' (avec son)' : ''}` : '—'}</dd>
                 <dt>Blocs</dt>
                 <dd>
                   {d.blocs.map((b) => b.type).join(' · ')} — {visuels.length - manquants} images,{' '}

@@ -128,11 +128,27 @@ Mettre le fichier MP4 dans `public/videos/` puis ajouter dans l'en-tête :
 ```yaml
 video:
   mp4: /videos/mon-projet.mp4
+  son: true # seulement si la vidéo a une bande son
 ```
 
 La vidéo remplace le visuel principal en haut de la page (le visuel principal sert d'image
-d'attente). Elle est muette, tourne en boucle, ne se lance que quand elle est visible et
-garde un bouton pause. **Viser 2 à 4 Mo** : exporter en 720p ou 1080p, H.264, débit modéré.
+d'attente). Elle tourne en boucle, ne se lance que quand elle est visible et garde un bouton
+pause. Elle démarre toujours muette (les navigateurs bloquent la lecture automatique avec le
+son) ; avec `son: true`, un bouton « Activer le son » apparaît à côté du bouton pause.
+
+**Compresser la vidéo avant de l'ajouter** (viser moins de 4 Mo). Avec ffmpeg
+(`brew install ffmpeg`), cette commande réduit à 1080 px de haut au maximum, garde le son et
+place l'index au début du fichier pour un démarrage rapide :
+
+```bash
+ffmpeg -i export.mp4 -vf "scale=-2:'min(1080,ih)':flags=lanczos" -c:v libx264 -preset veryslow -crf 21 -pix_fmt yuv420p -c:a aac -b:a 192k -movflags +faststart public/videos/mon-projet.mp4
+```
+
+Les trois vidéos actuelles ont été compressées ainsi (image : 16,6 Mo au départ, 3,5 Mo
+après, sans différence visible, VMAF 96 à 98) en gardant leur piste son d'origine telle
+quelle. Seule Tamagotchi Paradise a du son : les pistes de NogoZone et de Répétition critique
+sont silencieuses. Si une vidéo paraît abîmée, baisser `-crf` (19 ou 20 : plus fidèle, plus
+lourd).
 
 ### 5. Les blocs de la page projet
 
@@ -342,7 +358,9 @@ viennent mot pour mot de l'ancien site, les phrases courtes viennent des maquett
 - Rituel : confirmer les couleurs du nuancier (relevées sur le visuel de la boîte : noir
   `#0B0A0C`, beige `#DBCAA9`, rouge sang `#7B311B`).
 - Visuels secondaires (« détail ») de Tamagotchi Paradise et de Répétition critique.
-- Vidéos plus légères (Tamagotchi Paradise pèse 11 Mo ; viser 2 à 4 Mo).
+- NogoZone et Répétition critique : les vidéos reprises de l'ancien site ont une piste son
+  vide. Si une version avec son existe, la compresser, remplacer le fichier et ajouter
+  `son: true`.
 
 **À propos**
 

@@ -144,6 +144,7 @@ if (imageHero && d.video) {
               mp4={d.video.mp4}
               webm={d.video.webm}
               poster={d.video.poster ?? d.visuelPrincipal?.src}
+              son={d.video.son}
               label={d.visuelPrincipal?.alt ?? d.titre}
             />
           ) : (
@@ -235,8 +236,11 @@ if (imageHero && d.video) {
 </script>
 
 <style>
+  /* Au-dessus de la section suivante : la parallaxe descend le visuel jusqu'à 120 px, et ses
+     boutons (vidéo) doivent rester cliquables. */
   .hero {
     position: relative;
+    z-index: 1;
     min-height: 900px;
     padding: 120px var(--gutter) 60px;
   }

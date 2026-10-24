@@ -86,6 +86,8 @@ const projets = defineCollection({
           webm: z.string().optional(),
           // Par défaut : l'image du visuel principal.
           poster: image().optional(),
+          // La vidéo démarre toujours muette ; `son: true` ajoute un bouton pour activer sa bande son.
+          son: z.boolean().default(false),
         })
         .optional(),
       blocs: z.array(bloc).default([]),
