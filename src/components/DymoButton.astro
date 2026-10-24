@@ -1,12 +1,14 @@
 ---
 // Étiquette Dymo : plastique embossé, lettres capitales espacées.
-// Toujours un vrai <a> (avec href) ou <button> (sans href).
+// Interactive : un vrai <a> (avec href) ou <button> (sans href).
+// Simple étiquette (titres de section, tags, compteurs) : as="span".
 import type { HTMLAttributes } from 'astro/types';
 
 type Variant = 'noir' | 'rouille' | 'ghost' | 'ghost-encre';
 
 interface Props extends Omit<HTMLAttributes<'a'> & HTMLAttributes<'button'>, 'type' | 'style'> {
   href?: string;
+  as?: 'span';
   variant?: Variant;
   size?: 'md' | 'sm';
   /** Animation « impression » (clip-path en escalier). */
@@ -21,6 +23,7 @@ interface Props extends Omit<HTMLAttributes<'a'> & HTMLAttributes<'button'>, 'ty
 
 const {
   href,
+  as,
   variant = 'noir',
   size = 'md',
   typeIn = false,
@@ -32,13 +35,13 @@ const {
   ...rest
 } = Astro.props;
 
-const Tag = href ? 'a' : 'button';
+const Tag = as ?? (href ? 'a' : 'button');
 const delayStyle = delay === undefined ? undefined : `--dymo-delay: ${delay}s`;
 ---
 
 <Tag
   href={href}
-  type={href ? undefined : type}
+  type={Tag === 'button' ? type : undefined}
   class:list={['dymo', `dymo--${variant}`, `dymo--${size}`, { 'dymo--type-in': typeIn }, className]}
   style={[delayStyle, style].filter(Boolean).join('; ') || undefined}
   aria-current={current ? 'page' : undefined}
@@ -84,7 +87,12 @@ const delayStyle = delay === undefined ? undefined : `--dymo-delay: ${delay}s`;
       background-color 0.15s ease;
   }
 
-  .dymo:hover {
+  span.dymo {
+    cursor: default;
+  }
+
+  a.dymo:hover,
+  button.dymo:hover {
     color: #fff;
     background-color: var(--dymo-hover);
     transform: translateY(-1px);
@@ -100,19 +108,20 @@ const delayStyle = delay === undefined ? undefined : `--dymo-delay: ${delay}s`;
     background-color: var(--rust);
   }
 
-  .dymo--rouille:hover {
+  a.dymo--rouille:hover,
+  button.dymo--rouille:hover {
     background-color: var(--rust-hover);
   }
 
-  .dymo--ghost,
-  .dymo--ghost:hover {
+  .dymo.dymo--ghost,
+  .dymo.dymo--ghost:hover {
     background: transparent;
     box-shadow: inset 0 0 0 1.5px rgba(237, 230, 211, 0.55);
     text-shadow: none;
   }
 
-  .dymo--ghost-encre,
-  .dymo--ghost-encre:hover {
+  .dymo.dymo--ghost-encre,
+  .dymo.dymo--ghost-encre:hover {
     background: transparent;
     color: var(--ink);
     box-shadow: inset 0 0 0 1.5px rgba(42, 33, 24, 0.5);

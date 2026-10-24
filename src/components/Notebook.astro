@@ -1,0 +1,269 @@
+---
+// Carnet sommaire des projets.
+// ≥ 1100 px : carnet à spirale sticky à gauche des cartes ; 760–1100 px : au-dessus, non sticky ;
+// < 760 px : barre « Sommaire · 01 · Rituel » collée en haut, qui se déplie.
+import { deuxChiffres, type Projet } from '../data/projets';
+import { sectionProjets } from '../data/site';
+import TocItem from './TocItem.astro';
+
+interface Props {
+  projets: Projet[];
+  /** Index du projet actif. */
+  actif?: number;
+}
+
+const { projets, actif = 0 } = Astro.props;
+const courant = projets[actif];
+const total = deuxChiffres(projets.length);
+---
+
+<aside class="notebook" aria-label="Sommaire des projets" data-notebook>
+  <div class="nb">
+    <div class="rings" aria-hidden="true">
+      {Array.from({ length: 9 }, () => (
+        <span />
+      ))}
+    </div>
+    <div class="entete">
+      <span class="hand titre">{sectionProjets.sommaire}</span>
+      <span class="compteur">
+        <span data-toc-num>{courant && deuxChiffres(courant.data.numero)}</span> / {total}
+      </span>
+    </div>
+    <nav class="liste">
+      {projets.map((p, i) => (
+        <TocItem projet={p} actif={i === actif} />
+      ))}
+    </nav>
+  </div>
+
+  <div class="barre">
+    <button type="button" class="bouton" aria-expanded="false" aria-controls="sommaire-mobile">
+      <span class="bouton-texte">
+        <span class="hand titre-barre">{sectionProjets.sommaire}</span>
+        <span class="courant" data-toc-courant>
+          {courant && `${deuxChiffres(courant.data.numero)} · ${courant.data.titre}`}
+        </span>
+      </span>
+      <span
+        class="fleche"
+        data-ouvrir={sectionProjets.sommaireOuvrir}
+        data-fermer={sectionProjets.sommaireFermer}
+      >
+        {sectionProjets.sommaireOuvrir}
+      </span>
+    </button>
+    <nav class="liste-mobile" id="sommaire-mobile" hidden>
+      {projets.map((p) => (
+        <a href={`#projet-${p.id}`}>
+          <span class="stencil num">{deuxChiffres(p.data.numero)}</span>
+          <span class="titre-mobile">{p.data.titre}</span>
+        </a>
+      ))}
+    </nav>
+  </div>
+</aside>
+
+<script>
+  document.querySelectorAll<HTMLElement>('[data-notebook]').forEach((carnet) => {
+    const bouton = carnet.querySelector<HTMLButtonElement>('.bouton');
+    const liste = carnet.querySelector<HTMLElement>('.liste-mobile');
+    const fleche = carnet.querySelector<HTMLElement>('.fleche');
+    if (!bouton || !liste || !fleche) return;
+
+    const basculer = (ouvert: boolean) => {
+      bouton.setAttribute('aria-expanded', String(ouvert));
+      liste.hidden = !ouvert;
+      fleche.textContent = (ouvert ? fleche.dataset.fermer : fleche.dataset.ouvrir) ?? '';
+    };
+
+    bouton.addEventListener('click', () => basculer(liste.hasAttribute('hidden')));
+    liste
+      .querySelectorAll('a')
+      .forEach((lien) => lien.addEventListener('click', () => basculer(false)));
+  });
+</script>
+
+<style>
+  .notebook {
+    position: sticky;
+    top: 90px;
+    z-index: 5;
+    flex: 0 0 min(360px, 30%);
+    --focus-color: var(--rust);
+  }
+
+  .nb {
+    position: relative;
+    padding: 44px 30px 26px 52px;
+    color: var(--ink);
+    background-color: var(--paper);
+    background-image:
+      linear-gradient(90deg, transparent 38px, var(--paper-margin) 38px 40px, transparent 40px),
+      repeating-linear-gradient(180deg, transparent 0 31px, var(--paper-line) 31px 32px);
+    background-position:
+      0 0,
+      0 28px;
+    box-shadow: 0 20px 34px rgba(0, 0, 0, 0.4);
+    transform: rotate(-1deg);
+  }
+
+  .rings {
+    position: absolute;
+    left: 24px;
+    right: 24px;
+    top: -14px;
+    display: flex;
+    justify-content: space-between;
+  }
+
+  .rings span {
+    display: block;
+    width: 14px;
+    height: 30px;
+    border: 3px solid #3a3631;
+    border-radius: 7px;
+    box-shadow: inset 1px 0 0 rgba(255, 255, 255, 0.4);
+  }
+
+  .entete {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 10px;
+    margin-bottom: 8px;
+  }
+
+  .titre {
+    font-size: 34px;
+    line-height: 1;
+    color: var(--rust);
+  }
+
+  .compteur {
+    font-size: 13px;
+    font-weight: 700;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--ink-soft);
+  }
+
+  .liste {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    max-height: 470px;
+    overflow: auto;
+  }
+
+  .barre {
+    display: none;
+  }
+
+  @media (max-width: 1099.98px) {
+    .notebook {
+      position: relative;
+      top: auto;
+      flex: 1 1 100%;
+    }
+  }
+
+  @media (max-width: 759.98px) {
+    .notebook {
+      position: sticky;
+      top: 0;
+      z-index: 40;
+      margin: 0 -16px;
+      padding: 10px 16px;
+      background: rgba(36, 80, 61, 0.94);
+      border-bottom: 1px dashed var(--dashed);
+    }
+
+    .nb {
+      display: none;
+    }
+
+    .barre {
+      display: block;
+    }
+  }
+
+  .bouton {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    width: 100%;
+    min-height: 48px;
+    margin: 0;
+    padding: 8px 14px;
+    border: 0;
+    color: var(--ink);
+    background: var(--paper);
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.3);
+    cursor: pointer;
+  }
+
+  .bouton-texte {
+    display: flex;
+    align-items: baseline;
+    gap: 10px;
+    min-width: 0;
+  }
+
+  .titre-barre {
+    font-size: 22px;
+    color: var(--rust);
+  }
+
+  .courant {
+    overflow: hidden;
+    font-size: 15px;
+    font-weight: 700;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  .fleche {
+    flex: none;
+    font-size: 13px;
+    font-weight: 700;
+    letter-spacing: 0.12em;
+  }
+
+  .liste-mobile {
+    display: flex;
+    flex-direction: column;
+    padding: 6px 14px 10px;
+    color: var(--ink);
+    background-color: var(--paper);
+    background-image: repeating-linear-gradient(
+      180deg,
+      transparent 0 47px,
+      var(--paper-line) 47px 48px
+    );
+    box-shadow: 0 10px 16px rgba(0, 0, 0, 0.35);
+  }
+
+  .liste-mobile[hidden] {
+    display: none;
+  }
+
+  .liste-mobile a {
+    display: grid;
+    grid-template-columns: 34px minmax(0, 1fr);
+    align-items: center;
+    min-height: 48px;
+    color: var(--ink);
+    text-decoration: none;
+  }
+
+  .liste-mobile .num {
+    font-size: 20px;
+    color: var(--rust);
+  }
+
+  .titre-mobile {
+    font-size: 17px;
+    font-weight: 700;
+  }
+</style>

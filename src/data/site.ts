@@ -2,6 +2,16 @@
 // Les longs textes (bio, phrases d'accroche) viennent mot pour mot de l'ancien site WordPress ;
 // les phrases manuscrites et les textes d'interface viennent des maquettes : à faire valider par Jade.
 // Dans `bio`, les passages entre ==…== sont surlignés au scroll.
+import type { ImageMetadata } from 'astro';
+import atelier from '../assets/jade/atelier.jpg';
+
+/** Photos de Jade. Sans `src`, un Placeholder s'affiche à la place. */
+export const photos: Record<'portrait' | 'atelier', { src?: ImageMetadata; alt: string }> = {
+  // À fournir : portrait vertical 4:5 en haute définition (src/assets/jade/portrait.jpg).
+  portrait: { alt: 'photo de Jade — portrait' },
+  // Provisoire : photo de l'ancien site, en attendant une vraie photo « à l'atelier ».
+  atelier: { src: atelier, alt: 'Jade, souriante, tient son affiche du Doudou 2026.' },
+};
 
 export const site = {
   nom: 'Jade Deschuyteneer',
@@ -73,6 +83,8 @@ export const sectionProjets = {
   titre: 'MES PROJETS',
   note: 'le carnet suit ta lecture — clique sur un titre pour y aller, sur une image pour ouvrir le projet.',
   sommaire: 'Sommaire',
+  sommaireOuvrir: 'ouvrir ▼',
+  sommaireFermer: 'fermer ▲',
   voirProjet: 'Voir le projet →',
   ouvrirProjet: 'Ouvrir le projet',
 } as const;

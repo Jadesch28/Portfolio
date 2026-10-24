@@ -1,0 +1,80 @@
+---
+// Un visuel de projet : <Picture> AVIF + WebP s'il existe, sinon le Placeholder hachuré.
+// Le cadre (bords, ombre, rotation) appartient au composant parent.
+import { Picture } from 'astro:assets';
+import type { Visuel } from '../data/projets';
+import Placeholder from './Placeholder.astro';
+
+interface Props {
+  visuel?: Visuel;
+  /** Libellé du Placeholder quand il n'y a pas de visuel du tout. */
+  label?: string;
+  tone?: 'clair' | 'sombre';
+  /** cover : remplit un cadre de hauteur fixe ; naturel : garde les proportions de l'image. */
+  fit?: 'cover' | 'naturel';
+  widths?: number[];
+  sizes?: string;
+  /** Visuel au-dessus de la ligne de flottaison : chargé tout de suite. */
+  priority?: boolean;
+  class?: string;
+}
+
+const {
+  visuel,
+  label,
+  tone = 'sombre',
+  fit = 'cover',
+  widths = [480, 800, 1200, 1600],
+  sizes = '(max-width: 760px) 100vw, 50vw',
+  priority = false,
+  class: className,
+} = Astro.props;
+
+const src = visuel?.src;
+// Jamais de variante plus large que l'original.
+const largeurs = src ? widths.filter((w) => w <= src.width) : [];
+if (src && largeurs.length === 0) largeurs.push(src.width);
+---
+
+{src ? (
+  <Picture
+    src={src}
+    alt={visuel.alt}
+    formats={['avif', 'webp']}
+    widths={largeurs}
+    sizes={sizes}
+    loading={priority ? 'eager' : 'lazy'}
+    fetchpriority={priority ? 'high' : undefined}
+    class:list={['visuel', `visuel--${fit}`, className]}
+    pictureAttributes={{ class: 'visuel-picture' }}
+  />
+) : (
+  <Placeholder
+    label={visuel?.alt ?? label ?? 'visuel'}
+    tone={tone}
+    class:list={['visuel', 'visuel--cover', className]}
+  />
+)}
+
+<style>
+  .visuel-picture {
+    display: contents;
+  }
+
+  .visuel {
+    width: 100%;
+  }
+
+  img.visuel {
+    display: block;
+  }
+
+  .visuel--cover {
+    height: 100%;
+    object-fit: cover;
+  }
+
+  .visuel--naturel {
+    height: auto;
+  }
+</style>

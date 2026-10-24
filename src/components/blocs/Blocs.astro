@@ -1,0 +1,92 @@
+---
+// Les blocs d'une page projet, dans l'ordre des données.
+// Chaque bloc titré reçoit un numéro (« 01 — La boîte ») ; une palette sans titre
+// se range à droite du bloc texte qui la précède.
+import { deuxChiffres, type Bloc, type Projet } from '../../data/projets';
+import BlockCards from './BlockCards.astro';
+import BlockGallery from './BlockGallery.astro';
+import BlockPalette from './BlockPalette.astro';
+import BlockQuote from './BlockQuote.astro';
+import BlockSurMesure from './BlockSurMesure.astro';
+import BlockText from './BlockText.astro';
+
+interface Props {
+  projet: Projet;
+}
+
+const { projet } = Astro.props;
+
+type Palette = Extract<Bloc, { type: 'palette' }>;
+const rendus: Array<{ bloc: Bloc; etiquette?: string; palette?: Palette }> = [];
+let numero = 0;
+
+for (const bloc of projet.data.blocs) {
+  const precedent = rendus.at(-1);
+  if (bloc.type === 'palette' && !bloc.titre && precedent?.bloc.type === 'texte') {
+    precedent.palette = bloc;
+    continue;
+  }
+  const titre = 'titre' in bloc ? bloc.titre : undefined;
+  rendus.push({ bloc, etiquette: titre ? `${deuxChiffres(++numero)} — ${titre}` : undefined });
+}
+---
+
+{rendus.map(({ bloc, etiquette = '', palette }) => (
+  <section class:list={['bloc', `bloc--${bloc.type}`]} data-reveal>
+    <div class="wrap">
+      {bloc.type === 'galerie' && (
+        <BlockGallery etiquette={etiquette} note={bloc.note} images={bloc.images} />
+      )}
+      {bloc.type === 'cartes' && (
+        <BlockCards etiquette={etiquette} note={bloc.note} images={bloc.images} />
+      )}
+      {bloc.type === 'texte' && (
+        <BlockText
+          etiquette={etiquette}
+          texte={bloc.texte}
+          images={bloc.images}
+          couleurs={palette?.couleurs}
+        />
+      )}
+      {bloc.type === 'palette' && (
+        <BlockPalette etiquette={etiquette || undefined} couleurs={bloc.couleurs} />
+      )}
+      {bloc.type === 'citation' && <BlockQuote texte={bloc.texte} />}
+      {bloc.type === 'sur-mesure' && (
+        <BlockSurMesure
+          projet={projet}
+          composant={bloc.composant}
+          etiquette={etiquette || undefined}
+          note={bloc.note}
+          donnees={bloc.donnees}
+        />
+      )}
+    </div>
+  </section>
+))}
+
+<style>
+  .bloc {
+    position: relative;
+    padding: 90px var(--gutter);
+  }
+
+  .bloc--citation {
+    padding-block: 120px;
+  }
+
+  .wrap {
+    max-width: var(--container);
+    margin: 0 auto;
+  }
+
+  @media (max-width: 759.98px) {
+    .bloc {
+      padding: 40px 16px;
+    }
+
+    .bloc--citation {
+      padding-block: 60px;
+    }
+  }
+</style>

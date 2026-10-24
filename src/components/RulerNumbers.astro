@@ -1,0 +1,29 @@
+---
+// Graduations numérotées du tapis (1 à 38, tous les 38 px), en haut du hero.
+const nombres = Array.from({ length: 38 }, (_, i) => i + 1);
+---
+
+<div class="nums" aria-hidden="true">
+  {nombres.map((n) => (
+    <span>{n}</span>
+  ))}
+</div>
+
+<style>
+  .nums {
+    position: absolute;
+    left: 0;
+    top: 3px;
+    display: flex;
+    font-size: 10px;
+    line-height: 1;
+    color: rgba(237, 230, 211, 0.5);
+    pointer-events: none;
+  }
+
+  .nums span {
+    flex: none;
+    width: 38px;
+    padding-left: 4px;
+  }
+</style>

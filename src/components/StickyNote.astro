@@ -1,0 +1,50 @@
+---
+// Post-it moutarde, ombre en escalier. Texte manuscrit court, jamais porteur d'une info essentielle.
+interface Props {
+  /** Rotation en degrés. */
+  rotate?: number;
+  width?: string;
+  size?: string;
+  /** Ombre portée en plus de l'escalier (post-it posé sur une photo). */
+  lifted?: boolean;
+  class?: string;
+}
+
+const {
+  rotate = 5,
+  width = '150px',
+  size = '22px',
+  lifted = false,
+  class: className,
+} = Astro.props;
+---
+
+<div
+  class:list={['sticky', 'hand', { 'sticky--lifted': lifted }, className]}
+  style={`--r: ${rotate}deg; --w: ${width}; --fs: ${size}`}
+>
+  <slot />
+</div>
+
+<style>
+  .sticky {
+    position: relative;
+    width: var(--w);
+    padding: 18px 14px;
+    font-size: var(--fs);
+    line-height: 1.15;
+    color: var(--ink);
+    background: var(--sticky);
+    box-shadow:
+      3px 3px 0 var(--sticky-edge),
+      6px 6px 0 var(--sticky);
+    transform: rotate(var(--r));
+  }
+
+  .sticky--lifted {
+    box-shadow:
+      3px 3px 0 var(--sticky-edge),
+      6px 6px 0 var(--sticky),
+      0 14px 20px rgba(0, 0, 0, 0.3);
+  }
+</style>

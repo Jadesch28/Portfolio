@@ -1,0 +1,12 @@
+---
+// Bloc « citation » : « Ce que j'en retiens ».
+import Quote from '../Quote.astro';
+
+interface Props {
+  texte: string;
+}
+
+const { texte } = Astro.props;
+---
+
+<Quote texte={texte} />

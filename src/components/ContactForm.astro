@@ -1,0 +1,259 @@
+---
+// Formulaire de contact sur une page de carnet. Envoi en POST vers PUBLIC_FORM_ENDPOINT (Formspree…) ;
+// sans point d'envoi configuré, la page propose l'e-mail à la place.
+// Le comportement (validation, envoi, tampon) vient de scripts/contact-form.ts.
+import { formulaire, site } from '../data/site';
+import DymoButton from './DymoButton.astro';
+import Field from './Field.astro';
+import SentStamp from './SentStamp.astro';
+import WashiTape from './WashiTape.astro';
+
+interface Props {
+  endpoint?: string;
+  /** Rendu statique d'un état, pour le styleguide. */
+  etat?: 'formulaire' | 'envoye';
+  /** Préfixe des id, si plusieurs formulaires cohabitent (styleguide). */
+  prefixe?: string;
+}
+
+const {
+  endpoint = import.meta.env.PUBLIC_FORM_ENDPOINT,
+  etat = 'formulaire',
+  prefixe = '',
+} = Astro.props;
+const mailto = `mailto:${site.email}`;
+---
+
+<div class="nb" data-contact-form>
+  <div class="rings" aria-hidden="true">
+    {Array.from({ length: 12 }, () => (
+      <span />
+    ))}
+  </div>
+  <WashiTape color="sauge" right="40px" bottom="-12px" width={110} rotate={-5} />
+
+  {endpoint ? (
+    <>
+      <form
+        action={endpoint}
+        method="POST"
+        novalidate
+        class="formulaire"
+        hidden={etat === 'envoye'}
+      >
+        <h2 class="hand titre">{formulaire.titre}</h2>
+        <div class="ligne-double">
+          <Field
+            id={`${prefixe}prenom`}
+            name="prenom"
+            label={formulaire.champs.prenom}
+            autocomplete="given-name"
+            required
+            erreur={formulaire.erreurs.prenom}
+          />
+          <Field
+            id={`${prefixe}nom`}
+            name="nom"
+            label={formulaire.champs.nom}
+            autocomplete="family-name"
+          />
+        </div>
+        <Field
+          id={`${prefixe}email`}
+          name="email"
+          type="email"
+          label={formulaire.champs.email}
+          autocomplete="email"
+          required
+          erreur={formulaire.erreurs.email}
+        />
+        <Field
+          id={`${prefixe}message`}
+          name="message"
+          type="textarea"
+          label={formulaire.champs.message}
+          required
+          erreur={formulaire.erreurs.message}
+        />
+        {/* Pot de miel anti-spam : invisible pour les humains, rempli par les robots */}
+        <div class="pot" aria-hidden="true">
+          <label for={`${prefixe}site-web`}>Site web</label>
+          <input
+            id={`${prefixe}site-web`}
+            type="text"
+            name="_gotcha"
+            tabindex="-1"
+            autocomplete="off"
+          />
+        </div>
+        <p class="echec" role="alert" hidden>
+          {formulaire.echec} <a href={mailto}>{site.email}</a>.
+        </p>
+        <div class="pied">
+          <p class="obligatoires">{formulaire.obligatoires}</p>
+          <DymoButton type="submit" variant="rouille" data-envoyer>
+            {formulaire.envoyer}
+          </DymoButton>
+        </div>
+      </form>
+
+      <div class="envoye" hidden={etat !== 'envoye'} tabindex="-1">
+        <SentStamp />
+        <p class="hand confirmation">{formulaire.confirmation}</p>
+        <DymoButton size="sm" data-autre-message>
+          {formulaire.autreMessage}
+        </DymoButton>
+      </div>
+    </>
+  ) : (
+    <div class="sans-formulaire">
+      <h2 class="hand titre">{formulaire.titre}</h2>
+      <p>{formulaire.sansFormulaire}</p>
+      <DymoButton href={mailto} variant="rouille">
+        {site.email}
+      </DymoButton>
+    </div>
+  )}
+</div>
+
+<style>
+  .nb {
+    position: relative;
+    padding: 54px 44px 40px 64px;
+    color: var(--ink);
+    background-color: var(--paper);
+    background-image:
+      linear-gradient(90deg, transparent 42px, var(--paper-margin) 42px 44px, transparent 44px),
+      repeating-linear-gradient(180deg, transparent 0 37px, var(--paper-line) 37px 38px);
+    background-position:
+      0 0,
+      0 30px;
+    box-shadow: 0 24px 40px rgba(0, 0, 0, 0.4);
+    transform: rotate(1deg);
+    --focus-color: var(--rust);
+  }
+
+  .rings {
+    position: absolute;
+    left: 30px;
+    right: 30px;
+    top: -15px;
+    display: flex;
+    justify-content: space-between;
+  }
+
+  .rings span {
+    display: block;
+    width: 14px;
+    height: 32px;
+    border: 3px solid #3a3631;
+    border-radius: 7px;
+    box-shadow: inset 1px 0 0 rgba(255, 255, 255, 0.4);
+  }
+
+  .formulaire,
+  .sans-formulaire {
+    display: flex;
+    flex-direction: column;
+    gap: 22px;
+  }
+
+  .formulaire[hidden],
+  .envoye[hidden] {
+    display: none;
+  }
+
+  .titre {
+    font-size: 36px;
+    font-weight: 400;
+    line-height: 1;
+    color: var(--rust);
+  }
+
+  .ligne-double {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(min(200px, 100%), 1fr));
+    gap: 22px;
+  }
+
+  .pot {
+    position: absolute;
+    left: -10000px;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+  }
+
+  .echec {
+    font-size: 16px;
+    line-height: 1.5;
+    color: var(--rust);
+  }
+
+  .echec[hidden] {
+    display: none;
+  }
+
+  .echec a {
+    color: var(--rust);
+  }
+
+  .pied {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: 14px;
+  }
+
+  .obligatoires {
+    font-size: 13px;
+    color: var(--ink-soft);
+  }
+
+  .envoye {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    justify-content: center;
+    gap: 22px;
+    min-height: 520px;
+    outline: none;
+  }
+
+  .confirmation {
+    font-size: 34px;
+    line-height: 1.2;
+  }
+
+  .sans-formulaire p {
+    font-size: 18px;
+  }
+
+  @media (max-width: 759.98px) {
+    .nb {
+      padding: 46px 18px 30px 44px;
+      background-image:
+        linear-gradient(90deg, transparent 30px, var(--paper-margin) 30px 32px, transparent 32px),
+        repeating-linear-gradient(180deg, transparent 0 37px, var(--paper-line) 37px 38px);
+      transform: rotate(0.5deg);
+    }
+
+    .rings {
+      left: 16px;
+      right: 16px;
+    }
+
+    .rings span:nth-child(n + 9) {
+      display: none;
+    }
+
+    .envoye {
+      min-height: 380px;
+    }
+
+    .confirmation {
+      font-size: 28px;
+    }
+  }
+</style>

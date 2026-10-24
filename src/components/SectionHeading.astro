@@ -1,0 +1,73 @@
+---
+// Titre de section : compteur Dymo rouille + grand titre pochoir + note manuscrite moutarde.
+import DymoButton from './DymoButton.astro';
+
+interface Props {
+  count?: string;
+  title: string;
+  note?: string;
+  id?: string;
+}
+
+const { count, title, note, id } = Astro.props;
+---
+
+<div class="heading">
+  <div class="titre">
+    {count && (
+      <DymoButton as="span" size="sm" variant="rouille">
+        {count}
+      </DymoButton>
+    )}
+    <h2 class="stencil" id={id}>
+      {title}
+    </h2>
+  </div>
+  {note && <p class="hand note">{note}</p>}
+</div>
+
+<style>
+  .heading {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: flex-end;
+    justify-content: space-between;
+    gap: 20px;
+    max-width: 1300px;
+    margin: 0 auto 56px;
+  }
+
+  .titre {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 10px;
+  }
+
+  h2 {
+    font-size: clamp(72px, 9vw, 140px);
+    line-height: 0.82;
+  }
+
+  .note {
+    max-width: 380px;
+    font-size: 26px;
+    line-height: 1.2;
+    color: var(--mustard);
+  }
+
+  @media (max-width: 759.98px) {
+    .heading {
+      margin-bottom: 18px;
+    }
+
+    h2 {
+      font-size: 76px;
+    }
+
+    /* Le carnet devient une barre : la note ne s'applique plus */
+    .note {
+      display: none;
+    }
+  }
+</style>

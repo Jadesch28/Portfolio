@@ -1,0 +1,112 @@
+---
+// Fiche technique sur papier ligné (ligne rouge sous le titre manuscrit).
+// Une ligne sans valeur n'apparaît pas en production ; en dev, elle affiche « [ à compléter ] ».
+import { pageProjet } from '../data/site';
+import ACompleter from './ACompleter.astro';
+import WashiTape from './WashiTape.astro';
+
+interface Props {
+  lignes: Array<{ label: string; valeur?: string }>;
+  titre?: string;
+}
+
+const { lignes, titre = pageProjet.ficheTechnique } = Astro.props;
+const visibles = import.meta.env.DEV ? lignes : lignes.filter((l) => l.valeur);
+---
+
+<div class="fiche">
+  <WashiTape left="38%" top="-12px" width={100} rotate={-4} />
+  <p class="hand titre">{titre}</p>
+  <dl>
+    {visibles.map((l) => (
+      <div class="ligne">
+        <dt>{l.label}</dt>
+        <dd>{l.valeur ?? <ACompleter />}</dd>
+      </div>
+    ))}
+  </dl>
+</div>
+
+<style>
+  .fiche {
+    position: relative;
+    padding: 30px 32px 24px;
+    color: var(--ink);
+    background-color: var(--paper);
+    background-image:
+      linear-gradient(var(--card-redline), var(--card-redline)),
+      repeating-linear-gradient(180deg, transparent 0 33px, var(--paper-line) 33px 34px);
+    background-size:
+      100% 2px,
+      100% 100%;
+    background-position:
+      0 74px,
+      0 40px;
+    background-repeat: no-repeat, repeat;
+    box-shadow: 0 18px 30px rgba(0, 0, 0, 0.35);
+    transform: rotate(1deg);
+    --focus-color: var(--rust);
+  }
+
+  .titre {
+    margin-bottom: 26px;
+    font-size: 32px;
+    line-height: 1;
+    color: var(--rust);
+  }
+
+  dl {
+    margin: 0;
+  }
+
+  .ligne {
+    display: grid;
+    grid-template-columns: 120px minmax(0, 1fr);
+    gap: 14px;
+    padding: 6px 0;
+    font-size: 16.5px;
+    line-height: 22px;
+  }
+
+  dt {
+    padding-top: 3px;
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--ink-soft);
+  }
+
+  dd {
+    margin: 0;
+  }
+
+  @media (max-width: 759.98px) {
+    .fiche {
+      padding: 22px 20px 16px;
+      background-image:
+        linear-gradient(var(--card-redline), var(--card-redline)),
+        repeating-linear-gradient(180deg, transparent 0 31px, var(--paper-line) 31px 32px);
+      background-position:
+        0 62px,
+        0 30px;
+      box-shadow: 0 14px 22px rgba(0, 0, 0, 0.35);
+    }
+
+    .titre {
+      margin-bottom: 20px;
+      font-size: 26px;
+    }
+
+    .ligne {
+      grid-template-columns: 96px minmax(0, 1fr);
+      gap: 10px;
+      padding: 5px 0;
+      font-size: 15px;
+    }
+
+    dt {
+      font-size: 11px;
+    }
+  }
+</style>

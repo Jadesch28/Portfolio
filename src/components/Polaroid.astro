@@ -1,0 +1,100 @@
+---
+// Polaroïd : bord crème, bas plus large pour une légende manuscrite.
+import type { Visuel as VisuelData } from '../data/projets';
+import Visuel from './Visuel.astro';
+
+interface Props {
+  visuel?: VisuelData;
+  /** Libellé du Placeholder sans visuel. */
+  placeholder?: string;
+  caption?: string;
+  /** Rotation en degrés. */
+  rotate?: number;
+  /** Largeur du polaroïd (longueur CSS). */
+  width?: string;
+  /** Hauteur de la photo (longueur CSS). */
+  photoHeight?: string;
+  /** Épaisseur du bord et hauteur du bas. */
+  frame?: 'petit' | 'moyen' | 'grand';
+  tone?: 'clair' | 'sombre';
+  sizes?: string;
+  priority?: boolean;
+  class?: string;
+}
+
+const {
+  visuel,
+  placeholder,
+  caption,
+  rotate = -3,
+  width = '220px',
+  photoHeight = '190px',
+  frame = 'moyen',
+  tone = 'clair',
+  sizes = '320px',
+  priority,
+  class: className,
+} = Astro.props;
+---
+
+<figure
+  class:list={['polaroid', `polaroid--${frame}`, className]}
+  style={`--w: ${width}; --ph: ${photoHeight}; --r: ${rotate}deg`}
+>
+  <div class="photo">
+    <Visuel
+      visuel={visuel}
+      label={placeholder}
+      tone={tone}
+      widths={[320, 480, 640]}
+      sizes={sizes}
+      priority={priority}
+    />
+  </div>
+  {caption && <figcaption class="hand">{caption}</figcaption>}
+  <slot />
+</figure>
+
+<style>
+  .polaroid {
+    position: relative;
+    width: var(--w);
+    max-width: 100%;
+    margin: 0;
+    background: var(--photo);
+    box-shadow: 0 14px 22px rgba(0, 0, 0, 0.35);
+    transform: rotate(var(--r));
+  }
+
+  .polaroid--petit {
+    padding: 10px 10px 30px;
+  }
+
+  .polaroid--moyen {
+    padding: 12px 12px 48px;
+  }
+
+  .polaroid--grand {
+    padding: 16px 16px 70px;
+    box-shadow: 0 24px 40px rgba(0, 0, 0, 0.4);
+  }
+
+  .photo {
+    height: var(--ph);
+  }
+
+  figcaption {
+    position: absolute;
+    left: 16px;
+    bottom: 10px;
+    font-size: 22px;
+    line-height: 1.2;
+    color: var(--ink);
+  }
+
+  .polaroid--grand figcaption {
+    left: 24px;
+    bottom: 16px;
+    font-size: 26px;
+  }
+</style>

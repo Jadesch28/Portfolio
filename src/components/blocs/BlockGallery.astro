@@ -1,0 +1,85 @@
+---
+// Bloc « galerie » : tirages bordés en quinconce, washi alternés, légende manuscrite.
+import type { Visuel } from '../../data/projets';
+import FramedPrint from '../FramedPrint.astro';
+import WashiTape from '../WashiTape.astro';
+import BlocTitre from './BlocTitre.astro';
+
+interface Props {
+  etiquette: string;
+  note?: string;
+  images: Visuel[];
+}
+
+const { etiquette, note, images } = Astro.props;
+
+const rotations = [-1.5, 1.8, -1, 2, -2, 1.2];
+const washis = [
+  { color: 'moutarde', left: '42%', rotate: 3 },
+  { color: 'sauge', left: '36%', rotate: -4 },
+] as const;
+---
+
+<BlocTitre etiquette={etiquette} note={note} />
+<div class="galerie">
+  {images.map((visuel, i) => {
+    const w = washis[i % washis.length] ?? washis[0];
+    return (
+      <figure class="item">
+        <div class="tirage">
+          <FramedPrint
+            visuel={visuel}
+            rotate={rotations[i % rotations.length]}
+            sizes="(max-width: 760px) calc(100vw - 32px), 600px"
+          />
+          <WashiTape color={w.color} left={w.left} top="-12px" width={110} rotate={w.rotate} />
+        </div>
+        {visuel.legende && <figcaption class="hand">{visuel.legende}</figcaption>}
+      </figure>
+    );
+  })}
+</div>
+
+<style>
+  .galerie {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(min(420px, 100%), 1fr));
+    align-items: start;
+    gap: 48px;
+  }
+
+  .item {
+    margin: 0;
+  }
+
+  /* Quinconce : un tirage sur deux descend de 50 px */
+  .item:nth-child(even) {
+    margin-top: 50px;
+  }
+
+  .tirage {
+    position: relative;
+  }
+
+  figcaption {
+    margin-top: 18px;
+    padding-left: 10px;
+    font-size: 24px;
+    line-height: 1.2;
+    color: var(--mustard);
+  }
+
+  @media (max-width: 759.98px) {
+    .galerie {
+      gap: 26px;
+    }
+
+    .item:nth-child(even) {
+      margin-top: 0;
+    }
+
+    figcaption {
+      font-size: 20px;
+    }
+  }
+</style>

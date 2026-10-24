@@ -1,0 +1,70 @@
+---
+// En-tête d'un bloc de page projet : étiquette Dymo rouille numérotée + note manuscrite facultative.
+import DymoButton from '../DymoButton.astro';
+
+interface Props {
+  etiquette: string;
+  note?: string;
+  /** Petite indication propre au mobile (ex. « ← glisse → »). */
+  noteMobile?: string;
+}
+
+const { etiquette, note, noteMobile } = Astro.props;
+---
+
+<div class="bloc-titre">
+  <h2>
+    <DymoButton as="span" variant="rouille">
+      {etiquette}
+    </DymoButton>
+  </h2>
+  {note && <p class="hand note">{note}</p>}
+  {noteMobile && <p class="hand note note--mobile">{noteMobile}</p>}
+</div>
+
+<style>
+  .bloc-titre {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: baseline;
+    gap: 18px;
+    margin-bottom: 40px;
+  }
+
+  h2 {
+    font: inherit;
+  }
+
+  .note {
+    font-size: 26px;
+    line-height: 1.2;
+    color: var(--mustard);
+  }
+
+  .note--mobile {
+    display: none;
+  }
+
+  @media (max-width: 759.98px) {
+    .bloc-titre {
+      justify-content: space-between;
+      gap: 10px;
+      margin-bottom: 16px;
+    }
+
+    .bloc-titre :global(.dymo) {
+      padding: 6px 12px;
+      font-size: 13px;
+      letter-spacing: 0.14em;
+    }
+
+    .note {
+      display: none;
+    }
+
+    .note--mobile {
+      display: block;
+      font-size: 20px;
+    }
+  }
+</style>

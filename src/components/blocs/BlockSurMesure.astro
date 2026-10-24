@@ -1,0 +1,31 @@
+---
+// Bloc « sur-mesure » : rend src/components/sur-mesure/<composant>.astro.
+// Le composant reçoit { projet, etiquette?, note?, donnees? } et fait ce qu'il veut de la section.
+import type { AstroComponentFactory } from 'astro/runtime/server/index.js';
+import type { Projet } from '../../data/projets';
+
+interface Props {
+  projet: Projet;
+  composant: string;
+  etiquette?: string;
+  note?: string;
+  donnees?: Record<string, unknown>;
+}
+
+const { projet, composant, etiquette, note, donnees } = Astro.props;
+
+const modules = import.meta.glob<AstroComponentFactory>('../sur-mesure/*.astro', {
+  eager: true,
+  import: 'default',
+});
+const Composant = modules[`../sur-mesure/${composant}.astro`];
+
+if (!Composant) {
+  throw new Error(
+    `Projet « ${projet.id} » : le bloc sur mesure « ${composant} » n'existe pas. ` +
+      `Crée src/components/sur-mesure/${composant}.astro (modèle : Exemple.astro).`,
+  );
+}
+---
+
+<Composant projet={projet} etiquette={etiquette} note={note} donnees={donnees} />

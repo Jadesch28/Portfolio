@@ -1,0 +1,137 @@
+---
+// Bloc « texte » : paragraphes à gauche ; à droite, la palette rattachée et les visuels d'accompagnement.
+import type { Visuel } from '../../data/projets';
+import FramedPrint from '../FramedPrint.astro';
+import PaintChip from '../PaintChip.astro';
+import WashiTape from '../WashiTape.astro';
+import BlocTitre from './BlocTitre.astro';
+
+interface Props {
+  etiquette: string;
+  texte: string;
+  images?: Visuel[];
+  couleurs?: Array<{ nom: string; hex: string }>;
+}
+
+const { etiquette, texte, images = [], couleurs = [] } = Astro.props;
+const paragraphes = texte
+  .split(/\n\s*\n/)
+  .map((p) => p.trim())
+  .filter(Boolean);
+const aside = images.length > 0 || couleurs.length > 0;
+const rotationsChips = [-3, 2, -1, 3, -2];
+const rotationsImages = [1, -2, 1.5, -1];
+---
+
+<div class:list={['texte', { 'texte--aside': aside }]}>
+  <div class="colonne">
+    <BlocTitre etiquette={etiquette} />
+    {paragraphes.map((p) => (
+      <p>{p}</p>
+    ))}
+  </div>
+  {aside && (
+    <div class="aside">
+      {couleurs.length > 0 && (
+        <div class="nuancier">
+          {couleurs.map((c, i) => (
+            <PaintChip nom={c.nom} hex={c.hex} rotate={rotationsChips[i % rotationsChips.length]} />
+          ))}
+        </div>
+      )}
+      {images.length > 0 && (
+        <div class="visuels">
+          {images.map((visuel, i) => (
+            <div class="visuel">
+              <FramedPrint
+                visuel={visuel}
+                tone={i % 2 ? 'sombre' : 'clair'}
+                height="180px"
+                rotate={rotationsImages[i % rotationsImages.length]}
+                sizes="(max-width: 760px) calc(100vw - 32px), 300px"
+              />
+              {i % 2 === 1 && (
+                <WashiTape color="sauge" left="30%" top="-12px" width={90} rotate={4} />
+              )}
+            </div>
+          ))}
+        </div>
+      )}
+    </div>
+  )}
+</div>
+
+<style>
+  .texte {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 64px;
+  }
+
+  .colonne {
+    display: flex;
+    flex: 1 1 460px;
+    flex-direction: column;
+    gap: 20px;
+    min-width: 0;
+    max-width: 760px;
+  }
+
+  .texte--aside .colonne {
+    max-width: none;
+  }
+
+  .colonne :global(.bloc-titre) {
+    margin-bottom: 0;
+  }
+
+  p {
+    font-size: 19px;
+    line-height: 1.7;
+  }
+
+  .aside {
+    display: flex;
+    flex: 1 1 460px;
+    flex-direction: column;
+    gap: 28px;
+    min-width: 0;
+  }
+
+  .nuancier {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 18px;
+  }
+
+  .visuels {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(min(200px, 100%), 1fr));
+    gap: 18px;
+  }
+
+  .visuel {
+    position: relative;
+  }
+
+  @media (max-width: 759.98px) {
+    .texte {
+      gap: 24px;
+    }
+
+    .colonne {
+      gap: 16px;
+    }
+
+    p {
+      font-size: 17px;
+      line-height: 1.6;
+    }
+
+    .nuancier {
+      flex-wrap: nowrap;
+      gap: 10px;
+    }
+  }
+</style>

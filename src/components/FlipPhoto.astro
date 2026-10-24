@@ -1,0 +1,251 @@
+---
+// Photo retournable : recto = portrait, verso = mot manuscrit sur papier ligné.
+// Un vrai <button> plein cadre retourne la photo ; son aria-label suit la face visible.
+import type { Visuel as VisuelData } from '../data/projets';
+import { photo } from '../data/site';
+import Visuel from './Visuel.astro';
+import WashiTape from './WashiTape.astro';
+
+interface Props {
+  front?: VisuelData;
+  /** Rotation au repos, en degrés. */
+  rotate?: number;
+  /** Bouts de washi aux coins supérieurs. */
+  tapes?: boolean;
+  priority?: boolean;
+  class?: string;
+}
+
+const { front, rotate = 0, tapes = true, priority = false, class: className } = Astro.props;
+---
+
+<div class:list={['flip', className]} style={`--r: ${rotate}deg`} data-flip>
+  <div class="lift">
+    <div class="pf">
+      <div class="face recto">
+        <div class="photo">
+          <Visuel
+            visuel={front}
+            label="photo de Jade — portrait"
+            tone="clair"
+            widths={[400, 600, 800]}
+            sizes="(max-width: 760px) 290px, 400px"
+            priority={priority}
+          />
+        </div>
+        <span class="hand legende">{photo.legende}</span>
+        <span class="hand indice indice--souris">{photo.retourner}</span>
+        <span class="hand indice indice--tactile">{photo.retournerTactile}</span>
+      </div>
+      <div class="face verso">
+        <slot>
+          <span class="hand salut">{photo.dos.titre}</span>
+          {photo.dos.lignes.map((ligne) => (
+            <p class="hand">{ligne}</p>
+          ))}
+          <span class="hand indice-retour">{photo.dos.retourner}</span>
+        </slot>
+      </div>
+    </div>
+  </div>
+  {tapes && (
+    <>
+      <WashiTape left="-26px" top="22px" width={110} rotate={-38} />
+      <WashiTape color="sauge" right="-28px" top="18px" width={110} rotate={36} />
+    </>
+  )}
+  <button
+    type="button"
+    class="hit"
+    aria-label={photo.ariaRecto}
+    data-label-recto={photo.ariaRecto}
+    data-label-verso={photo.ariaVerso}
+  ></button>
+</div>
+
+<script>
+  document.querySelectorAll<HTMLElement>('[data-flip]').forEach((carte) => {
+    const bouton = carte.querySelector<HTMLButtonElement>('.hit');
+    bouton?.addEventListener('click', () => {
+      const retourne = carte.classList.toggle('is-flipped');
+      const label = retourne ? bouton.dataset.labelVerso : bouton.dataset.labelRecto;
+      if (label) bouton.setAttribute('aria-label', label);
+    });
+  });
+</script>
+
+<style>
+  .flip {
+    position: relative;
+    width: 400px;
+    height: 530px;
+    transform: rotate(var(--r));
+  }
+
+  .lift {
+    width: 100%;
+    height: 100%;
+    filter: drop-shadow(0 8px 6px rgba(0, 0, 0, 0.35)) drop-shadow(0 24px 30px rgba(0, 0, 0, 0.3));
+    transition: transform 0.35s var(--e-lift);
+  }
+
+  .flip:hover .lift {
+    transform: translateY(-8px) rotate(1deg);
+  }
+
+  .pf {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    transform-style: preserve-3d;
+    transition: transform 0.8s var(--e-flip);
+  }
+
+  .is-flipped .pf {
+    transform: rotateY(180deg);
+  }
+
+  .face {
+    position: absolute;
+    inset: 0;
+    backface-visibility: hidden;
+    -webkit-backface-visibility: hidden;
+    color: var(--ink);
+    background: var(--photo);
+  }
+
+  .recto {
+    padding: 18px 18px 72px;
+  }
+
+  .photo {
+    height: 100%;
+  }
+
+  .legende {
+    position: absolute;
+    left: 22px;
+    bottom: 18px;
+    font-size: 30px;
+    line-height: 1.2;
+  }
+
+  .indice {
+    position: absolute;
+    right: 20px;
+    bottom: 24px;
+    font-size: 18px;
+    color: var(--rust);
+  }
+
+  .indice--tactile {
+    display: none;
+  }
+
+  .verso {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    padding: 40px 38px;
+    background-color: var(--paper);
+    background-image: repeating-linear-gradient(
+      180deg,
+      transparent 0 37px,
+      rgba(110, 140, 120, 0.35) 37px 38px
+    );
+    background-position: 0 30px;
+    transform: rotateY(180deg);
+  }
+
+  .salut {
+    font-size: 34px;
+    line-height: 38px;
+    color: var(--rust);
+  }
+
+  .verso p {
+    font-size: 24px;
+    line-height: 38px;
+  }
+
+  .indice-retour {
+    margin-top: auto;
+    font-size: 18px;
+    color: var(--rust);
+  }
+
+  .hit {
+    position: absolute;
+    inset: 0;
+    z-index: 5;
+    margin: 0;
+    padding: 0;
+    border: 0;
+    background: transparent;
+    cursor: pointer;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .pf {
+      transition-duration: 0.2s;
+    }
+  }
+
+  @media (hover: none) {
+    .indice--souris {
+      display: none;
+    }
+
+    .indice--tactile {
+      display: inline;
+    }
+  }
+
+  @media (max-width: 759.98px) {
+    .flip {
+      width: 290px;
+      height: 400px;
+    }
+
+    .recto {
+      padding: 14px 14px 56px;
+    }
+
+    .legende {
+      left: 16px;
+      bottom: 14px;
+      font-size: 24px;
+    }
+
+    .indice {
+      right: 14px;
+      bottom: 18px;
+      font-size: 15px;
+    }
+
+    .verso {
+      gap: 8px;
+      padding: 28px 24px;
+      background-image: repeating-linear-gradient(
+        180deg,
+        transparent 0 31px,
+        rgba(110, 140, 120, 0.35) 31px 32px
+      );
+      background-position: 0 24px;
+    }
+
+    .salut {
+      font-size: 28px;
+      line-height: 32px;
+    }
+
+    .verso p {
+      font-size: 20px;
+      line-height: 32px;
+    }
+
+    .indice-retour {
+      font-size: 15px;
+    }
+  }
+</style>

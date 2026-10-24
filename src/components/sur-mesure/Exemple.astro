@@ -1,0 +1,35 @@
+---
+// Modèle de bloc sur mesure, à copier pour un projet qui sort du squelette commun.
+// Dans le Markdown du projet :
+//   - type: sur-mesure
+//     composant: Exemple        # nom de ce fichier, sans .astro
+//     titre: Mon bloc           # facultatif : étiquette numérotée « 0X — Mon bloc »
+//     note: une note manuscrite # facultatif
+//     donnees: { couleur: '#7B311B' }  # facultatif : données libres
+import type { Projet } from '../../data/projets';
+import BlocTitre from '../blocs/BlocTitre.astro';
+
+interface Props {
+  projet: Projet;
+  etiquette?: string;
+  note?: string;
+  donnees?: Record<string, unknown>;
+}
+
+const { projet, etiquette, note, donnees } = Astro.props;
+---
+
+{etiquette && <BlocTitre etiquette={etiquette} note={note} />}
+<div class="exemple">
+  <p>
+    Bloc sur mesure du projet « {projet.data.titre} » — données reçues :{' '}
+    {JSON.stringify(donnees ?? {})}
+  </p>
+</div>
+
+<style>
+  .exemple {
+    padding: 24px;
+    border: 1px dashed var(--dashed);
+  }
+</style>

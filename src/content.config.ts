@@ -47,6 +47,15 @@ const projets = defineCollection({
         type: z.literal('citation'),
         texte: z.string(),
       }),
+      // Section propre à un projet : composant src/components/sur-mesure/<composant>.astro.
+      z.object({
+        type: z.literal('sur-mesure'),
+        composant: z.string().regex(/^[A-Z][A-Za-z0-9]*$/),
+        titre: z.string().optional(),
+        note: z.string().optional(),
+        /** Données libres transmises au composant. */
+        donnees: z.record(z.string(), z.unknown()).optional(),
+      }),
     ]);
 
     return z.object({

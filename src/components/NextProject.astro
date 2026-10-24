@@ -1,0 +1,167 @@
+---
+// Projet suivant : grand polaroïd + titre pochoir + flèche qui glisse au survol.
+import { deuxChiffres, projetHref, type Projet } from '../data/projets';
+import { pageProjet } from '../data/site';
+import DymoButton from './DymoButton.astro';
+import Visuel from './Visuel.astro';
+import WashiTape from './WashiTape.astro';
+
+interface Props {
+  projet: Projet;
+}
+
+const { projet } = Astro.props;
+const d = projet.data;
+const numero = deuxChiffres(d.numero);
+---
+
+<div class="suivant">
+  <div class="entete">
+    <DymoButton as="span" variant="rouille">
+      {pageProjet.projetSuivant}
+    </DymoButton>
+    <DymoButton href="/#projets" size="sm" variant="ghost">
+      {pageProjet.tousLesProjets}
+    </DymoButton>
+  </div>
+  <a href={projetHref(projet)} class="next" aria-label={`${pageProjet.projetSuivant} : ${d.titre}`}>
+    <div class="pol">
+      <div class="cadre">
+        <div class="photo">
+          <Visuel
+            visuel={d.visuelPrincipal}
+            label={d.titre}
+            tone="clair"
+            widths={[400, 700]}
+            sizes="(max-width: 760px) calc(100vw - 32px), 380px"
+          />
+        </div>
+        <span class="hand legende">
+          {numero} — {d.titreCourt}
+        </span>
+      </div>
+      <WashiTape left="40%" top="-12px" width={100} rotate={4} />
+    </div>
+    <div class="textes">
+      <DymoButton as="span" size="sm">
+        {numero} · {d.categorie}
+      </DymoButton>
+      <span class="stencil titre">
+        {d.titre}{' '}
+        <span class="fleche" aria-hidden="true">
+          →
+        </span>
+      </span>
+      <span class="intro">{d.intro}</span>
+    </div>
+  </a>
+</div>
+
+<style>
+  .suivant {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    gap: 36px;
+  }
+
+  .entete {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+  }
+
+  .next {
+    position: relative;
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(min(320px, 100%), 1fr));
+    align-items: center;
+    gap: 48px;
+    color: var(--cream);
+    text-decoration: none;
+  }
+
+  .pol {
+    position: relative;
+    justify-self: center;
+    transition: transform 0.4s var(--e-lift);
+  }
+
+  .next:hover .pol {
+    transform: translateY(-10px) rotate(-1deg) scale(1.02);
+  }
+
+  .cadre {
+    position: relative;
+    width: 380px;
+    max-width: 100%;
+    padding: 14px 14px 60px;
+    background: var(--photo);
+    box-shadow: 0 20px 34px rgba(0, 0, 0, 0.4);
+    transform: rotate(-3deg);
+  }
+
+  .photo {
+    height: 300px;
+  }
+
+  .legende {
+    position: absolute;
+    left: 24px;
+    bottom: 16px;
+    font-size: 26px;
+    line-height: 1.2;
+    color: var(--ink);
+  }
+
+  .textes {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 16px;
+  }
+
+  .titre {
+    font-size: clamp(64px, 7vw, 112px);
+    line-height: 0.85;
+    text-transform: uppercase;
+  }
+
+  .fleche {
+    display: inline-block;
+    transition: transform 0.3s ease;
+  }
+
+  .next:hover .fleche {
+    transform: translateX(10px);
+  }
+
+  .intro {
+    max-width: 460px;
+    font-size: 18px;
+    line-height: 1.6;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .pol,
+    .fleche {
+      transition: none;
+    }
+  }
+
+  @media (max-width: 759.98px) {
+    .next {
+      gap: 28px;
+    }
+
+    .photo {
+      height: 240px;
+    }
+
+    .titre {
+      font-size: 56px;
+    }
+  }
+</style>

@@ -1,0 +1,26 @@
+---
+// Bloc « cartes » : cartes de jeu en éventail (bande à faire glisser sur mobile).
+import type { Visuel } from '../../data/projets';
+import { pageProjet } from '../../data/site';
+import CardFan from '../CardFan.astro';
+import BlocTitre from './BlocTitre.astro';
+
+interface Props {
+  etiquette: string;
+  note?: string;
+  images: Visuel[];
+}
+
+const { etiquette, note, images } = Astro.props;
+---
+
+<div class="cartes">
+  <BlocTitre etiquette={etiquette} note={note} noteMobile={pageProjet.glisse} />
+  <CardFan images={images} />
+</div>
+
+<style>
+  .cartes :global(.bloc-titre) {
+    margin-bottom: 26px;
+  }
+</style>

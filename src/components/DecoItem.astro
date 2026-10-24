@@ -1,0 +1,111 @@
+---
+// Objets du bureau, purement décoratifs (toujours aria-hidden).
+type DecoType = 'crayon' | 'gomme' | 'rouleau' | 'trombone' | 'feuille' | 'feuille-olive';
+
+interface Props {
+  type: DecoType;
+  /** Taille des feuilles en px (100 par défaut, 90 pour la feuille olive). */
+  size?: number;
+  /** Ombre portée « posé sur le tapis ». */
+  lift?: boolean;
+  /** Rotation en degrés. */
+  rotate?: number;
+  class?: string;
+}
+
+const { type, size, lift = false, rotate, class: className } = Astro.props;
+
+const feuille =
+  'M50 98 C50 90 50 86 50 80 C40 82 30 78 32 70 C22 70 16 62 22 56 C12 52 12 42 22 40 C14 32 18 22 28 24 C26 14 36 8 42 14 C44 6 56 6 58 14 C64 8 74 14 72 24 C82 22 86 32 78 40 C88 42 88 52 78 56 C84 62 78 70 68 70 C70 78 60 82 50 80';
+const nervures = 'M50 96 L50 18 M50 64 L34 56 M50 64 L66 56 M50 46 L30 36 M50 46 L70 36';
+const couleurs = {
+  feuille: { fond: 'var(--leaf)', trait: '#7E3F1E', taille: 100 },
+  'feuille-olive': { fond: 'var(--leaf-olive)', trait: '#545226', taille: 90 },
+};
+const f = type === 'feuille' || type === 'feuille-olive' ? couleurs[type] : undefined;
+---
+
+<div
+  class:list={['deco', `deco--${type}`, { 'deco--lift': lift }, className]}
+  style={rotate === undefined ? undefined : `transform: rotate(${rotate}deg)`}
+  aria-hidden="true"
+>
+  {type === 'crayon' && (
+    <svg width="300" height="26" viewBox="0 0 300 26">
+      <rect x="34" y="3" width="220" height="20" fill="#2F5E46" />
+      <rect x="34" y="3" width="220" height="6" fill="#3E7258" />
+      <rect x="34" y="17" width="220" height="6" fill="#244A37" />
+      <rect x="254" y="2" width="22" height="22" fill="#A9A397" />
+      <rect x="276" y="2" width="22" height="22" rx="4" fill="#E2B6A0" />
+      <polygon points="34,3 34,23 4,13" fill="#E3C49A" />
+      <polygon points="12,9.3 12,16.7 4,13" fill="#3A332C" />
+    </svg>
+  )}
+  {type === 'gomme' && (
+    <div class="gomme">
+      <span class="gomme-rouille" />
+      <span class="gomme-blanc" />
+    </div>
+  )}
+  {type === 'rouleau' && <div class="rouleau" />}
+  {type === 'trombone' && (
+    <svg width="30" height="82" viewBox="0 0 30 82">
+      <path
+        d="M10 20 L10 62 C10 72 22 72 22 62 L22 12 C22 2 6 2 6 12 L6 66 C6 80 26 80 26 66 L26 24"
+        fill="none"
+        stroke="#D2CDC1"
+        stroke-width="2.6"
+        stroke-linecap="round"
+      />
+    </svg>
+  )}
+  {f && (
+    <svg width={size ?? f.taille} height={size ?? f.taille} viewBox="0 0 100 100">
+      <path d={feuille} fill={f.fond} />
+      <path d={nervures} fill="none" stroke={f.trait} stroke-width="1.4" stroke-linecap="round" />
+    </svg>
+  )}
+</div>
+
+<style>
+  .deco {
+    display: inline-block;
+    line-height: 0;
+  }
+
+  .deco--lift {
+    filter: drop-shadow(0 5px 4px rgba(0, 0, 0, 0.38));
+  }
+
+  .gomme {
+    display: flex;
+    width: 120px;
+    height: 46px;
+    overflow: hidden;
+    border-radius: 6px;
+    box-shadow: inset 0 -3px 0 rgba(0, 0, 0, 0.12);
+  }
+
+  .gomme-rouille {
+    flex: 0 0 46%;
+    background: var(--rust-hover);
+  }
+
+  .gomme-blanc {
+    flex: 1;
+    background: #f1e9da;
+  }
+
+  /* Rouleau de washi : anneau moutarde, mandrin en carton */
+  .rouleau {
+    width: 110px;
+    height: 110px;
+    border-radius: 50%;
+    background-color: #d3a43a;
+    background-image:
+      radial-gradient(circle, #c9ae84 0 36px, rgba(60, 40, 10, 0.3) 37px, transparent 38px),
+      repeating-radial-gradient(circle, rgba(255, 255, 255, 0.08) 0 2px, transparent 2px 4px);
+    -webkit-mask: radial-gradient(circle, transparent 0 28px, #000 29px);
+    mask: radial-gradient(circle, transparent 0 28px, #000 29px);
+  }
+</style>

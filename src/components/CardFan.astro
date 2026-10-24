@@ -1,0 +1,115 @@
+---
+// Éventail de cartes de jeu 170 × 240. Desktop : rangée en éventail ; mobile : bande qui défile (scroll-snap).
+import type { Visuel as VisuelData } from '../data/projets';
+import Visuel from './Visuel.astro';
+
+interface Props {
+  images: VisuelData[];
+}
+
+const { images } = Astro.props;
+
+// Rotations −8 / −4 / 0 / 4 / 8 / 12° et décalages verticaux des maquettes (prolongés au-delà de 6 cartes).
+const decalages: Record<number, number> = { [-8]: 18, [-4]: 6, 0: 0, 4: 6, 8: 18, 12: 34 };
+const rotationsMobile = [-2, 1, -1, 2, -2, 1];
+const cartes = images.map((visuel, i) => {
+  const r = -8 + 4 * i;
+  return {
+    visuel,
+    r,
+    y: decalages[r] ?? Math.round(r * r * 0.24),
+    rm: rotationsMobile[i % rotationsMobile.length],
+    delai: 0.15 + i * 0.12,
+  };
+});
+---
+
+<div class="cards">
+  {cartes.map((c) => (
+    <div
+      class="deal"
+      style={`--r: ${c.r}deg; --y: ${c.y}px; --rm: ${c.rm}deg; --delai: ${c.delai.toFixed(2)}s`}
+    >
+      <div class:list={['gcard', { 'gcard--attente': !c.visuel.src }]}>
+        <Visuel visuel={c.visuel} widths={[340, 510]} sizes="170px" />
+      </div>
+    </div>
+  ))}
+</div>
+
+<style>
+  .cards {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 22px;
+    padding-top: 20px;
+  }
+
+  .gcard {
+    width: 170px;
+    height: 240px;
+    overflow: hidden;
+    border-radius: 10px;
+    font-size: 13px;
+    box-shadow: 0 14px 22px rgba(0, 0, 0, 0.4);
+    transform: rotate(var(--r)) translateY(var(--y));
+    transition: transform 0.35s var(--e-lift);
+  }
+
+  /* Carte en attente : double liseré kraft sombre + rouille, visible sous les hachures */
+  .gcard--attente {
+    background-color: var(--kraft-dark);
+    box-shadow:
+      inset 0 0 0 8px var(--kraft-dark),
+      inset 0 0 0 9.5px var(--rust),
+      0 14px 22px rgba(0, 0, 0, 0.4);
+  }
+
+  .gcard--attente :global(.ph) {
+    background-color: transparent;
+  }
+
+  .gcard:hover {
+    transform: translateY(-14px) rotate(0deg);
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .gcard {
+      transition: none;
+    }
+  }
+
+  @media (max-width: 759.98px) {
+    .cards {
+      flex-wrap: nowrap;
+      justify-content: flex-start;
+      gap: 14px;
+      margin: 0 -16px;
+      padding: 10px 16px 24px;
+      overflow-x: auto;
+      scroll-snap-type: x mandatory;
+    }
+
+    .deal {
+      flex: none;
+      scroll-snap-align: center;
+    }
+
+    .gcard {
+      box-shadow: 0 12px 18px rgba(0, 0, 0, 0.4);
+      transform: rotate(var(--rm));
+    }
+
+    .gcard--attente {
+      box-shadow:
+        inset 0 0 0 8px var(--kraft-dark),
+        inset 0 0 0 9.5px var(--rust),
+        0 12px 18px rgba(0, 0, 0, 0.4);
+    }
+
+    .gcard:hover {
+      transform: rotate(var(--rm));
+    }
+  }
+</style>

@@ -3,6 +3,10 @@ import { getCollection, type CollectionEntry } from 'astro:content';
 
 export type Projet = CollectionEntry<'projets'>;
 
+/** Un visuel des données : sans `src`, il s'affiche en Placeholder libellé avec `alt`. */
+export type Visuel = NonNullable<Projet['data']['visuelPrincipal']>;
+export type Bloc = Projet['data']['blocs'][number];
+
 /** Tous les projets, triés par `numero`. Refuse deux projets avec le même numéro. */
 export async function getProjets(): Promise<Projet[]> {
   const projets = (await getCollection('projets')).sort((a, b) => a.data.numero - b.data.numero);

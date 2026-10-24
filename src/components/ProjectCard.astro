@@ -1,0 +1,198 @@
+---
+// Carte projet de l'accueil : visuel encadré cliquable + petit polaroïd en parallaxe, puis les textes.
+import { deuxChiffres, projetHref, type Projet } from '../data/projets';
+import { sectionProjets } from '../data/site';
+import DymoButton from './DymoButton.astro';
+import Visuel from './Visuel.astro';
+import WashiTape from './WashiTape.astro';
+
+interface Props {
+  projet: Projet;
+  /** Position dans la liste (0, 1, 2…) : alterne les rotations. */
+  index: number;
+}
+
+const { projet, index } = Astro.props;
+const d = projet.data;
+const href = projetHref(projet);
+const pair = index % 2 === 0;
+const secondaire = d.visuelSecondaire ?? (import.meta.env.DEV ? { alt: 'visuel 2' } : undefined);
+---
+
+<article
+  class="card"
+  id={`projet-${projet.id}`}
+  data-projet={projet.id}
+  style={`--r1: ${pair ? -1.2 : 1.2}deg; --r2: ${pair ? 6 : -5}deg; --rm: ${pair ? -1 : 1}deg`}
+>
+  <div class="visuels">
+    <a href={href} class="lien-photo" aria-label={`${sectionProjets.ouvrirProjet} ${d.titre}`}>
+      <div class="photo">
+        <Visuel
+          visuel={d.visuelPrincipal}
+          label={`visuel principal : ${d.titre}`}
+          sizes="(max-width: 760px) calc(100vw - 32px), (max-width: 1100px) 50vw, 420px"
+        />
+      </div>
+      <WashiTape class="washi-mobile" left="40%" top="-10px" width={80} rotate={-3} />
+    </a>
+    {secondaire && (
+      <div class="parallaxe" data-parallax="-60">
+        <div class="pola">
+          <div class="pola-photo">
+            <Visuel visuel={secondaire} tone="clair" widths={[200, 400]} sizes="170px" />
+          </div>
+        </div>
+      </div>
+    )}
+  </div>
+
+  <div class="textes">
+    <DymoButton as="span" size="sm">
+      {deuxChiffres(d.numero)} · {d.titreCourt}
+    </DymoButton>
+    <h3 class="stencil">{d.titre}</h3>
+    <p class="categorie">{d.categorie}</p>
+    <p class="resume">{d.resume}</p>
+    <DymoButton href={href} size="sm" variant="rouille">
+      {sectionProjets.voirProjet}
+    </DymoButton>
+  </div>
+</article>
+
+<style>
+  .card {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(min(320px, 100%), 1fr));
+    align-items: center;
+    gap: 40px;
+    padding: 60px 0;
+    border-bottom: 1px dashed var(--dashed);
+  }
+
+  .visuels {
+    position: relative;
+  }
+
+  .lien-photo {
+    position: relative;
+    display: block;
+    text-decoration: none;
+  }
+
+  .photo {
+    height: 340px;
+    border: 12px solid var(--photo);
+    background: var(--photo);
+    box-shadow: 0 16px 28px rgba(0, 0, 0, 0.35);
+    transform: rotate(var(--r1));
+    transition:
+      transform 0.4s var(--e-lift),
+      box-shadow 0.4s ease;
+  }
+
+  .lien-photo:hover .photo {
+    transform: translateY(-8px) rotate(0deg);
+    box-shadow: var(--sh-lg);
+  }
+
+  .lien-photo :global(.washi-mobile) {
+    display: none;
+  }
+
+  .parallaxe {
+    position: absolute;
+    right: -10px;
+    bottom: -40px;
+    pointer-events: none;
+  }
+
+  .pola {
+    width: 170px;
+    padding: 10px 10px 30px;
+    background: var(--photo);
+    box-shadow: 0 12px 20px rgba(0, 0, 0, 0.35);
+    transform: rotate(var(--r2));
+  }
+
+  .pola-photo {
+    height: 120px;
+    font-size: 12px;
+  }
+
+  .textes {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 14px;
+    min-width: 0;
+  }
+
+  h3 {
+    font-size: clamp(48px, 5vw, 76px);
+    line-height: 0.88;
+  }
+
+  .categorie {
+    font-size: 14px;
+    font-weight: 700;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: var(--mustard);
+  }
+
+  .resume {
+    font-size: 17.5px;
+    line-height: 1.6;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .photo {
+      transition: none;
+    }
+  }
+
+  @media (max-width: 759.98px) {
+    .card {
+      display: flex;
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 12px;
+      padding: 40px 0;
+    }
+
+    .visuels {
+      width: 100%;
+      margin-bottom: 8px;
+    }
+
+    .photo {
+      height: 230px;
+      border-width: 10px;
+      box-shadow: 0 14px 22px rgba(0, 0, 0, 0.35);
+      transform: rotate(var(--rm));
+    }
+
+    .lien-photo :global(.washi-mobile) {
+      display: block;
+    }
+
+    .parallaxe {
+      display: none;
+    }
+
+    h3 {
+      font-size: 50px;
+    }
+
+    .categorie {
+      font-size: 13px;
+      letter-spacing: 0.14em;
+    }
+
+    .resume {
+      font-size: 16.5px;
+      line-height: 1.55;
+    }
+  }
+</style>

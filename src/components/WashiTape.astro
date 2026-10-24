@@ -1,0 +1,113 @@
+---
+// Bout de washi tape (décoratif). Positionné en absolu dans un parent `position: relative`.
+interface Props {
+  color?: 'moutarde' | 'sauge';
+  /** Largeur en px. */
+  width?: number;
+  /** Rotation en degrés. */
+  rotate?: number;
+  left?: string;
+  right?: string;
+  top?: string;
+  bottom?: string;
+  /** Animation « se colle » au chargement. */
+  stick?: boolean;
+  /** Délai de l'animation, en secondes. */
+  delay?: number;
+  class?: string;
+}
+
+const {
+  color = 'moutarde',
+  width = 110,
+  rotate = 0,
+  left,
+  right,
+  top,
+  bottom,
+  stick = false,
+  delay,
+  class: className,
+} = Astro.props;
+
+const style = [
+  `width: ${width}px`,
+  `--r: ${rotate}deg`,
+  left && `left: ${left}`,
+  right && `right: ${right}`,
+  top && `top: ${top}`,
+  bottom && `bottom: ${bottom}`,
+  delay !== undefined && `--washi-delay: ${delay}s`,
+]
+  .filter(Boolean)
+  .join('; ');
+---
+
+<span
+  class:list={['washi', `washi--${color}`, { 'washi--stick': stick }, className]}
+  style={style}
+  aria-hidden="true"
+></span>
+
+<style>
+  .washi {
+    position: absolute;
+    z-index: 4;
+    height: 28px;
+    background-color: var(--washi);
+    background-image: repeating-linear-gradient(
+      45deg,
+      rgba(255, 255, 255, 0.22) 0 5px,
+      transparent 5px 11px
+    );
+    clip-path: polygon(
+      2% 0,
+      98% 0,
+      100% 22%,
+      97% 42%,
+      100% 62%,
+      97% 82%,
+      99% 100%,
+      1% 100%,
+      3% 80%,
+      0 60%,
+      3% 40%,
+      0 20%
+    );
+    transform: rotate(var(--r));
+    pointer-events: none;
+  }
+
+  .washi--sauge {
+    background-color: var(--washi-sage);
+  }
+
+  .washi--stick {
+    animation: washi-stick 0.5s var(--e-stick) var(--washi-delay, 0s) both;
+  }
+
+  @keyframes washi-stick {
+    from {
+      opacity: 0;
+      transform: scale(1.6) rotate(var(--r));
+    }
+  }
+
+  @keyframes washi-fade {
+    from {
+      opacity: 0;
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .washi--stick {
+      animation: washi-fade 0.2s ease both;
+    }
+  }
+
+  @media (max-width: 759.98px) {
+    .washi {
+      height: 24px;
+    }
+  }
+</style>

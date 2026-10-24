@@ -1,0 +1,41 @@
+---
+// Barre de lecture : règle ambrée de 8 px collée en haut. Le remplissage suit --progress (0 → 1),
+// mis à jour par scripts/reading-progress.ts.
+---
+
+<div class="progress" aria-hidden="true" data-reading-progress>
+  <div class="barre">
+    <div class="remplissage"></div>
+  </div>
+</div>
+
+<style>
+  .progress {
+    position: sticky;
+    top: 0;
+    z-index: 90;
+    height: 0;
+  }
+
+  .barre {
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: 0;
+    height: 8px;
+    background: rgba(214, 138, 42, 0.35);
+    background-image: repeating-linear-gradient(
+      90deg,
+      rgba(70, 35, 5, 0.6) 0 1px,
+      transparent 1px 9.5px
+    );
+  }
+
+  .remplissage {
+    position: absolute;
+    inset: 0;
+    background: rgba(214, 138, 42, 0.9);
+    transform: scaleX(var(--progress, 0));
+    transform-origin: left;
+  }
+</style>

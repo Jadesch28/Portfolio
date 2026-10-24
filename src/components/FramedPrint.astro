@@ -1,0 +1,66 @@
+---
+// Tirage bordé : bord crème de 12 px, ombre « papier posé ».
+import type { Visuel as VisuelData } from '../data/projets';
+import Visuel from './Visuel.astro';
+
+interface Props {
+  visuel?: VisuelData;
+  placeholder?: string;
+  /** Rotation en degrés. */
+  rotate?: number;
+  tone?: 'clair' | 'sombre';
+  /** Hauteur fixe (image recadrée). Sans hauteur : proportions de l'image. */
+  height?: string;
+  sizes?: string;
+  priority?: boolean;
+  class?: string;
+}
+
+const {
+  visuel,
+  placeholder,
+  rotate = 0,
+  tone = 'sombre',
+  height,
+  sizes,
+  priority,
+  class: className,
+} = Astro.props;
+
+// Un Placeholder a besoin d'une hauteur ; une image sans hauteur garde ses proportions.
+const hauteur = height ?? (visuel?.src ? undefined : '460px');
+---
+
+<div
+  class:list={['print', { 'print--fixe': hauteur }, className]}
+  style={[`--r: ${rotate}deg`, hauteur && `--h: ${hauteur}`].filter(Boolean).join('; ')}
+>
+  <Visuel
+    visuel={visuel}
+    label={placeholder}
+    tone={tone}
+    fit={hauteur ? 'cover' : 'naturel'}
+    sizes={sizes}
+    priority={priority}
+  />
+</div>
+
+<style>
+  .print {
+    border: 12px solid var(--photo);
+    background: var(--photo);
+    box-shadow: 0 16px 28px rgba(0, 0, 0, 0.35);
+    transform: rotate(var(--r));
+  }
+
+  .print--fixe {
+    height: var(--h);
+  }
+
+  @media (max-width: 759.98px) {
+    .print {
+      border-width: 10px;
+      box-shadow: 0 14px 22px rgba(0, 0, 0, 0.35);
+    }
+  }
+</style>

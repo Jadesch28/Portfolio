@@ -1,13 +1,34 @@
 ---
 // Styleguide (dev uniquement, injecté par astro.config.ts) : les vrais composants et leurs états,
-// d'après design-reference/Site-Composants.dc.html.
+// d'après design-reference/Site-Composants.dc.html. Les animations en boucle sont des démos locales.
 import { Image } from 'astro:assets';
 import ACompleter from '../components/ACompleter.astro';
+import BlockSurMesure from '../components/blocs/BlockSurMesure.astro';
+import Blocs from '../components/blocs/Blocs.astro';
+import CardFan from '../components/CardFan.astro';
+import ContactForm from '../components/ContactForm.astro';
+import DecoItem from '../components/DecoItem.astro';
 import DymoButton from '../components/DymoButton.astro';
+import FactSheet from '../components/FactSheet.astro';
+import Field from '../components/Field.astro';
+import FlipPhoto from '../components/FlipPhoto.astro';
 import Footer from '../components/Footer.astro';
+import FramedPrint from '../components/FramedPrint.astro';
+import NextProject from '../components/NextProject.astro';
+import Notebook from '../components/Notebook.astro';
+import PaintChip from '../components/PaintChip.astro';
 import Placeholder from '../components/Placeholder.astro';
+import Polaroid from '../components/Polaroid.astro';
+import ProjectCard from '../components/ProjectCard.astro';
+import Quote from '../components/Quote.astro';
+import ReadingProgress from '../components/ReadingProgress.astro';
+import SectionHeading from '../components/SectionHeading.astro';
+import SentStamp from '../components/SentStamp.astro';
+import StencilRuler from '../components/StencilRuler.astro';
+import StickyNote from '../components/StickyNote.astro';
+import WashiTape from '../components/WashiTape.astro';
 import { deuxChiffres, getProjets, projetHref, projetSuivant } from '../data/projets';
-import { aPropos } from '../data/site';
+import { aPropos, formulaire, hero, pageProjet, photos, sectionProjets } from '../data/site';
 import Base from '../layouts/Base.astro';
 
 const projets = await getProjets();
@@ -15,6 +36,45 @@ const slugs = new Set(projets.map((p) => p.id));
 const liensCasses = aPropos.ceQueJeFais.cartes.flatMap((c) =>
   c.projets.filter((slug) => !slugs.has(slug)),
 );
+const rituel = projets.find((p) => p.id === 'rituel') ?? projets[0];
+const cartesRituel = rituel?.data.blocs.find((b) => b.type === 'cartes');
+const paletteRituel = rituel?.data.blocs.find((b) => b.type === 'palette');
+const citationRituel = rituel?.data.blocs.find((b) => b.type === 'citation');
+
+const couleurs = [
+  { nom: 'Tapis', variable: '--mat', usage: 'Fond de toutes les pages' },
+  { nom: 'Lignes du tapis', variable: '--mat-line', usage: 'Grille 38 px + 190 px' },
+  { nom: 'Crème', variable: '--cream', usage: 'Texte sur le tapis' },
+  { nom: 'Moutarde', variable: '--mustard', usage: 'Annotations, catégories, focus' },
+  { nom: 'Papier', variable: '--paper', usage: 'Carnet, fiches, formulaires' },
+  { nom: 'Bord photo', variable: '--photo', usage: 'Polaroïds et tirages' },
+  { nom: 'Encre', variable: '--ink', usage: 'Texte sur papier' },
+  { nom: 'Encre douce', variable: '--ink-soft', usage: 'Labels sur papier' },
+  { nom: 'Rouille', variable: '--rust', usage: 'Action principale, actif' },
+  { nom: 'Rouille survol', variable: '--rust-hover', usage: 'Survol des boutons rouille' },
+  { nom: 'Dymo', variable: '--dymo', usage: 'Étiquettes & boutons' },
+  { nom: 'Ambre (règle)', variable: '--amber', usage: 'Règle pochoir, progression' },
+  { nom: 'Washi', variable: '--washi', usage: 'Scotch décoratif' },
+  { nom: 'Washi sauge', variable: '--washi-sage', usage: 'Scotch décoratif 2' },
+  { nom: 'Kraft', variable: '--kraft', usage: 'Visuels en attente' },
+];
+const espaces = [4, 8, 12, 16, 24, 32, 48, 56, 80, 110];
+const mouvements = [
+  { n: 'drop', d: '800 ms', e: '--e-drop', u: 'Objets qui tombent sur le bureau' },
+  { n: 'slide', d: '1000 ms', e: '--e-slide', u: 'Règle pochoir du hero' },
+  { n: 'type-in', d: '1000 ms', e: 'steps(24)', u: 'Étiquettes Dymo qui s’impriment' },
+  { n: 'fade-up', d: '800 ms', e: 'ease', u: 'Textes au scroll' },
+  { n: 'flip', d: '800 ms', e: '--e-flip', u: 'Photo retournable' },
+  { n: 'stick', d: '500 ms', e: '--e-stick', u: 'Washi qui se colle' },
+  { n: 'reveal', d: '800–900 ms', e: '--e-reveal', u: 'Grands titres (clip-path)' },
+  { n: 'circle', d: '700 ms', e: 'ease', u: 'Cercle au crayon du sommaire' },
+  {
+    n: 'tidy (scroll)',
+    d: '700 px de scroll',
+    e: 'easeInOutCubic',
+    u: 'Rangement du bureau (hero)',
+  },
+];
 ---
 
 <Base title="Styleguide — Jade Deschuyteneer">
@@ -22,24 +82,158 @@ const liensCasses = aPropos.ceQueJeFais.cartes.flatMap((c) =>
 
   <div class="intro">
     <div class="titre">
-      <DymoButton size="sm" variant="rouille">
+      <DymoButton as="span" size="sm" variant="rouille">
         Design system
       </DymoButton>
       <h1 class="stencil">COMPOSANTS &amp; TOKENS</h1>
     </div>
     <p>
-      Les vrais composants du site et leurs états. Survolez les éléments interactifs pour voir leurs
-      états.
+      Les vrais composants du site et leurs états (page visible en développement uniquement).
+      Survolez les éléments interactifs pour voir leurs états.
     </p>
   </div>
 
+  <!-- 01 · Couleurs -->
   <section class="sec">
     <div class="sh">
-      <DymoButton size="sm" variant="rouille">
+      <DymoButton as="span" size="sm" variant="rouille">
+        01 · Couleurs
+      </DymoButton>
+      <span class="cname">src/styles/tokens.css</span>
+    </div>
+    <div class="rangee rangee--large-22">
+      {couleurs.map((c) => (
+        <div class="nuance">
+          <span class="nuance-couleur" style={`background: var(${c.variable})`} />
+          <span class="nuance-nom">{c.nom}</span>
+          <span class="nuance-meta">{c.variable}</span>
+          <span class="nuance-usage">{c.usage}</span>
+        </div>
+      ))}
+    </div>
+    <p class="cap">
+      Contrastes vérifiés : crème sur tapis 7,4:1 · moutarde sur tapis 5,9:1 · encre sur papier ≈
+      14:1 · rouille sur papier 6,7:1 · texte clair sur rouille 5,9:1.
+    </p>
+  </section>
+
+  <!-- 02 · Typographie -->
+  <section class="sec">
+    <div class="sh">
+      <DymoButton as="span" size="sm" variant="rouille">
+        02 · Typographie
+      </DymoButton>
+      <span class="cname">3 familles auto-hébergées</span>
+    </div>
+    <div class="typos">
+      <div class="cell">
+        <span class="cname">Display — Big Shoulders Stencil 900</span>
+        <span class="stencil" style="font-size: 120px; line-height: 0.8">
+          JADE
+        </span>
+        <span class="stencil" style="font-size: 64px; line-height: 0.9">
+          MES PROJETS
+        </span>
+        <span class="stencil" style="font-size: 40px; line-height: 1">
+          Rituel
+        </span>
+        <span class="cap">
+          H1 150–210 px · H2 96–140 px · H3 48–96 px · interligne 0,8–0,9 · capitales pour les
+          grands titres.
+        </span>
+      </div>
+      <div class="cell">
+        <span class="cname">Texte &amp; interface — Archivo Narrow 400 / 600 / 700</span>
+        <span style="font-size: 26px; line-height: 1.5">
+          Chapô 26 px — un univers sombre, mystique et cérémoniel.
+        </span>
+        <span style="font-size: 18px; line-height: 1.65">
+          Courant 17–20 px, interligne 1,55–1,7. Je bidouille, j’explore et je construis des images
+          depuis que je suis capable de tenir un crayon.
+        </span>
+        <span class="label-demo">Label capitales 12–15 px · +0,14 em</span>
+      </div>
+      <div class="cell">
+        <span class="cname">Manuscrit — Gochi Hand</span>
+        <span class="hand" style="font-size: 64px; line-height: 1">
+          Salut, moi c’est Jade.
+        </span>
+        <span class="hand" style="font-size: 30px; line-height: 1.1; color: var(--mustard)">
+          {hero.range}
+        </span>
+        <span class="cap">
+          Annotations 22–38 px, titres manuscrits jusqu’à 92 px. Jamais pour un texte long ni pour
+          un champ de saisie critique.
+        </span>
+      </div>
+    </div>
+  </section>
+
+  <!-- 03 · Espaces, ombres & mouvements -->
+  <section class="sec">
+    <div class="sh">
+      <DymoButton as="span" size="sm" variant="rouille">
+        03 · Espaces, ombres &amp; mouvements
+      </DymoButton>
+      <span class="cname">--s-* · --sh-* · --e-*</span>
+    </div>
+    <div class="espaces-grille">
+      <div class="cell">
+        <span class="cname">Espacements (px)</span>
+        <div class="espaces">
+          {espaces.map((e) => (
+            <span class="espace">
+              <span class="espace-barre" style={`height: ${e}px`} />
+              <span>{e}</span>
+            </span>
+          ))}
+        </div>
+        <span class="cname" style="margin-top: 18px">
+          Ombres
+        </span>
+        <div class="rangee rangee--large-22">
+          <span class="ombre" style="box-shadow: var(--sh-sm)">
+            sm
+          </span>
+          <span class="ombre" style="box-shadow: var(--sh-md)">
+            md
+          </span>
+          <span class="ombre" style="box-shadow: var(--sh-lg)">
+            lg · survol
+          </span>
+        </div>
+      </div>
+      <div>
+        <div class="tok tok--entete">
+          <span>Animation</span>
+          <span>Durée</span>
+          <span>Courbe</span>
+          <span>Usage</span>
+        </div>
+        {mouvements.map((m) => (
+          <div class="tok">
+            <b>{m.n}</b>
+            <span>{m.d}</span>
+            <span class="tok-courbe">{m.e}</span>
+            <span>{m.u}</span>
+          </div>
+        ))}
+        <p class="cap">
+          Avec prefers-reduced-motion : toutes les entrées deviennent un fondu de 200 ms, plus de
+          rangement au scroll ni de vol de photo.
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <!-- 04 · Étiquettes Dymo -->
+  <section class="sec">
+    <div class="sh">
+      <DymoButton as="span" size="sm" variant="rouille">
         04 · Étiquettes Dymo
       </DymoButton>
       <span class="cname">
-        &lt;DymoButton variant="noir | rouille | ghost | ghost-encre" size="md | sm"&gt;
+        &lt;DymoButton variant="noir | rouille | ghost | ghost-encre" size="md | sm" as?="span"&gt;
       </span>
     </div>
     <div class="rangee rangee--large">
@@ -48,7 +242,7 @@ const liensCasses = aPropos.ceQueJeFais.cartes.flatMap((c) =>
         <div class="rangee">
           <DymoButton>Défaut</DymoButton>
           <DymoButton current>Actif</DymoButton>
-          <DymoButton disabled>Envoi…</DymoButton>
+          <DymoButton disabled>{formulaire.envoi}</DymoButton>
         </div>
       </div>
       <div class="cell">
@@ -83,33 +277,132 @@ const liensCasses = aPropos.ceQueJeFais.cartes.flatMap((c) =>
         </div>
       </div>
       <div class="cell">
+        <span class="cname">Étiquette simple (as="span")</span>
+        <div class="rangee">
+          <DymoButton as="span" size="sm" variant="rouille">
+            05 projets
+          </DymoButton>
+          <DymoButton as="span" size="sm">
+            After Effects
+          </DymoButton>
+        </div>
+      </div>
+      <div class="cell demo-type">
         <span class="cname">Animation « impression »</span>
-        <DymoButton typeIn delay={0.5}>
-          Graphiste · motion designer
-        </DymoButton>
+        <DymoButton as="span">Graphiste · motion designer</DymoButton>
       </div>
     </div>
+    <p class="cap">
+      Hauteur mini 44 px (cible tactile). Toujours un vrai &lt;a&gt; ou &lt;button&gt; quand c’est
+      cliquable. Texte en capitales espacées, ombre portée légère et reflet en dégradé pour l’effet
+      plastique embossé.
+    </p>
   </section>
 
+  <!-- 05 · Matières -->
   <section class="sec">
     <div class="sh">
-      <DymoButton size="sm" variant="rouille">
+      <DymoButton as="span" size="sm" variant="rouille">
         05 · Matières
       </DymoButton>
-      <span class="cname">&lt;Placeholder label tone="clair | sombre"&gt;</span>
+      <span class="cname">
+        &lt;WashiTape&gt; · &lt;Placeholder&gt; · &lt;StencilRuler&gt; · &lt;RulerNumbers&gt;
+      </span>
     </div>
-    <div class="cell">
-      <span class="cname">Visuel en attente (clair / sombre)</span>
-      <div class="rangee">
-        <Placeholder label="visuel" style="width: 150px; height: 110px" />
-        <Placeholder label="visuel" tone="sombre" style="width: 150px; height: 110px" />
+    <div class="rangee rangee--large-48">
+      <div class="cell">
+        <span class="cname">Washi moutarde / sauge</span>
+        <div class="boite" style="width: 220px; height: 90px">
+          <WashiTape left="0" top="10px" width={180} rotate={-4} />
+          <WashiTape color="sauge" left="30px" top="52px" width={180} rotate={3} />
+        </div>
+        <span class="cap">Bords dentelés en clip-path, 28 px de haut.</span>
+      </div>
+      <div class="cell demo-stick">
+        <span class="cname">Collage animé</span>
+        <div class="boite" style="width: 160px; height: 90px">
+          <WashiTape left="10px" top="30px" width={130} rotate={-10} />
+        </div>
+      </div>
+      <div class="cell">
+        <span class="cname">Papier ligné</span>
+        <div class="papier-ligne">
+          <span class="hand" style="font-size: 24px">
+            lignes tous les 32 px
+          </span>
+        </div>
+      </div>
+      <div class="cell">
+        <span class="cname">Visuel en attente (clair / sombre)</span>
+        <div class="rangee">
+          <Placeholder label="visuel" style="width: 150px; height: 110px" />
+          <Placeholder label="visuel" tone="sombre" style="width: 150px; height: 110px" />
+        </div>
+      </div>
+      <div class="cell">
+        <span class="cname">Règle pochoir (nom)</span>
+        <StencilRuler title="JADE" size="84px" />
+      </div>
+      <div class="cell">
+        <span class="cname">Règle du hero</span>
+        <StencilRuler title={hero.prenom} subtitle={hero.nom} size="clamp(104px, 10vw, 150px)" />
       </div>
     </div>
   </section>
 
+  <!-- 06 · Cadres photo -->
   <section class="sec">
     <div class="sh">
-      <DymoButton size="sm" variant="rouille">
+      <DymoButton as="span" size="sm" variant="rouille">
+        06 · Cadres photo
+      </DymoButton>
+      <span class="cname">
+        &lt;Polaroid&gt; · &lt;FramedPrint&gt; · &lt;FlipPhoto&gt; · &lt;StickyNote&gt;
+      </span>
+    </div>
+    <div class="rangee rangee--large rangee--start">
+      <div class="cell">
+        <span class="cname">Polaroïd + légende</span>
+        <Polaroid placeholder="photo" caption="légende">
+          <WashiTape left="60px" top="-12px" width={90} />
+        </Polaroid>
+      </div>
+      <div class="cell">
+        <span class="cname">Polaroïd « Jade à l’atelier » (provisoire)</span>
+        <Polaroid
+          visuel={photos.atelier}
+          width="320px"
+          photoHeight="300px"
+          rotate={-4}
+          frame="grand"
+        />
+      </div>
+      <div class="cell">
+        <span class="cname">Tirage bordé (galerie)</span>
+        <div style="width: 300px">
+          <FramedPrint placeholder="visuel projet" height="210px" rotate={1.5} />
+        </div>
+      </div>
+      <div class="cell">
+        <span class="cname">Photo retournable (cliquez)</span>
+        <FlipPhoto front={photos.portrait} />
+        <span class="cap">Clic, clavier ou tactile : bouton plein cadre avec aria-label.</span>
+      </div>
+      <div class="cell">
+        <span class="cname">Post-it</span>
+        <StickyNote>
+          {hero.postIt[0]}
+          <br />
+          {hero.postIt[1]}
+        </StickyNote>
+      </div>
+    </div>
+  </section>
+
+  <!-- 07 · Navigation -->
+  <section class="sec">
+    <div class="sh">
+      <DymoButton as="span" size="sm" variant="rouille">
         07 · Navigation
       </DymoButton>
       <span class="cname">&lt;Header&gt; · &lt;MobileMenu&gt; · &lt;Footer&gt;</span>
@@ -125,9 +418,190 @@ const liensCasses = aPropos.ceQueJeFais.cartes.flatMap((c) =>
     </div>
   </section>
 
+  <!-- 08 · Projets -->
   <section class="sec">
     <div class="sh">
-      <DymoButton size="sm" variant="rouille">
+      <DymoButton as="span" size="sm" variant="rouille">
+        08 · Projets
+      </DymoButton>
+      <span class="cname">
+        &lt;SectionHeading&gt; · &lt;Notebook&gt; · &lt;TocItem&gt; · &lt;ProjectCard&gt;
+      </span>
+    </div>
+    <SectionHeading
+      count={`${deuxChiffres(projets.length)} ${sectionProjets.compteur}`}
+      title={sectionProjets.titre}
+      note={sectionProjets.note}
+    />
+    <div class="projets-demo">
+      <div class="carnet-demo">
+        <Notebook projets={projets} actif={2} />
+      </div>
+      <div class="cartes-demo">
+        {projets.slice(0, 2).map((p, i) => (
+          <ProjectCard projet={p} index={i} />
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <!-- 09 · Page projet -->
+  <section class="sec">
+    <div class="sh">
+      <DymoButton as="span" size="sm" variant="rouille">
+        09 · Page projet
+      </DymoButton>
+      <span class="cname">
+        &lt;ReadingProgress&gt; · &lt;FactSheet&gt; · &lt;CardFan&gt; · &lt;PaintChip&gt; ·
+        &lt;Quote&gt; · &lt;NextProject&gt;
+      </span>
+    </div>
+    <div class="rangee rangee--large rangee--start">
+      <div class="cell" style="width: 100%">
+        <span class="cname">Barre de lecture (ici à 40 %)</span>
+        <div class="progress-demo" style="--progress: 0.4">
+          <ReadingProgress />
+        </div>
+      </div>
+      {rituel && (
+        <div class="cell" style="width: 440px; max-width: 100%">
+          <span class="cname">Fiche technique</span>
+          <FactSheet
+            lignes={[
+              { label: pageProjet.fiche.projet, valeur: rituel.data.titre },
+              { label: pageProjet.fiche.type, valeur: rituel.data.categorie },
+              { label: pageProjet.fiche.supports, valeur: rituel.data.supports?.join(', ') },
+              { label: pageProjet.fiche.annee, valeur: rituel.data.annee?.toString() },
+            ]}
+          />
+        </div>
+      )}
+      <div class="cell">
+        <span class="cname">Nuancier</span>
+        <div class="rangee">
+          {paletteRituel?.couleurs.map((c, i) => (
+            <PaintChip nom={c.nom} hex={c.hex} rotate={[-3, 2, -1][i % 3]} />
+          ))}
+        </div>
+      </div>
+      {cartesRituel && (
+        <div class="cell" style="width: 100%">
+          <span class="cname">Éventail de cartes (survolez)</span>
+          <CardFan images={cartesRituel.images} />
+        </div>
+      )}
+      {citationRituel && (
+        <div class="cell" style="width: 100%">
+          <span class="cname">Citation</span>
+          <Quote texte={citationRituel.texte} />
+        </div>
+      )}
+      {rituel && (
+        <div class="cell" style="width: 100%">
+          <span class="cname">Projet suivant</span>
+          <NextProject projet={projetSuivant(projets, rituel)} />
+        </div>
+      )}
+    </div>
+  </section>
+
+  <!-- Blocs -->
+  <section class="sec sec--blocs">
+    <div class="sh">
+      <DymoButton as="span" size="sm" variant="rouille">
+        Blocs · Rituel
+      </DymoButton>
+      <span class="cname">
+        &lt;Blocs&gt; : galerie · cartes · texte (+ palette) · citation · sur-mesure
+      </span>
+    </div>
+    {rituel && <Blocs projet={rituel} />}
+    {rituel && (
+      <div class="sur-mesure-demo">
+        <span class="cname">Bloc sur mesure (src/components/sur-mesure/Exemple.astro)</span>
+        <BlockSurMesure
+          projet={rituel}
+          composant="Exemple"
+          etiquette="06 — Bloc sur mesure"
+          note="un composant propre au projet"
+          donnees={{ exemple: true }}
+        />
+      </div>
+    )}
+  </section>
+
+  <!-- 10 · Formulaire -->
+  <section class="sec">
+    <div class="sh">
+      <DymoButton as="span" size="sm" variant="rouille">
+        10 · Formulaire
+      </DymoButton>
+      <span class="cname">&lt;ContactForm&gt; · &lt;Field&gt; · &lt;SentStamp&gt;</span>
+    </div>
+    <div class="rangee rangee--large-48 rangee--start">
+      <div class="papier etats-champs">
+        <Field id="demo-defaut" name="demo-defaut" label="Défaut" />
+        <Field id="demo-focus" name="demo-focus" label="Focus" value="Jade" class="is-focus" />
+        <Field
+          id="demo-erreur"
+          name="demo-erreur"
+          type="email"
+          label="Erreur"
+          value="jade@"
+          erreur={formulaire.erreurs.email}
+          invalid
+        />
+      </div>
+      <div class="cell">
+        <span class="cname">Tampon « envoyé »</span>
+        <SentStamp tone="moutarde" />
+      </div>
+    </div>
+    <div class="formulaires">
+      <div class="cell">
+        <span class="cname">Formulaire (point d’envoi factice)</span>
+        <ContactForm endpoint="#" />
+      </div>
+      <div class="cell">
+        <span class="cname">État envoyé</span>
+        <ContactForm endpoint="#" etat="envoye" prefixe="envoye-" />
+      </div>
+    </div>
+  </section>
+
+  <!-- 11 · Objets du bureau -->
+  <section class="sec">
+    <div class="sh">
+      <DymoButton as="span" size="sm" variant="rouille">
+        11 · Objets du bureau
+      </DymoButton>
+      <span class="cname">
+        &lt;DecoItem type="crayon | gomme | rouleau | trombone | feuille | feuille-olive"&gt;
+      </span>
+    </div>
+    <div class="rangee rangee--large-48 rangee--centre">
+      <DecoItem type="crayon" />
+      <DecoItem type="gomme" />
+      <DecoItem type="rouleau" />
+      <DecoItem type="trombone" />
+      <DecoItem type="feuille" />
+      <DecoItem type="feuille-olive" />
+      <div class="demo-drop">
+        <StickyNote width="120px" size="20px" rotate={0}>
+          « drop »
+        </StickyNote>
+      </div>
+    </div>
+    <p class="cap">
+      Tous les objets sont décoratifs : aria-hidden, aucun texte important dedans. Ils ont une pose
+      « en désordre » et une pose « rangée » (voir guide).
+    </p>
+  </section>
+
+  <!-- Contenu -->
+  <section class="sec">
+    <div class="sh">
+      <DymoButton as="span" size="sm" variant="rouille">
         Contenu · {deuxChiffres(projets.length)} projets
       </DymoButton>
       <span class="cname">src/content/projets/*.md · src/data/site.ts</span>
@@ -141,7 +615,7 @@ const liensCasses = aPropos.ceQueJeFais.cartes.flatMap((c) =>
         const visuels = d.blocs.flatMap((b) => ('images' in b ? (b.images ?? []) : []));
         const manquants = visuels.filter((v) => !v.src).length;
         return (
-          <article class="fiche">
+          <article class="fiche-contenu">
             <div class="vignette">
               {d.visuelPrincipal?.src ? (
                 <Image src={d.visuelPrincipal.src} alt={d.visuelPrincipal.alt} width={320} />
@@ -219,6 +693,15 @@ const liensCasses = aPropos.ceQueJeFais.cartes.flatMap((c) =>
     border-top: 1px dashed var(--dashed);
   }
 
+  .sec--blocs {
+    padding-inline: 0;
+  }
+
+  .sec--blocs .sh,
+  .sur-mesure-demo {
+    padding-inline: 64px;
+  }
+
   .sh {
     display: flex;
     flex-wrap: wrap;
@@ -234,11 +717,22 @@ const liensCasses = aPropos.ceQueJeFais.cartes.flatMap((c) =>
     color: var(--mustard);
   }
 
+  .cap {
+    margin-top: 22px;
+    font-size: 13px;
+    line-height: 1.45;
+    color: rgba(237, 230, 211, 0.85);
+  }
+
   .cell {
     display: flex;
     flex-direction: column;
     align-items: flex-start;
     gap: 12px;
+  }
+
+  .cell .cap {
+    margin-top: 0;
   }
 
   .rangee {
@@ -251,10 +745,45 @@ const liensCasses = aPropos.ceQueJeFais.cartes.flatMap((c) =>
     gap: 56px;
   }
 
+  .rangee--large-48 {
+    gap: 48px;
+  }
+
+  .rangee--large-22 {
+    gap: 22px;
+  }
+
+  .rangee--start {
+    align-items: flex-start;
+  }
+
+  .rangee--centre {
+    align-items: center;
+  }
+
+  .boite {
+    position: relative;
+  }
+
   .papier {
     padding: 18px;
+    color: var(--ink);
     background: var(--paper);
     --focus-color: var(--rust);
+  }
+
+  .papier-ligne {
+    width: 240px;
+    height: 140px;
+    padding: 14px 18px;
+    color: var(--ink);
+    background-color: var(--paper);
+    background-image: repeating-linear-gradient(
+      180deg,
+      transparent 0 31px,
+      var(--paper-line) 31px 32px
+    );
+    box-shadow: 0 14px 24px rgba(0, 0, 0, 0.35);
   }
 
   .cadre {
@@ -262,6 +791,215 @@ const liensCasses = aPropos.ceQueJeFais.cartes.flatMap((c) =>
     border: 1px dashed rgba(237, 230, 211, 0.35);
   }
 
+  /* 01 · Couleurs */
+  .nuance {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    width: 156px;
+    padding: 8px 8px 12px;
+    color: var(--ink);
+    background: var(--photo);
+    box-shadow: 0 10px 16px rgba(0, 0, 0, 0.3);
+  }
+
+  .nuance-couleur {
+    display: block;
+    height: 76px;
+    box-shadow: inset 0 0 0 1px rgba(0, 0, 0, 0.12);
+  }
+
+  .nuance-nom {
+    font-size: 14px;
+    font-weight: 700;
+  }
+
+  .nuance-meta,
+  .nuance-usage {
+    font-size: 12px;
+    line-height: 1.35;
+    color: var(--ink-soft);
+  }
+
+  /* 02 · Typographie */
+  .typos {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(min(320px, 100%), 1fr));
+    gap: 40px;
+  }
+
+  .label-demo {
+    font-size: 13px;
+    font-weight: 700;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: var(--mustard);
+  }
+
+  /* 03 · Espaces */
+  .espaces-grille {
+    display: grid;
+    grid-template-columns: minmax(0, 420px) minmax(0, 1fr);
+    gap: 56px;
+  }
+
+  .espaces {
+    display: flex;
+    align-items: flex-end;
+    gap: 10px;
+  }
+
+  .espace {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 6px;
+    font-size: 11px;
+  }
+
+  .espace-barre {
+    display: block;
+    width: 22px;
+    background: var(--mustard);
+  }
+
+  .ombre {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 110px;
+    height: 80px;
+    color: var(--ink);
+    background: var(--paper);
+  }
+
+  .tok {
+    display: grid;
+    grid-template-columns: 150px 120px 200px minmax(0, 1fr);
+    align-items: center;
+    gap: 16px;
+    padding: 10px 0;
+    border-bottom: 1px solid rgba(237, 230, 211, 0.15);
+    font-size: 14px;
+  }
+
+  .tok--entete {
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--mustard);
+  }
+
+  .tok-courbe {
+    opacity: 0.85;
+  }
+
+  /* 08 · Projets */
+  .projets-demo {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: flex-start;
+    gap: 56px;
+  }
+
+  .carnet-demo {
+    display: flex;
+    flex: 0 0 360px;
+    max-width: 100%;
+  }
+
+  .carnet-demo :global(.notebook) {
+    position: relative;
+    top: auto;
+    flex: 1 1 100%;
+  }
+
+  .cartes-demo {
+    flex: 1 1 560px;
+    min-width: 0;
+  }
+
+  /* 09 · Page projet */
+  .progress-demo {
+    position: relative;
+    width: 100%;
+    height: 8px;
+  }
+
+  /* 10 · Formulaire */
+  .etats-champs {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 26px;
+    width: 760px;
+    max-width: 100%;
+    padding: 30px 34px;
+  }
+
+  .formulaires {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(min(520px, 100%), 1fr));
+    gap: 56px;
+    margin-top: 56px;
+  }
+
+  /* Démos en boucle */
+  .demo-type :global(.dymo) {
+    animation: demo-type 2.4s steps(20, end) infinite;
+  }
+
+  .demo-stick :global(.washi) {
+    animation: demo-stick 1.8s var(--e-stick) infinite;
+  }
+
+  .demo-drop {
+    animation: demo-drop 1.6s var(--e-drop) infinite;
+  }
+
+  @keyframes demo-type {
+    0% {
+      clip-path: inset(0 100% 0 0);
+    }
+    50%,
+    100% {
+      clip-path: inset(0);
+    }
+  }
+
+  @keyframes demo-stick {
+    0% {
+      opacity: 0;
+      transform: scale(1.7) rotate(var(--r));
+    }
+    30%,
+    100% {
+      opacity: 1;
+      transform: rotate(var(--r));
+    }
+  }
+
+  @keyframes demo-drop {
+    0% {
+      opacity: 0;
+      transform: translateY(-50px) scale(1.3) rotate(-7deg);
+    }
+    35%,
+    100% {
+      opacity: 1;
+      transform: none;
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .demo-type :global(.dymo),
+    .demo-stick :global(.washi),
+    .demo-drop {
+      animation: none;
+    }
+  }
+
+  /* Contenu */
   .alerte {
     margin-bottom: 24px;
     padding: 12px 16px;
@@ -273,11 +1011,11 @@ const liensCasses = aPropos.ceQueJeFais.cartes.flatMap((c) =>
     gap: 32px;
   }
 
-  .fiche {
+  .fiche-contenu {
     display: grid;
     grid-template-columns: 320px minmax(0, 1fr);
-    gap: 32px;
     align-items: start;
+    gap: 32px;
     padding-bottom: 32px;
     border-bottom: 1px dashed var(--dashed);
   }
@@ -331,13 +1069,37 @@ const liensCasses = aPropos.ceQueJeFais.cartes.flatMap((c) =>
     margin: 0;
   }
 
+  @media (max-width: 1099.98px) {
+    .espaces-grille {
+      grid-template-columns: minmax(0, 1fr);
+    }
+
+    .tok {
+      grid-template-columns: 110px 90px minmax(0, 1fr);
+    }
+
+    .tok > :last-child {
+      grid-column: 1 / -1;
+    }
+  }
+
   @media (max-width: 759.98px) {
     .intro,
-    .sec {
+    .sec,
+    .sec--blocs .sh,
+    .sur-mesure-demo {
       padding-inline: 16px;
     }
 
-    .fiche {
+    .sec--blocs {
+      padding-inline: 0;
+    }
+
+    .etats-champs {
+      grid-template-columns: minmax(0, 1fr);
+    }
+
+    .fiche-contenu {
       grid-template-columns: minmax(0, 1fr);
     }
   }
