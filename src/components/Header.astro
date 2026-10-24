@@ -4,6 +4,7 @@
 // Variante minimale (404) : seulement « Jade D. ».
 import DymoButton from './DymoButton.astro';
 import MobileMenu from './MobileMenu.astro';
+import { getProjets, projetHref } from '../data/projets';
 import { menuMobile, navigation, site, type NavId } from '../data/site';
 
 interface Props {
@@ -12,6 +13,7 @@ interface Props {
 }
 
 const { current, variant = 'complet' } = Astro.props;
+const projets = (await getProjets()).map((p) => ({ titre: p.data.titre, href: projetHref(p) }));
 ---
 
 <header class="header">
@@ -49,7 +51,7 @@ const { current, variant = 'complet' } = Astro.props;
     )}
   </div>
 </header>
-{variant === 'complet' && <MobileMenu current={current} />}
+{variant === 'complet' && <MobileMenu current={current} projets={projets} />}
 
 <style>
   .header {

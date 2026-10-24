@@ -1,0 +1,12 @@
+---
+// Repère d'un contenu manquant : visible en développement uniquement, rien en production.
+import { pageProjet } from '../data/site';
+---
+
+{import.meta.env.DEV && <span class="a-completer">{pageProjet.aCompleter}</span>}
+
+<style>
+  .a-completer {
+    color: var(--rust);
+  }
+</style>

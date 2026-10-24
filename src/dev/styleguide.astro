@@ -1,10 +1,20 @@
 ---
 // Styleguide (dev uniquement, injecté par astro.config.ts) : les vrais composants et leurs états,
 // d'après design-reference/Site-Composants.dc.html.
+import { Image } from 'astro:assets';
+import ACompleter from '../components/ACompleter.astro';
 import DymoButton from '../components/DymoButton.astro';
 import Footer from '../components/Footer.astro';
 import Placeholder from '../components/Placeholder.astro';
+import { deuxChiffres, getProjets, projetHref, projetSuivant } from '../data/projets';
+import { aPropos } from '../data/site';
 import Base from '../layouts/Base.astro';
+
+const projets = await getProjets();
+const slugs = new Set(projets.map((p) => p.id));
+const liensCasses = aPropos.ceQueJeFais.cartes.flatMap((c) =>
+  c.projets.filter((slug) => !slugs.has(slug)),
+);
 ---
 
 <Base title="Styleguide — Jade Deschuyteneer">
@@ -114,6 +124,66 @@ import Base from '../layouts/Base.astro';
       </div>
     </div>
   </section>
+
+  <section class="sec">
+    <div class="sh">
+      <DymoButton size="sm" variant="rouille">
+        Contenu · {deuxChiffres(projets.length)} projets
+      </DymoButton>
+      <span class="cname">src/content/projets/*.md · src/data/site.ts</span>
+    </div>
+    {liensCasses.length > 0 && (
+      <p class="alerte">« Ce que je fais » cite des projets inconnus : {liensCasses.join(', ')}</p>
+    )}
+    <div class="projets">
+      {projets.map((p) => {
+        const d = p.data;
+        const visuels = d.blocs.flatMap((b) => ('images' in b ? (b.images ?? []) : []));
+        const manquants = visuels.filter((v) => !v.src).length;
+        return (
+          <article class="fiche">
+            <div class="vignette">
+              {d.visuelPrincipal?.src ? (
+                <Image src={d.visuelPrincipal.src} alt={d.visuelPrincipal.alt} width={320} />
+              ) : (
+                <Placeholder label={d.visuelPrincipal?.alt ?? 'visuel principal'} tone="sombre" />
+              )}
+            </div>
+            <div class="infos">
+              <p class="cname">
+                {deuxChiffres(d.numero)} · {d.titreCourt} → suivant :{' '}
+                {projetSuivant(projets, p).data.titreCourt}
+              </p>
+              <h3 class="stencil">
+                <a href={projetHref(p)}>{d.titre}</a>
+              </h3>
+              <p class="categorie">{d.categorie}</p>
+              <p>{d.resume}</p>
+              <dl>
+                <dt>Année</dt>
+                <dd>{d.annee ?? <ACompleter />}</dd>
+                <dt>Contexte</dt>
+                <dd>{d.contexte ?? <ACompleter />}</dd>
+                <dt>Supports</dt>
+                <dd>{d.supports?.join(', ') ?? <ACompleter />}</dd>
+                <dt>Disciplines</dt>
+                <dd>{d.disciplines?.join(', ') ?? <ACompleter />}</dd>
+                <dt>Outils</dt>
+                <dd>{d.outils?.join(', ') ?? <ACompleter />}</dd>
+                <dt>Vidéo</dt>
+                <dd>{d.video?.mp4 ?? '—'}</dd>
+                <dt>Blocs</dt>
+                <dd>
+                  {d.blocs.map((b) => b.type).join(' · ')} — {visuels.length - manquants} images,{' '}
+                  {manquants} en attente
+                </dd>
+              </dl>
+            </div>
+          </article>
+        );
+      })}
+    </div>
+  </section>
 </Base>
 
 <style>
@@ -192,10 +262,83 @@ import Base from '../layouts/Base.astro';
     border: 1px dashed rgba(237, 230, 211, 0.35);
   }
 
+  .alerte {
+    margin-bottom: 24px;
+    padding: 12px 16px;
+    background: var(--rust);
+  }
+
+  .projets {
+    display: grid;
+    gap: 32px;
+  }
+
+  .fiche {
+    display: grid;
+    grid-template-columns: 320px minmax(0, 1fr);
+    gap: 32px;
+    align-items: start;
+    padding-bottom: 32px;
+    border-bottom: 1px dashed var(--dashed);
+  }
+
+  .vignette :global(img),
+  .vignette :global(.ph) {
+    width: 100%;
+    height: 220px;
+    object-fit: cover;
+    border: 10px solid var(--photo);
+  }
+
+  .infos {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    font-size: 16px;
+    line-height: 1.5;
+  }
+
+  .infos h3 {
+    font-size: 48px;
+    line-height: 0.9;
+  }
+
+  .infos h3 a {
+    text-decoration: none;
+  }
+
+  .categorie {
+    font-size: 13px;
+    font-weight: 700;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: var(--mustard);
+  }
+
+  dl {
+    display: grid;
+    grid-template-columns: 110px minmax(0, 1fr);
+    gap: 2px 12px;
+    margin: 8px 0 0;
+    font-size: 14px;
+  }
+
+  dt {
+    color: var(--mustard);
+  }
+
+  dd {
+    margin: 0;
+  }
+
   @media (max-width: 759.98px) {
     .intro,
     .sec {
       padding-inline: 16px;
+    }
+
+    .fiche {
+      grid-template-columns: minmax(0, 1fr);
     }
   }
 </style>
