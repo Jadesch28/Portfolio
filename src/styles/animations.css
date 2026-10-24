@@ -56,6 +56,14 @@
   animation: anim-fade-up 0.8s ease 0.35s backwards;
 }
 
+/* Retour d'une page projet par une transition : la photo revole à sa place, le reste apparaît
+   d'un simple fondu (pas d'apparitions au scroll pour ce chargement). */
+.js.retour-projet [data-reveal] :is(.rv1, .rv2, .rv3, .rv4) {
+  opacity: 1;
+  clip-path: none;
+  animation: none;
+}
+
 /* ---------- Images clés (état de départ seulement) ---------- */
 
 @keyframes anim-drop {

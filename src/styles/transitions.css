@@ -1,0 +1,174 @@
+/* Transition liste → page projet : View Transitions API entre documents (amélioration progressive).
+   La photo de la carte (projet-<slug>) vole jusqu'au visuel principal de la page projet.
+   Navigateur sans support : navigation normale, les animations d'entrée de la page projet jouent.
+   Chronologie : design-reference/Site-Storyboard.dc.html.
+   L'activation (@view-transition { navigation: auto }) est dans le <head> de layouts/Base.astro :
+   dans une feuille externe, Chrome ne la voit pas toujours au premier rendu de la page d'arrivée. */
+
+@media (prefers-reduced-motion: no-preference) {
+  /* Photo partagée : un seul élément par nom et par page (carte, hero projet, projet suivant) */
+  .vt-photo {
+    view-transition-name: var(--vt);
+    view-transition-class: projet-photo;
+  }
+
+  /* L'en-tête ne bouge pas d'une page à l'autre */
+  .vt-entete {
+    view-transition-name: entete;
+  }
+
+  /* Éléments qui sortent de l'accueil (posés au clic sur une carte, voir scripts/transitions.ts) */
+  .vers-projet .notebook {
+    view-transition-name: carnet;
+  }
+
+  .vers-projet .card.is-leaving .textes {
+    view-transition-name: carte-texte;
+  }
+
+  .vers-projet .card.is-leaving .washi-carte {
+    view-transition-name: carte-washi;
+  }
+
+  /* Racine : l'ancienne page s'efface en 300 ms, la nouvelle apparaît sans animation */
+  ::view-transition-old(root) {
+    animation: vt-fondu-sortie 300ms ease both;
+  }
+
+  ::view-transition-new(root) {
+    animation: none;
+  }
+
+  /* Photo — vol de 200 à 1050 ms : position, taille et rotation, gérées par le groupe */
+  ::view-transition-group(*.projet-photo) {
+    z-index: 10;
+    animation-duration: 850ms;
+    animation-delay: 200ms;
+    animation-timing-function: var(--e-fly);
+  }
+
+  /* Photo — soulèvement de 0 à 260 ms : légère montée en échelle, ombre plus forte */
+  ::view-transition-image-pair(*.projet-photo) {
+    animation: vt-soulever 1050ms cubic-bezier(0.4, 0, 0.2, 1) both;
+  }
+
+  /* Fondu croisé pendant le vol : l'image de la carte reste nette jusqu'à mi-parcours,
+     le temps que l'image (plus grande) de la page projet arrive. */
+  ::view-transition-old(*.projet-photo),
+  ::view-transition-new(*.projet-photo) {
+    height: 100%;
+    object-fit: cover;
+  }
+
+  ::view-transition-old(*.projet-photo) {
+    animation: vt-photo-sortie 850ms linear 200ms both;
+  }
+
+  ::view-transition-new(*.projet-photo) {
+    animation: vt-photo-entree 850ms linear 200ms both;
+  }
+
+  /* Photos sans correspondance (les autres cartes) : simple fondu rapide */
+  ::view-transition-old(*.projet-photo):only-child {
+    animation: vt-fondu-sortie 300ms ease both;
+  }
+
+  ::view-transition-new(*.projet-photo):only-child {
+    animation: vt-fondu-entree 300ms ease both;
+  }
+
+  /* Le scotch de la carte se décolle (0 → 350 ms) */
+  ::view-transition-old(carte-washi) {
+    animation: vt-decoller 350ms ease-in both;
+  }
+
+  /* Le texte de la carte descend et s'efface (0 → 450 ms) */
+  ::view-transition-old(carte-texte) {
+    animation: vt-texte-sortie 450ms var(--e-out) both;
+  }
+
+  /* Le carnet glisse hors champ à gauche (100 → 700 ms) */
+  ::view-transition-old(carnet) {
+    animation: vt-carnet-sortie 600ms var(--e-out) 100ms both;
+  }
+}
+
+/* Mouvement réduit : pas de vol, un simple fondu de 200 ms */
+@media (prefers-reduced-motion: reduce) {
+  ::view-transition-old(root) {
+    animation: vt-fondu-sortie 200ms ease both;
+  }
+
+  ::view-transition-new(root) {
+    animation: none;
+  }
+}
+
+@keyframes vt-fondu-sortie {
+  to {
+    opacity: 0;
+  }
+}
+
+@keyframes vt-fondu-entree {
+  from {
+    opacity: 0;
+  }
+}
+
+/* Ancienne et nouvelle image complémentaires (mélange additif) : la somme reste à 1 */
+@keyframes vt-photo-sortie {
+  0%,
+  50% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 0;
+  }
+}
+
+@keyframes vt-photo-entree {
+  0%,
+  50% {
+    opacity: 0;
+  }
+  100% {
+    opacity: 1;
+  }
+}
+
+@keyframes vt-soulever {
+  0% {
+    transform: none;
+    box-shadow: 0 16px 28px rgba(0, 0, 0, 0.35);
+  }
+  25% {
+    transform: scale(1.05);
+    box-shadow: 0 40px 60px rgba(0, 0, 0, 0.5);
+  }
+  100% {
+    transform: none;
+    box-shadow: 0 16px 28px rgba(0, 0, 0, 0.35);
+  }
+}
+
+@keyframes vt-decoller {
+  to {
+    opacity: 0;
+    transform: translate(30px, -60px) rotate(-70deg);
+  }
+}
+
+@keyframes vt-texte-sortie {
+  to {
+    opacity: 0;
+    transform: translateY(40px);
+  }
+}
+
+@keyframes vt-carnet-sortie {
+  to {
+    opacity: 0;
+    transform: translateX(-130%) rotate(-12deg);
+  }
+}

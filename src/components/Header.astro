@@ -19,7 +19,7 @@ const projets = (await getProjets()).map((p) => ({ titre: p.data.titre, href: pr
 ---
 
 <header class="header">
-  <div class="bar">
+  <div class="bar vt-entete">
     <DymoButton href="/" size="sm" class:list={['marque', { 'marque--desktop': retourMobile }]}>
       {site.nomCourt}
     </DymoButton>

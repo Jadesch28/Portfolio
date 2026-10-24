@@ -3,6 +3,7 @@ import { Font } from 'astro:assets';
 import '../styles/tokens.css';
 import '../styles/base.css';
 import '../styles/animations.css';
+import '../styles/transitions.css';
 import Footer from '../components/Footer.astro';
 import Header from '../components/Header.astro';
 import type { NavId } from '../data/site';
@@ -35,10 +36,45 @@ const canonical = new URL(Astro.url.pathname.replace(/(index)?\.html$/, ''), Ast
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <!-- Les apparitions au scroll ne masquent le contenu que si le JavaScript tourne -->
+    <!-- Les apparitions au scroll ne masquent le contenu que si le JavaScript tourne.
+         pagereveal (juste avant le premier rendu) : d'où vient-on pendant une transition ?
+         - accueil → projet : .from-list cale les entrées de la page projet sur le vol de la photo ;
+         - arrivée sur un projet par transition : .vt-arrivee (le visuel arrive en volant) ;
+         - projet → accueil : .retour-projet (pas d'apparitions, la photo revole à sa place). -->
     <script is:inline>
-      document.documentElement.classList.add('js');
+      (function () {
+        var racine = document.documentElement;
+        racine.classList.add('js');
+        window.addEventListener('load', function () {
+          setTimeout(function () {
+            racine.classList.add('defilement-doux');
+          }, 0);
+        });
+        window.addEventListener('pagereveal', function (event) {
+          racine.classList.remove('vers-projet', 'from-list', 'vt-arrivee', 'retour-projet');
+          if (!event.viewTransition) return;
+          var activation = window.navigation && window.navigation.activation;
+          var depuis = (activation && activation.from && activation.from.url) || document.referrer;
+          if (!depuis) return;
+          var avant = new URL(depuis).pathname.replace(/(index)?\.html$/, '');
+          var ici = location.pathname.replace(/(index)?\.html$/, '');
+          var projet = /^\/projets\//;
+          if (projet.test(ici)) {
+            racine.classList.add('vt-arrivee');
+            if (avant === '/') racine.classList.add('from-list');
+          } else if (ici === '/' && projet.test(avant)) {
+            racine.classList.add('retour-projet');
+          }
+        });
+      })();
     </script>
+    <!-- Activation des transitions entre pages : déclarée dans la page elle-même pour être connue
+         dès le premier rendu (dans une feuille externe, Chrome peut l'ignorer à l'arrivée). -->
+    <style is:inline>
+      @view-transition {
+        navigation: auto;
+      }
+    </style>
     <title>{title}</title>
     {description && <meta name="description" content={description} />}
     <link rel="canonical" href={canonical} />

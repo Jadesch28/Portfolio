@@ -28,14 +28,16 @@ const secondaire = d.visuelSecondaire ?? (import.meta.env.DEV ? { alt: 'visuel 2
 >
   <div class="visuels">
     <a href={href} class="lien-photo rv1" aria-label={`${sectionProjets.ouvrirProjet} ${d.titre}`}>
-      <div class="photo">
+      <div class="photo vt-photo" style={`--vt: projet-${projet.id}`}>
         <Visuel
           visuel={d.visuelPrincipal}
           label={`visuel principal : ${d.titre}`}
           sizes="(max-width: 760px) calc(100vw - 32px), (max-width: 1100px) 50vw, 420px"
         />
       </div>
-      <WashiTape class="washi-mobile" left="40%" top="-10px" width={80} rotate={-3} />
+      <!-- Le scotch qui se décolle au clic (transition vers la page projet) -->
+      <WashiTape class="washi-carte washi-desktop" left="38%" top="-12px" width={110} rotate={-4} />
+      <WashiTape class="washi-carte washi-mobile" left="40%" top="-10px" width={80} rotate={-3} />
     </a>
     {secondaire && (
       <div class="parallaxe" data-parallax="-60">
@@ -65,10 +67,13 @@ const secondaire = d.visuelSecondaire ?? (import.meta.env.DEV ? { alt: 'visuel 2
 
 <script>
   import '../scripts/parallax';
+  import '../scripts/transitions';
 </script>
 
 <style>
   .card {
+    /* Arrivée par une ancre (#projet-x) : sous l'en-tête flottant, carnet calé dessus */
+    scroll-margin-top: 80px;
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(min(320px, 100%), 1fr));
     align-items: center;
@@ -105,6 +110,11 @@ const secondaire = d.visuelSecondaire ?? (import.meta.env.DEV ? { alt: 'visuel 2
 
   .lien-photo :global(.washi-mobile) {
     display: none;
+  }
+
+  /* Le scotch se décolle avec la photo : il reste immobile au survol */
+  .lien-photo :global(.washi-desktop) {
+    z-index: 5;
   }
 
   .parallaxe {
@@ -182,6 +192,10 @@ const secondaire = d.visuelSecondaire ?? (import.meta.env.DEV ? { alt: 'visuel 2
 
     .lien-photo :global(.washi-mobile) {
       display: block;
+    }
+
+    .lien-photo :global(.washi-desktop) {
+      display: none;
     }
 
     .parallaxe {

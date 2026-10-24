@@ -11,8 +11,10 @@ html {
   text-size-adjust: 100%;
 }
 
+/* Défilement doux pour les ancres de la page, activé après le chargement :
+   l'arrivée sur /#projet-x doit être immédiate (la photo y revole pendant la transition). */
 @media (prefers-reduced-motion: no-preference) {
-  html {
+  html.defilement-doux {
     scroll-behavior: smooth;
   }
 }
