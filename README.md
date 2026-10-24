@@ -8,8 +8,8 @@ polaroïds et un carnet à spirale.
   JavaScript vanilla (aucun framework côté navigateur).
 - **Hébergement** : Vercel (offre gratuite Hobby), depuis le dépôt GitHub
   [Jadesch28/Portfolio](https://github.com/Jadesch28/Portfolio).
-- **Maquettes de référence** : `design-reference/` (exports Claude Design) et le brief
-  `PROMPT_CLAUDE_CODE.md`.
+- **Maquettes** : conçues dans Claude Design ; elles ne sont pas dans ce dépôt, qui ne contient
+  que le site.
 
 ## Sommaire
 
@@ -379,7 +379,6 @@ src/
   styles/                  tokens, base, animations, transitions
   dev/                     styleguide et image de partage (développement seulement)
 public/                    vidéos, favicons, image de partage
-design-reference/          maquettes Claude Design (référence visuelle)
 ```
 
 ### Animations et accessibilité

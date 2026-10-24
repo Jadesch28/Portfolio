@@ -14,6 +14,10 @@ node_modules/
 # captures de contrôle (npm run shots)
 .screenshots/
 
+# maquettes Claude Design et brief de développement : gardés en local, hors du dépôt
+design-reference/
+PROMPT_CLAUDE_CODE.md
+
 # divers
 .DS_Store
 npm-debug.log*

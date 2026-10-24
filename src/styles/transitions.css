@@ -1,7 +1,7 @@
 /* Transition liste → page projet : View Transitions API entre documents (amélioration progressive).
    La photo de la carte (projet-<slug>) vole jusqu'au visuel principal de la page projet.
    Navigateur sans support : navigation normale, les animations d'entrée de la page projet jouent.
-   Chronologie : design-reference/Site-Storyboard.dc.html.
+   Chronologie : storyboard de la transition (maquettes Claude Design).
    L'activation (@view-transition { navigation: auto }) est dans le <head> de layouts/Base.astro :
    dans une feuille externe, Chrome ne la voit pas toujours au premier rendu de la page d'arrivée. */
 
