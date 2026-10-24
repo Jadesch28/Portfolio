@@ -1,0 +1,582 @@
+---
+import ACompleter from '../components/ACompleter.astro';
+import DymoButton from '../components/DymoButton.astro';
+import Polaroid from '../components/Polaroid.astro';
+import StickyNote from '../components/StickyNote.astro';
+import WashiTape from '../components/WashiTape.astro';
+import { getProjets, projetHref } from '../data/projets';
+import { aPropos, contactCourt, photos, site } from '../data/site';
+import Base from '../layouts/Base.astro';
+
+const projets = await getProjets();
+const parSlug = new Map(projets.map((p) => [p.id, p]));
+const cartes = aPropos.ceQueJeFais.cartes.map((carte, i) => ({
+  ...carte,
+  rotation: [-1.5, 1, -0.5][i % 3],
+  liens: carte.projets.flatMap((slug) => {
+    const p = parSlug.get(slug);
+    return p ? [{ titre: p.data.titre, href: projetHref(p) }] : [];
+  }),
+}));
+
+// Bio : les passages entre ==…== deviennent des <mark> surlignés.
+const segments = (paragraphe: string) =>
+  paragraphe
+    .split(/(==[^=]+==)/)
+    .map((morceau) =>
+      morceau.startsWith('==')
+        ? { texte: morceau.slice(2, -2), mark: true }
+        : { texte: morceau, mark: false },
+    );
+---
+
+<Base
+  title={`À propos — ${site.nom}`}
+  description={aPropos.bio[0]?.replaceAll('==', '')}
+  current="a-propos"
+>
+  <section class="hero">
+    <div class="wrap hero-inner">
+      <div class="hero-texte">
+        <DymoButton as="span">{aPropos.etiquette}</DymoButton>
+        <h1>
+          <span class="stencil salut">{aPropos.salut}</span>
+          <span class="hand moi">{aPropos.moi}</span>
+        </h1>
+        <div class="etiquettes">
+          <DymoButton as="span" size="sm" variant="rouille">
+            {site.age}
+          </DymoButton>
+          <DymoButton as="span" size="sm">
+            {aPropos.role}
+          </DymoButton>
+        </div>
+      </div>
+      <div class="hero-photo">
+        <div class="photo-cadre">
+          <Polaroid
+            visuel={photos.portrait}
+            width="400px"
+            photoHeight="440px"
+            rotate={3}
+            frame="grand"
+            widthMobile="300px"
+            photoHeightMobile="330px"
+            sizes="(max-width: 760px) 300px, 400px"
+            priority
+          />
+          <WashiTape left="34%" top="-12px" width={130} rotate={-4} />
+          <div class="post-it">
+            <StickyNote width="180px" size="22px" rotate={-8} lifted>
+              {aPropos.postIt}
+            </StickyNote>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="sec">
+    <div class="wrap wrap--bio">
+      <div class="bio">
+        <WashiTape color="sauge" left="44%" top="-12px" width={120} rotate={3} />
+        {aPropos.bio.map((paragraphe) => (
+          <p>{segments(paragraphe).map((s) => (s.mark ? <mark>{s.texte}</mark> : s.texte))}</p>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <section class="sec" aria-labelledby="ce-que-je-fais">
+    <div class="wrap">
+      <div class="titre-section">
+        <h2 id="ce-que-je-fais">
+          <DymoButton as="span" variant="rouille">
+            {aPropos.ceQueJeFais.titre}
+          </DymoButton>
+        </h2>
+        <p class="hand note">{aPropos.ceQueJeFais.note}</p>
+      </div>
+      <div class="competences">
+        {cartes.map((c) => (
+          <article class="competence" style={`--r: ${c.rotation}deg`}>
+            <WashiTape left="40%" top="-12px" width={90} rotate={-4} />
+            <h3 class="stencil">{c.titre}</h3>
+            <p>{c.texte}</p>
+            <p class="lies">{aPropos.ceQueJeFais.projetsLies}</p>
+            <ul>
+              {c.liens.map((l) => (
+                <li>
+                  <DymoButton href={l.href} size="sm" variant="ghost-encre">
+                    {l.titre}
+                  </DymoButton>
+                </li>
+              ))}
+            </ul>
+          </article>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <section class="sec" aria-labelledby="parcours">
+    <div class="wrap">
+      <div class="titre-section">
+        <h2 id="parcours">
+          <DymoButton as="span" variant="rouille">
+            {aPropos.parcours.titre}
+          </DymoButton>
+        </h2>
+        <p class="hand note">{aPropos.parcours.note}</p>
+      </div>
+      <div class="regle">
+        <span class="graduations" aria-hidden="true"></span>
+        <ol class="etapes">
+          {aPropos.parcours.etapes.map((e) => (
+            <li class="etape">
+              {e.annee ? (
+                <span class="stencil annee">{e.annee}</span>
+              ) : (
+                import.meta.env.DEV && (
+                  <span class="annee annee--vide">
+                    <ACompleter />
+                  </span>
+                )
+              )}
+              <span class="ecole">{e.ecole}</span>
+              <span>
+                {e.diplome} · {e.detail}
+              </span>
+            </li>
+          ))}
+        </ol>
+      </div>
+    </div>
+  </section>
+
+  <section class="sec">
+    <div class="wrap outils">
+      <div class="groupe">
+        <h2>
+          <DymoButton as="span" variant="rouille">
+            {aPropos.logiciels.titre}
+          </DymoButton>
+        </h2>
+        <ul class="tags">
+          {aPropos.logiciels.liste.map((l) => (
+            <li>
+              <DymoButton as="span" size="sm">
+                {l}
+              </DymoButton>
+            </li>
+          ))}
+        </ul>
+      </div>
+      <div class="groupe">
+        <h2>
+          <DymoButton as="span" variant="rouille">
+            {aPropos.langues.titre}
+          </DymoButton>
+        </h2>
+        <ul class="tags">
+          {aPropos.langues.liste.map((l) => (
+            <li>
+              <DymoButton as="span" size="sm" variant="ghost">
+                {l.langue}
+                {l.niveau && ` · ${l.niveau}`}
+              </DymoButton>
+              {!l.niveau && <ACompleter />}
+            </li>
+          ))}
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <section class="sec sec--cta">
+    <div class="wrap cta">
+      <h2 class="hand">{contactCourt.phrase}</h2>
+      <div class="liens">
+        <DymoButton href="/contact" variant="rouille">
+          {contactCourt.bouton}
+        </DymoButton>
+        <DymoButton href="/#projets">{aPropos.voirProjets}</DymoButton>
+      </div>
+    </div>
+  </section>
+</Base>
+
+<style>
+  .wrap {
+    max-width: var(--container);
+    margin: 0 auto;
+  }
+
+  .sec {
+    position: relative;
+    padding: 90px var(--gutter);
+  }
+
+  h2 {
+    font: inherit;
+  }
+
+  .titre-section {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: baseline;
+    gap: 18px;
+    margin-bottom: 44px;
+  }
+
+  .note {
+    font-size: 26px;
+    line-height: 1.2;
+    color: var(--mustard);
+  }
+
+  /* Hero */
+  .hero {
+    position: relative;
+    min-height: 820px;
+    padding: 130px var(--gutter) 70px;
+  }
+
+  .hero-inner {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: 56px;
+  }
+
+  .hero-texte {
+    display: flex;
+    flex: 1 1 460px;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 18px;
+    min-width: 0;
+  }
+
+  h1 {
+    display: flex;
+    flex-direction: column;
+  }
+
+  .salut {
+    font-size: clamp(110px, 13vw, 200px);
+    line-height: 0.8;
+  }
+
+  .moi {
+    font-size: clamp(56px, 6vw, 92px);
+    font-weight: 400;
+    line-height: 1;
+    color: var(--mustard);
+  }
+
+  .etiquettes {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+  }
+
+  .hero-photo {
+    display: flex;
+    flex: 0 1 460px;
+    justify-content: center;
+  }
+
+  .photo-cadre {
+    position: relative;
+    max-width: 100%;
+  }
+
+  .post-it {
+    position: absolute;
+    left: -60px;
+    bottom: -30px;
+    z-index: 5;
+  }
+
+  /* Bio sur papier ligné */
+  .wrap--bio {
+    max-width: 980px;
+  }
+
+  .bio {
+    position: relative;
+    padding: 34px 40px 30px;
+    color: var(--ink);
+    background-color: var(--paper);
+    background-image:
+      linear-gradient(90deg, transparent 22px, var(--paper-margin) 22px 24px, transparent 24px),
+      repeating-linear-gradient(180deg, transparent 0 33px, var(--paper-line) 33px 34px);
+    background-position:
+      0 0,
+      0 24px;
+    box-shadow: 0 18px 30px rgba(0, 0, 0, 0.35);
+    transform: rotate(-0.6deg);
+  }
+
+  .bio p {
+    margin-left: 20px;
+    font-size: 21px;
+    line-height: 34px;
+  }
+
+  .bio p + p {
+    margin-top: 34px;
+  }
+
+  /* Surligneur : plein par défaut, animé au scroll quand le JS est là (étape animations) */
+  mark {
+    color: inherit;
+    background-color: transparent;
+    background-image: linear-gradient(rgba(226, 182, 85, 0.75), rgba(226, 182, 85, 0.75));
+    background-repeat: no-repeat;
+    background-position: 0 70%;
+    background-size: 100% 62%;
+  }
+
+  /* Ce que je fais */
+  .competences {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(min(320px, 100%), 1fr));
+    gap: 36px;
+  }
+
+  .competence {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+    padding: 28px 28px 26px;
+    color: var(--ink);
+    background: var(--paper);
+    box-shadow: var(--sh-md);
+    transform: rotate(var(--r));
+    transition: transform 0.35s var(--e-lift);
+    --focus-color: var(--rust);
+  }
+
+  .competence:hover {
+    transform: translateY(-8px) rotate(0deg);
+  }
+
+  .competence h3 {
+    font-size: 54px;
+    line-height: 0.9;
+    color: var(--mat);
+  }
+
+  .competence p {
+    font-size: 17px;
+    line-height: 1.55;
+  }
+
+  .competence .lies {
+    margin-top: 6px;
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--ink-soft);
+  }
+
+  .competence ul,
+  .tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  /* Parcours sur une règle ambrée */
+  .regle {
+    position: relative;
+    padding: 44px 30px 30px;
+    border: 1.5px solid var(--amber-border);
+    border-radius: 10px;
+    background: var(--amber);
+    box-shadow: 0 14px 22px rgba(0, 0, 0, 0.35);
+  }
+
+  .graduations {
+    position: absolute;
+    left: 20px;
+    right: 20px;
+    top: 0;
+    height: 20px;
+    background-image:
+      repeating-linear-gradient(90deg, rgba(70, 35, 5, 0.7) 0 1px, transparent 1px 9.5px),
+      repeating-linear-gradient(90deg, rgba(70, 35, 5, 0.75) 0 1.5px, transparent 1.5px 95px);
+    background-size:
+      100% 10px,
+      100% 20px;
+    background-repeat: no-repeat;
+  }
+
+  .etapes {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(min(220px, 100%), 1fr));
+    gap: 22px;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  .etape {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    padding: 16px 18px;
+    color: var(--ink);
+    background: var(--paper);
+    box-shadow: 0 6px 10px rgba(0, 0, 0, 0.2);
+    font-size: 16px;
+    line-height: 1.4;
+  }
+
+  .annee {
+    font-size: 30px;
+    line-height: 1.1;
+    color: var(--rust);
+  }
+
+  .annee--vide {
+    font-size: 16px;
+  }
+
+  .ecole {
+    font-weight: 700;
+  }
+
+  /* Logiciels & langues */
+  .outils {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(min(420px, 100%), 1fr));
+    gap: 56px;
+  }
+
+  .groupe {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 20px;
+  }
+
+  .tags li {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  /* Appel à l'action */
+  .sec--cta {
+    padding-bottom: 110px;
+  }
+
+  .cta {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 26px;
+  }
+
+  .cta h2 {
+    max-width: 900px;
+    font-family: var(--f-hand);
+    font-size: clamp(44px, 5.4vw, 78px);
+    line-height: 1;
+  }
+
+  .liens {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .competence {
+      transition: none;
+    }
+  }
+
+  @media (max-width: 759.98px) {
+    .sec {
+      padding: 40px 16px;
+    }
+
+    .hero {
+      min-height: 0;
+      padding: 20px 16px 60px;
+    }
+
+    .hero-inner {
+      gap: 40px;
+    }
+
+    .hero-texte,
+    .hero-photo {
+      flex: 1 1 100%;
+    }
+
+    .post-it {
+      left: -10px;
+      bottom: -40px;
+    }
+
+    .post-it :global(.sticky) {
+      --w: 150px;
+      --fs: 18px;
+    }
+
+    .titre-section {
+      margin-bottom: 24px;
+    }
+
+    .note {
+      font-size: 20px;
+    }
+
+    .bio {
+      padding: 26px 18px 24px 26px;
+      background-image:
+        linear-gradient(90deg, transparent 14px, var(--paper-margin) 14px 16px, transparent 16px),
+        repeating-linear-gradient(180deg, transparent 0 29px, var(--paper-line) 29px 30px);
+      background-position:
+        0 0,
+        0 20px;
+    }
+
+    .bio p {
+      margin-left: 8px;
+      font-size: 17px;
+      line-height: 30px;
+    }
+
+    .bio p + p {
+      margin-top: 30px;
+    }
+
+    .competence h3 {
+      font-size: 44px;
+    }
+
+    .regle {
+      padding: 36px 16px 18px;
+    }
+
+    .outils {
+      gap: 36px;
+    }
+
+    .cta h2 {
+      font-size: 42px;
+    }
+  }
+</style>

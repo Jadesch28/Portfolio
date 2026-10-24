@@ -14,6 +14,10 @@ interface Props {
   width?: string;
   /** Hauteur de la photo (longueur CSS). */
   photoHeight?: string;
+  /** Tailles et rotation sous 760 px (par défaut : celles du desktop). */
+  widthMobile?: string;
+  photoHeightMobile?: string;
+  rotateMobile?: number;
   /** Épaisseur du bord et hauteur du bas. */
   frame?: 'petit' | 'moyen' | 'grand';
   tone?: 'clair' | 'sombre';
@@ -29,6 +33,9 @@ const {
   rotate = -3,
   width = '220px',
   photoHeight = '190px',
+  widthMobile,
+  photoHeightMobile,
+  rotateMobile,
   frame = 'moyen',
   tone = 'clair',
   sizes = '320px',
@@ -39,7 +46,16 @@ const {
 
 <figure
   class:list={['polaroid', `polaroid--${frame}`, className]}
-  style={`--w: ${width}; --ph: ${photoHeight}; --r: ${rotate}deg`}
+  style={[
+    `--w: ${width}`,
+    `--ph: ${photoHeight}`,
+    `--r: ${rotate}deg`,
+    widthMobile && `--w-m: ${widthMobile}`,
+    photoHeightMobile && `--ph-m: ${photoHeightMobile}`,
+    rotateMobile !== undefined && `--r-m: ${rotateMobile}deg`,
+  ]
+    .filter(Boolean)
+    .join('; ')}
 >
   <div class="photo">
     <Visuel
@@ -96,5 +112,25 @@ const {
     left: 24px;
     bottom: 16px;
     font-size: 26px;
+  }
+
+  @media (max-width: 759.98px) {
+    .polaroid {
+      width: var(--w-m, var(--w));
+      transform: rotate(var(--r-m, var(--r)));
+    }
+
+    .photo {
+      height: var(--ph-m, var(--ph));
+    }
+
+    .polaroid--petit {
+      padding: 8px 8px 24px;
+    }
+
+    .polaroid--grand {
+      padding: 12px 12px 46px;
+      box-shadow: 0 14px 22px rgba(0, 0, 0, 0.35);
+    }
   }
 </style>

@@ -91,7 +91,7 @@ const mailto = `mailto:${site.email}`;
         </p>
         <div class="pied">
           <p class="obligatoires">{formulaire.obligatoires}</p>
-          <DymoButton type="submit" variant="rouille" data-envoyer>
+          <DymoButton type="submit" variant="rouille" data-envoyer data-envoi={formulaire.envoi}>
             {formulaire.envoyer}
           </DymoButton>
         </div>
@@ -115,6 +115,10 @@ const mailto = `mailto:${site.email}`;
     </div>
   )}
 </div>
+
+<script>
+  import '../scripts/contact-form';
+</script>
 
 <style>
   .nb {

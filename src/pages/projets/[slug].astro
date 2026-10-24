@@ -1,0 +1,402 @@
+---
+// Page projet générique : hero, « Le projet » + fiche technique, blocs du projet, projet suivant.
+// Un projet peut ajouter ses propres sections avec des blocs « sur-mesure » (voir Blocs.astro).
+import { render } from 'astro:content';
+import Blocs from '../../components/blocs/Blocs.astro';
+import DymoButton from '../../components/DymoButton.astro';
+import FactSheet from '../../components/FactSheet.astro';
+import NextProject from '../../components/NextProject.astro';
+import Polaroid from '../../components/Polaroid.astro';
+import ProjectVideo from '../../components/ProjectVideo.astro';
+import ReadingProgress from '../../components/ReadingProgress.astro';
+import Visuel from '../../components/Visuel.astro';
+import WashiTape from '../../components/WashiTape.astro';
+import { deuxChiffres, getProjets, projetSuivant, type Projet } from '../../data/projets';
+import { pageProjet, site } from '../../data/site';
+import Base from '../../layouts/Base.astro';
+
+export async function getStaticPaths() {
+  const projets = await getProjets();
+  return projets.map((projet) => ({ params: { slug: projet.id }, props: { projet } }));
+}
+
+interface Props {
+  projet: Projet;
+}
+
+const { projet } = Astro.props;
+const d = projet.data;
+const projets = await getProjets();
+const { Content } = await render(projet);
+const retour = `/#projet-${projet.id}`;
+const detail = d.visuelSecondaire ?? (import.meta.env.DEV ? { alt: 'détail' } : undefined);
+// Longueur du mot le plus long : règle la taille du titre pour qu'il tienne dans sa colonne.
+// Un mot court peut déborder sous le visuel (comme RITUEL dans la maquette), un mot long non.
+const motLePlusLong = Math.max(...d.titre.split(/\s+/).map((mot) => mot.length));
+const debord = motLePlusLong <= 6 ? 2.5 : 2.1;
+const f = pageProjet.fiche;
+---
+
+<Base
+  title={`${d.titre} — ${site.nom}`}
+  description={d.resume}
+  retourMobile={{ href: retour, label: pageProjet.retourCourt }}
+>
+  <ReadingProgress />
+
+  <section class="hero">
+    <div class="hero-inner">
+      <div class="hero-texte">
+        <div class="etiquettes">
+          <DymoButton href={retour} size="sm" variant="ghost" class="retour">
+            {pageProjet.retour}
+          </DymoButton>
+          <DymoButton as="span" size="sm">
+            {`${pageProjet.projet} ${deuxChiffres(d.numero)} / ${deuxChiffres(projets.length)}`}
+          </DymoButton>
+        </div>
+        <h1 class="stencil titre" style={`--len: ${motLePlusLong}; --k: ${debord}`}>
+          {d.titre}
+        </h1>
+        <p class="categorie">{d.categorie}</p>
+        <p class="intro">{d.intro}</p>
+        {d.annotation && <p class="hand annotation">{d.annotation}</p>}
+      </div>
+
+      <div class="hero-visuel">
+        <div class="cadre">
+          {d.video ? (
+            <ProjectVideo
+              mp4={d.video.mp4}
+              webm={d.video.webm}
+              poster={d.video.poster ?? d.visuelPrincipal?.src}
+              label={d.visuelPrincipal?.alt ?? d.titre}
+            />
+          ) : (
+            <Visuel
+              visuel={d.visuelPrincipal}
+              label={`visuel principal : ${d.titre}`}
+              sizes="(max-width: 760px) calc(100vw - 32px), 760px"
+              widths={[640, 960, 1280, 1600]}
+              priority
+            />
+          )}
+        </div>
+        <WashiTape class="w1" left="-24px" top="18px" width={120} rotate={-36} />
+        <WashiTape class="w2" color="sauge" right="-26px" top="14px" width={120} rotate={34} />
+        <WashiTape class="w3" right="60px" bottom="-12px" width={110} rotate={-6} />
+        {detail && (
+          <div class="detail">
+            <Polaroid
+              visuel={detail}
+              tone="sombre"
+              width="190px"
+              photoHeight="150px"
+              widthMobile="120px"
+              photoHeightMobile="90px"
+              rotate={-7}
+              frame="petit"
+              sizes="190px"
+            />
+          </div>
+        )}
+      </div>
+    </div>
+  </section>
+
+  <section class="sec">
+    <div class="wrap le-projet">
+      <div class="presentation">
+        <h2>
+          <DymoButton as="span">{pageProjet.leProjet}</DymoButton>
+        </h2>
+        <div class="contenu">
+          <Content />
+        </div>
+      </div>
+      <div class="fiche">
+        <FactSheet
+          lignes={[
+            { label: f.projet, valeur: d.titre },
+            { label: f.type, valeur: d.categorie },
+            { label: f.supports, valeur: d.supports?.join(', ') },
+            { label: f.disciplines, valeur: d.disciplines?.join(', ') },
+            { label: f.annee, valeur: d.annee?.toString() },
+            { label: f.contexte, valeur: d.contexte },
+            { label: f.outils, valeur: d.outils?.join(', ') },
+          ]}
+        />
+      </div>
+    </div>
+  </section>
+
+  <Blocs projet={projet} />
+
+  <section class="sec sec--suivant">
+    <div class="wrap">
+      <NextProject projet={projetSuivant(projets, projet)} />
+    </div>
+  </section>
+</Base>
+
+<style>
+  .hero {
+    position: relative;
+    min-height: 900px;
+    padding: 120px var(--gutter) 60px;
+  }
+
+  .hero-inner {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 48px;
+    max-width: var(--container);
+    margin: 0 auto;
+    container-type: inline-size;
+  }
+
+  .hero-texte {
+    display: flex;
+    flex: 1 1 380px;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 20px;
+    min-width: 0;
+    container-type: inline-size;
+  }
+
+  .etiquettes {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+  }
+
+  /* Le titre peut déborder un peu sous le visuel, comme dans la maquette (RITUEL) */
+  .titre {
+    font-size: min(clamp(110px, 14vw, 210px), 100cqi * var(--k) / var(--len));
+    line-height: 0.8;
+    letter-spacing: 0.02em;
+    text-transform: uppercase;
+    overflow-wrap: normal;
+  }
+
+  .categorie {
+    font-size: 16px;
+    font-weight: 700;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: var(--mustard);
+  }
+
+  .intro {
+    max-width: 470px;
+    font-size: 21px;
+    line-height: 1.55;
+  }
+
+  .annotation {
+    font-size: 28px;
+    line-height: 1.2;
+    color: var(--mustard);
+  }
+
+  .hero-visuel {
+    position: relative;
+    flex: 1 1 640px;
+    min-width: 0;
+  }
+
+  .cadre {
+    height: 560px;
+    border: 12px solid var(--photo);
+    background: var(--photo);
+    box-shadow: 0 16px 28px rgba(0, 0, 0, 0.35);
+    transform: rotate(1.2deg);
+  }
+
+  .detail {
+    position: absolute;
+    left: -40px;
+    bottom: -50px;
+    z-index: 5;
+  }
+
+  .detail :global(.polaroid) {
+    box-shadow: 0 14px 24px rgba(0, 0, 0, 0.4);
+  }
+
+  /* Le projet */
+  .sec {
+    position: relative;
+    padding: 90px var(--gutter);
+  }
+
+  .sec--suivant {
+    border-top: 1px dashed var(--dashed);
+  }
+
+  .wrap {
+    max-width: var(--container);
+    margin: 0 auto;
+  }
+
+  .le-projet {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: flex-start;
+    gap: 64px;
+  }
+
+  .presentation {
+    display: flex;
+    flex: 1 1 520px;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 22px;
+    min-width: 0;
+  }
+
+  .presentation h2 {
+    font: inherit;
+  }
+
+  .contenu {
+    display: flex;
+    flex-direction: column;
+    gap: 22px;
+  }
+
+  .contenu :global(p) {
+    font-size: 18px;
+    line-height: 1.7;
+    opacity: 0.92;
+  }
+
+  /* Chapô */
+  .contenu :global(p:first-child) {
+    font-size: 26px;
+    line-height: 1.5;
+    opacity: 1;
+  }
+
+  .fiche {
+    flex: 0 1 440px;
+    min-width: 0;
+  }
+
+  @media (max-width: 759.98px) {
+    .hero {
+      min-height: 0;
+      padding: 20px 16px 30px;
+    }
+
+    /* Ordre mobile : étiquette → titre → catégorie → visuel → intro */
+    .hero-inner {
+      flex-direction: column;
+      align-items: stretch;
+      gap: 14px;
+    }
+
+    .hero-texte {
+      display: contents;
+    }
+
+    .etiquettes {
+      order: 1;
+    }
+
+    .etiquettes :global(.retour) {
+      display: none;
+    }
+
+    .titre {
+      order: 2;
+      font-size: min(124px, 100cqi * 1.9 / var(--len));
+    }
+
+    .categorie {
+      order: 3;
+      font-size: 14px;
+      letter-spacing: 0.14em;
+    }
+
+    .hero-visuel {
+      order: 4;
+      flex: none;
+      margin-top: 14px;
+    }
+
+    .intro {
+      order: 5;
+      margin-top: 40px;
+      font-size: 19px;
+    }
+
+    .annotation {
+      order: 6;
+      font-size: 24px;
+    }
+
+    .cadre {
+      height: 300px;
+      border-width: 10px;
+      box-shadow: 0 14px 22px rgba(0, 0, 0, 0.35);
+    }
+
+    .hero-visuel :global(.washi) {
+      width: 80px !important;
+    }
+
+    .hero-visuel :global(.w1) {
+      left: -14px !important;
+      top: 14px !important;
+    }
+
+    .hero-visuel :global(.w2) {
+      right: -16px !important;
+      top: 12px !important;
+    }
+
+    .hero-visuel :global(.w3) {
+      display: none;
+    }
+
+    .detail {
+      left: -8px;
+      bottom: -36px;
+    }
+
+    .detail :global(.polaroid) {
+      box-shadow: 0 10px 16px rgba(0, 0, 0, 0.4);
+    }
+
+    .sec {
+      padding: 40px 16px;
+    }
+
+    .le-projet {
+      gap: 26px;
+    }
+
+    .presentation {
+      flex: 1 1 100%;
+      gap: 16px;
+    }
+
+    .contenu {
+      gap: 16px;
+    }
+
+    .contenu :global(p),
+    .contenu :global(p:first-child) {
+      font-size: 17px;
+      line-height: 1.6;
+      opacity: 1;
+    }
+
+    .fiche {
+      flex: 1 1 100%;
+    }
+  }
+</style>

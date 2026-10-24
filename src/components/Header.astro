@@ -2,6 +2,7 @@
 // En-tête : étiquettes Dymo flottantes sur le tapis (sticky, hauteur 0).
 // < 760 px : « Jade D. » + « Menu ☰ » dans le flux, qui ouvre le MobileMenu.
 // Variante minimale (404) : seulement « Jade D. ».
+// `retourMobile` remplace « Jade D. » sous 760 px (page projet : « ← Établi »).
 import DymoButton from './DymoButton.astro';
 import MobileMenu from './MobileMenu.astro';
 import { getProjets, projetHref } from '../data/projets';
@@ -10,17 +11,23 @@ import { menuMobile, navigation, site, type NavId } from '../data/site';
 interface Props {
   current?: NavId;
   variant?: 'complet' | 'minimal';
+  retourMobile?: { href: string; label: string };
 }
 
-const { current, variant = 'complet' } = Astro.props;
+const { current, variant = 'complet', retourMobile } = Astro.props;
 const projets = (await getProjets()).map((p) => ({ titre: p.data.titre, href: projetHref(p) }));
 ---
 
 <header class="header">
   <div class="bar">
-    <DymoButton href="/" size="sm">
+    <DymoButton href="/" size="sm" class:list={['marque', { 'marque--desktop': retourMobile }]}>
       {site.nomCourt}
     </DymoButton>
+    {retourMobile && (
+      <DymoButton href={retourMobile.href} size="sm" variant="ghost" class="retour-mobile">
+        {retourMobile.label}
+      </DymoButton>
+    )}
     {variant === 'complet' && (
       <>
         <nav class="nav" aria-label="Navigation principale">
@@ -80,7 +87,8 @@ const projets = (await getProjets()).map((p) => ({ titre: p.data.titre, href: pr
     gap: 10px;
   }
 
-  .menu-btn {
+  .menu-btn,
+  .bar :global(.retour-mobile) {
     display: none;
   }
 
@@ -101,6 +109,14 @@ const projets = (await getProjets()).map((p) => ({ titre: p.data.titre, href: pr
 
     .menu-btn {
       display: contents;
+    }
+
+    .bar :global(.marque--desktop) {
+      display: none;
+    }
+
+    .bar :global(.retour-mobile) {
+      display: inline-flex;
     }
   }
 </style>

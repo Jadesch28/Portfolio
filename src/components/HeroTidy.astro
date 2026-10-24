@@ -1,0 +1,392 @@
+---
+// Hero de l'accueil : le bureau en désordre qui se range au fil du scroll.
+// Chaque objet porte sa pose « désordre » (x0, y0, r0) et « rangée » (x1, y1, r1), en % de la scène.
+// Sans JavaScript : désordre ; avec prefers-reduced-motion : rangé ; < 760 px : scène empilée.
+// La progression au scroll est pilotée par scripts/hero-tidy.ts (variables --x, --y, --r, --s).
+import { hero, photos } from '../data/site';
+import DecoItem from './DecoItem.astro';
+import DymoButton from './DymoButton.astro';
+import FlipPhoto from './FlipPhoto.astro';
+import RulerNumbers from './RulerNumbers.astro';
+import StencilRuler from './StencilRuler.astro';
+import StickyNote from './StickyNote.astro';
+
+type Pose = { x: number; y: number; r: number };
+type Objet = {
+  id: string;
+  type: 'crayon' | 'rouleau' | 'gomme' | 'post-it' | 'trombone' | 'feuille' | 'feuille-olive';
+  s0: Pose;
+  s1: Pose;
+};
+
+// Ordre = index de décalage (0,03 de progression par objet).
+const objets: Objet[] = [
+  { id: 'crayon', type: 'crayon', s0: { x: 60, y: 90, r: -12 }, s1: { x: 67, y: 92, r: 0 } },
+  { id: 'rouleau', type: 'rouleau', s0: { x: 91, y: 36, r: 0 }, s1: { x: 88.5, y: 24, r: 0 } },
+  { id: 'gomme', type: 'gomme', s0: { x: 55, y: 79, r: 24 }, s1: { x: 88.5, y: 42, r: 0 } },
+  { id: 'post-it', type: 'post-it', s0: { x: 92, y: 73, r: 9 }, s1: { x: 88.5, y: 61, r: 0 } },
+  { id: 'trombone', type: 'trombone', s0: { x: 82, y: 20, r: 50 }, s1: { x: 88.5, y: 80, r: 0 } },
+  { id: 'feuille', type: 'feuille', s0: { x: 52, y: 30, r: 30 }, s1: { x: 60, y: 12.5, r: 0 } },
+  {
+    id: 'feuille-olive',
+    type: 'feuille-olive',
+    s0: { x: 84, y: 88, r: -40 },
+    s1: { x: 74, y: 12.5, r: 0 },
+  },
+];
+const portrait = { s0: { x: 67, y: 52, r: -4 }, s1: { x: 67, y: 51, r: 0 } };
+
+const poses = (o: { s0: Pose; s1: Pose }) =>
+  `--x0: ${o.s0.x}; --y0: ${o.s0.y}; --r0: ${o.s0.r}; --x1: ${o.s1.x}; --y1: ${o.s1.y}; --r1: ${o.s1.r}`;
+---
+
+<section class="scene" data-hero-tidy>
+  <div class="stage">
+    <RulerNumbers />
+
+    <div class="texte">
+      <div class="h-regle">
+        <StencilRuler
+          as="h1"
+          title={hero.prenom}
+          subtitle={hero.nom}
+          size="clamp(96px, 10.4vw, 150px)"
+          width="540px"
+          class="regle"
+        />
+      </div>
+      <div class="h-roles">
+        <DymoButton as="span">{hero.role}</DymoButton>
+        <DymoButton as="span" variant="rouille">
+          {hero.roleSuite}
+        </DymoButton>
+      </div>
+      <p class="h-paragraphe">{hero.texte}</p>
+      <div class="h-boutons">
+        <DymoButton href="#projets" variant="rouille">
+          {hero.boutonProjets}
+        </DymoButton>
+        <DymoButton href="/a-propos">{hero.boutonAPropos}</DymoButton>
+      </div>
+    </div>
+
+    {objets.map((o, i) => (
+      <div class="ko deco-o" style={`${poses(o)}; --i: ${i}`} data-objet={o.id}>
+        {o.type === 'post-it' ? (
+          <div class="lift">
+            <StickyNote width="130px" size="24px" rotate={0}>
+              {hero.postIt[0]}
+              <br />
+              {hero.postIt[1]}
+            </StickyNote>
+          </div>
+        ) : (
+          <DecoItem type={o.type} lift />
+        )}
+      </div>
+    ))}
+
+    <div class="ko ko--portrait" style={poses(portrait)} data-objet="portrait">
+      <FlipPhoto front={photos.portrait} priority />
+      <div class="deco-mobile" aria-hidden="true">
+        <DecoItem type="feuille" size={70} rotate={-20} class="feuille-mobile" />
+        <StickyNote width="92px" size="17px" rotate={8} class="postit-mobile">
+          {hero.postIt.join(' ')}
+        </StickyNote>
+      </div>
+    </div>
+
+    <p class="hand hint" aria-hidden="true">
+      {hero.indiceScroll}
+    </p>
+    <a href="#projets" class="hand done">
+      {hero.range}
+    </a>
+  </div>
+</section>
+
+<style>
+  .scene {
+    --stage-h: clamp(620px, 100vh, 940px);
+    /* Échelle des objets : min(largeur / 1440, hauteur / 900), bornée à [0,55 ; 1].
+       Approximation CSS, affinée par hero-tidy.ts. */
+    --sc-w: 1;
+    --sc-h: 1;
+    --sc: min(var(--sc-w), var(--sc-h));
+    /* Progression : 0 = désordre (défaut sans JS) */
+    --p: 0;
+    position: relative;
+    height: calc(var(--stage-h) + 700px);
+  }
+
+  .stage {
+    position: sticky;
+    top: 0;
+    height: var(--stage-h);
+    overflow: hidden;
+    container-type: size;
+  }
+
+  .texte {
+    position: absolute;
+    left: 5%;
+    top: 15%;
+    z-index: 6;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 18px;
+    width: min(560px, 40%);
+  }
+
+  .h-regle {
+    max-width: 100%;
+  }
+
+  .h-roles {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin-top: 4px;
+  }
+
+  .h-paragraphe {
+    max-width: 470px;
+    font-size: 20px;
+    line-height: 1.55;
+  }
+
+  .h-boutons {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+  }
+
+  /* Objets : centrés sur leur pose, déplacés uniquement par transform */
+  .ko {
+    --x: var(--x0);
+    --y: var(--y0);
+    --r: var(--r0);
+    --s: 1;
+    position: absolute;
+    left: 0;
+    top: 0;
+    z-index: 2;
+    transform: translate(calc(var(--x) * 1cqw - 50%), calc(var(--y) * 1cqh - 50%))
+      rotate(calc(var(--r) * 1deg)) scale(calc(var(--sc) * var(--s)));
+  }
+
+  .ko--portrait {
+    z-index: 3;
+  }
+
+  .ko[data-objet='trombone'] {
+    z-index: 4;
+  }
+
+  .lift {
+    filter: drop-shadow(0 5px 4px rgba(0, 0, 0, 0.38));
+  }
+
+  .deco-mobile {
+    display: none;
+  }
+
+  .hint,
+  .done {
+    position: absolute;
+    left: 5%;
+    bottom: 5%;
+    z-index: 6;
+    margin: 0;
+  }
+
+  .hint {
+    font-size: 26px;
+    opacity: calc(1 - var(--p) * 3);
+  }
+
+  .done {
+    font-size: 30px;
+    color: var(--mustard);
+    opacity: 0;
+    visibility: hidden;
+  }
+
+  .scene.is-range .done {
+    visibility: visible;
+  }
+
+  /* Échelle approximative selon la largeur et la hauteur de l'écran */
+  @media (max-width: 1340px) {
+    .scene {
+      --sc-w: 0.93;
+    }
+  }
+
+  @media (max-width: 1200px) {
+    .scene {
+      --sc-w: 0.83;
+    }
+  }
+
+  @media (max-width: 1060px) {
+    .scene {
+      --sc-w: 0.74;
+    }
+  }
+
+  @media (max-width: 920px) {
+    .scene {
+      --sc-w: 0.64;
+    }
+  }
+
+  @media (max-width: 820px) {
+    .scene {
+      --sc-w: 0.57;
+    }
+  }
+
+  @media (max-height: 860px) {
+    .scene {
+      --sc-h: 0.92;
+    }
+  }
+
+  @media (max-height: 760px) {
+    .scene {
+      --sc-h: 0.8;
+    }
+  }
+
+  @media (max-height: 680px) {
+    .scene {
+      --sc-h: 0.69;
+    }
+  }
+
+  /* Mouvement réduit : bureau déjà rangé, pas de scroll supplémentaire */
+  @media (prefers-reduced-motion: reduce) {
+    .scene {
+      --p: 1;
+      height: var(--stage-h);
+    }
+
+    .ko {
+      --x: var(--x1);
+      --y: var(--y1);
+      --r: var(--r1);
+      --s: 0.9;
+    }
+
+    .ko--portrait {
+      --s: 1.02;
+    }
+
+    .hint {
+      visibility: hidden;
+    }
+
+    .done {
+      opacity: 1;
+      visibility: visible;
+    }
+  }
+
+  /* Mobile : scène empilée (nom → photo → texte → boutons), pas d'épinglage */
+  @media (max-width: 759.98px) {
+    .scene {
+      height: auto;
+    }
+
+    .stage {
+      position: relative;
+      display: flex;
+      flex-direction: column;
+      gap: 18px;
+      height: auto;
+      padding: 16px 16px 40px;
+      overflow: visible;
+      container-type: normal;
+    }
+
+    .stage > :global(.nums),
+    .deco-o,
+    .hint,
+    .done {
+      display: none;
+    }
+
+    .texte {
+      display: contents;
+    }
+
+    .h-regle {
+      order: 1;
+    }
+
+    .h-regle :global(.regle) {
+      --r: -2deg;
+      width: 100% !important;
+    }
+
+    .h-roles {
+      order: 2;
+      gap: 8px;
+      margin-top: 0;
+    }
+
+    .h-roles :global(.dymo) {
+      padding: 6px 12px;
+      font-size: 13px;
+      letter-spacing: 0.14em;
+    }
+
+    .ko--portrait {
+      order: 3;
+      position: relative;
+      align-self: center;
+      width: 290px;
+      height: 420px;
+      margin-top: 12px;
+      transform: none;
+    }
+
+    .ko--portrait :global(.flip) {
+      --r: -2deg;
+    }
+
+    .deco-mobile {
+      display: block;
+    }
+
+    .deco-mobile :global(.feuille-mobile) {
+      position: absolute;
+      left: -48px;
+      top: 260px;
+    }
+
+    .deco-mobile :global(.postit-mobile) {
+      position: absolute;
+      right: -46px;
+      top: 6px;
+      z-index: 6;
+      padding: 12px 10px;
+      line-height: 1.1;
+      box-shadow: 3px 3px 0 var(--sticky-edge);
+    }
+
+    .h-paragraphe {
+      order: 4;
+      font-size: 18px;
+    }
+
+    .h-boutons {
+      order: 5;
+      flex-direction: column;
+      align-items: stretch;
+      gap: 10px;
+    }
+  }
+</style>

@@ -227,6 +227,9 @@ export const pageProjet = {
     outils: 'Outils',
   },
   glisse: '← glisse →',
+  // Absents des maquettes : à valider par Jade.
+  videoPause: 'Pause',
+  videoLecture: 'Lecture',
   ceQueJenRetiens: 'Ce que j’en retiens',
   projetSuivant: 'Projet suivant',
   tousLesProjets: '← Tous les projets',

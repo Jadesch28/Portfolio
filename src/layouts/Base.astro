@@ -12,10 +12,19 @@ interface Props {
   /** Lien actif de la navigation. */
   current?: NavId;
   header?: 'complet' | 'minimal';
+  /** Lien qui remplace « Jade D. » dans l'en-tête mobile. */
+  retourMobile?: { href: string; label: string };
   footer?: boolean;
 }
 
-const { title, description, current, header = 'complet', footer = true } = Astro.props;
+const {
+  title,
+  description,
+  current,
+  header = 'complet',
+  retourMobile,
+  footer = true,
+} = Astro.props;
 // Avec build.format 'file', le chemin finit par « .html » au build : on garde l'URL propre servie par Vercel.
 const canonical = new URL(Astro.url.pathname.replace(/(index)?\.html$/, ''), Astro.site);
 ---
@@ -39,7 +48,7 @@ const canonical = new URL(Astro.url.pathname.replace(/(index)?\.html$/, ''), Ast
       Aller au contenu
     </a>
     <div class="site">
-      <Header current={current} variant={header} />
+      <Header current={current} variant={header} retourMobile={retourMobile} />
       <main id="contenu" tabindex="-1">
         <slot />
       </main>

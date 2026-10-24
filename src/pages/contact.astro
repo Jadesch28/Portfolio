@@ -1,0 +1,144 @@
+---
+import ContactForm from '../components/ContactForm.astro';
+import DecoItem from '../components/DecoItem.astro';
+import DymoButton from '../components/DymoButton.astro';
+import { contact, contactCourt, site } from '../data/site';
+import Base from '../layouts/Base.astro';
+---
+
+<Base title={`Contact — ${site.nom}`} description={contact.phrase} current="contact">
+  <section class="contact">
+    <div class="inner">
+      <div class="texte">
+        <DymoButton as="span" variant="rouille">
+          {contactCourt.etiquette}
+        </DymoButton>
+        <h1 class="hand">{contact.phrase}</h1>
+        <p class="sous-titre">{contact.sousTitre}</p>
+        <div class="ailleurs">
+          <h2 class="label">{contact.ailleurs}</h2>
+          <div class="reseaux">
+            <DymoButton href={site.reseaux.instagram} size="sm">
+              Instagram · {site.reseaux.instagramPseudo}
+            </DymoButton>
+            <DymoButton href={site.reseaux.linkedin} size="sm">
+              LinkedIn
+            </DymoButton>
+          </div>
+          <p class="email">
+            {contact.emailDirect} <a href={`mailto:${site.email}`}>{site.email}</a>
+          </p>
+        </div>
+        <DecoItem type="feuille" size={120} rotate={-20} class="feuille" />
+      </div>
+      <div class="carnet">
+        <ContactForm />
+      </div>
+    </div>
+  </section>
+</Base>
+
+<style>
+  .contact {
+    position: relative;
+    padding: 140px var(--gutter) 110px;
+  }
+
+  .inner {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: flex-start;
+    gap: 72px;
+    max-width: var(--container);
+    margin: 0 auto;
+  }
+
+  .texte {
+    display: flex;
+    flex: 1 1 400px;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 24px;
+    min-width: 0;
+    padding-top: 20px;
+  }
+
+  h1 {
+    font-size: clamp(52px, 5.4vw, 82px);
+    font-weight: 400;
+    line-height: 1;
+  }
+
+  .sous-titre {
+    font-size: 20px;
+    line-height: 1.6;
+  }
+
+  .ailleurs {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 12px;
+    margin-top: 14px;
+  }
+
+  .label {
+    font-size: 13px;
+    font-weight: 700;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--mustard);
+  }
+
+  .reseaux {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+  }
+
+  .email {
+    margin-top: 8px;
+    font-size: 16px;
+  }
+
+  .email a {
+    color: var(--mustard);
+  }
+
+  .texte :global(.feuille) {
+    margin-top: 20px;
+  }
+
+  .carnet {
+    flex: 1 1 560px;
+    min-width: 0;
+  }
+
+  @media (max-width: 759.98px) {
+    .contact {
+      padding: 20px 16px 60px;
+    }
+
+    .inner {
+      gap: 48px;
+    }
+
+    .texte {
+      flex: 1 1 100%;
+      gap: 18px;
+      padding-top: 0;
+    }
+
+    h1 {
+      font-size: 44px;
+    }
+
+    .texte :global(.feuille) {
+      display: none;
+    }
+
+    .carnet {
+      flex: 1 1 100%;
+    }
+  }
+</style>
