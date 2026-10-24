@@ -9,13 +9,15 @@ const site =
   process.env.SITE_URL ||
   (vercelProduction ? `https://${vercelProduction}` : 'https://jadedeschuyteneer.be');
 
-// La page /styleguide n'existe qu'en développement : elle n'est jamais générée au build.
+// Les pages /styleguide et /og (source de l'image de partage et du favicon) n'existent qu'en
+// développement : elles ne sont jamais générées au build.
 const styleguideDevOnly = (): AstroIntegration => ({
   name: 'styleguide-dev-only',
   hooks: {
     'astro:config:setup': ({ command, injectRoute }) => {
       if (command === 'dev') {
         injectRoute({ pattern: '/styleguide', entrypoint: './src/dev/styleguide.astro' });
+        injectRoute({ pattern: '/og', entrypoint: './src/dev/og.astro' });
       }
     },
   },

@@ -6,7 +6,7 @@ import { page404, site } from '../data/site';
 import Base from '../layouts/Base.astro';
 ---
 
-<Base title={`Page introuvable — ${site.nom}`} header="minimal" footer={false}>
+<Base title={`Page introuvable — ${site.nom}`} header="minimal" footer={false} noindex>
   <section class="oups">
     <div class="inner">
       <div class="texte">

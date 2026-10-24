@@ -6,6 +6,7 @@ const barre = document.querySelector<HTMLElement>('[data-reading-progress]');
 if (barre) {
   surScroll(({ scrollY, vh }) => {
     const total = document.documentElement.scrollHeight - vh;
-    barre.style.setProperty('--progress', total > 0 ? borner(scrollY / total).toFixed(4) : '0');
+    const progression = total > 0 ? borner(scrollY / total).toFixed(4) : '0';
+    return () => barre.style.setProperty('--progress', progression);
   });
 }

@@ -18,6 +18,8 @@ export const site = {
   nomCourt: 'Jade D.',
   age: '24 ans',
   email: import.meta.env.PUBLIC_CONTACT_EMAIL || 'deschuyteneerjade@gmail.com',
+  /** Point d'envoi du formulaire (Formspree de Jade) ; PUBLIC_FORM_ENDPOINT le remplace si définie. */
+  formulaire: import.meta.env.PUBLIC_FORM_ENDPOINT || 'https://formspree.io/f/meaaooyr',
   reseaux: {
     instagram: 'https://www.instagram.com/design_by_jade_/',
     instagramPseudo: '@design_by_jade_',

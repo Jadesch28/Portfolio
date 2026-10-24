@@ -61,6 +61,7 @@ const secondaire = d.visuelSecondaire ?? (import.meta.env.DEV ? { alt: 'visuel 2
     <p class="resume rv4">{d.resume}</p>
     <DymoButton href={href} size="sm" variant="rouille" class="rv4">
       {sectionProjets.voirProjet}
+      <span class="visually-hidden">{d.titre}</span>
     </DymoButton>
   </div>
 </article>

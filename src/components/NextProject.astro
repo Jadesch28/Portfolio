@@ -24,11 +24,8 @@ const numero = deuxChiffres(d.numero);
       {pageProjet.tousLesProjets}
     </DymoButton>
   </div>
-  <a
-    href={projetHref(projet)}
-    class="next rv4"
-    aria-label={`${pageProjet.projetSuivant} : ${d.titre}`}
-  >
+  <!-- Toute la zone est cliquable, mais le lien (son nom accessible) est le titre seul -->
+  <div class="next rv4">
     <div class="pol">
       <div class="cadre">
         <div class="photo vt-photo" style={`--vt: projet-${projet.id}`}>
@@ -50,15 +47,16 @@ const numero = deuxChiffres(d.numero);
       <DymoButton as="span" size="sm">
         {numero} · {d.categorie}
       </DymoButton>
-      <span class="stencil titre">
+      <a href={projetHref(projet)} class="stencil titre">
+        <span class="visually-hidden">{pageProjet.projetSuivant} : </span>
         {d.titre}{' '}
         <span class="fleche" aria-hidden="true">
           →
         </span>
-      </span>
+      </a>
       <span class="intro">{d.intro}</span>
     </div>
-  </a>
+  </div>
 </div>
 
 <style>
@@ -80,6 +78,7 @@ const numero = deuxChiffres(d.numero);
   .next {
     position: relative;
     display: grid;
+    cursor: pointer;
     grid-template-columns: repeat(auto-fit, minmax(min(320px, 100%), 1fr));
     align-items: center;
     gap: 48px;
@@ -90,6 +89,8 @@ const numero = deuxChiffres(d.numero);
   .pol {
     position: relative;
     justify-self: center;
+    width: 100%;
+    max-width: 380px;
     transition: transform 0.4s var(--e-lift);
   }
 
@@ -99,8 +100,7 @@ const numero = deuxChiffres(d.numero);
 
   .cadre {
     position: relative;
-    width: 380px;
-    max-width: 100%;
+    width: 100%;
     padding: 14px 14px 60px;
     background: var(--photo);
     box-shadow: 0 20px 34px rgba(0, 0, 0, 0.4);
@@ -118,6 +118,27 @@ const numero = deuxChiffres(d.numero);
     font-size: 26px;
     line-height: 1.2;
     color: var(--ink);
+  }
+
+  /* Le lien du titre couvre toute la zone (photo comprise) */
+  .titre::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+  }
+
+  .titre {
+    color: var(--cream);
+    text-decoration: none;
+  }
+
+  .titre:focus-visible {
+    outline: none;
+  }
+
+  .next:has(.titre:focus-visible) {
+    outline: 2px solid var(--mustard);
+    outline-offset: 10px;
   }
 
   .textes {

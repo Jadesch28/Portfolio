@@ -1,8 +1,11 @@
 // Une seule boucle de scroll pour tout le site : un écouteur passif + requestAnimationFrame.
-// Chaque effet s'abonne avec surScroll() et reçoit les mesures du cadre courant.
+// Chaque effet s'abonne avec surScroll() : il mesure (lectures du DOM) et renvoie, s'il y a lieu,
+// une fonction d'écriture. Toutes les lectures passent avant toutes les écritures, pour éviter
+// les recalculs de mise en page forcés.
 
 export type Mesures = { scrollY: number; vw: number; vh: number };
-type Abonne = (mesures: Mesures) => void;
+type Ecriture = () => void;
+type Abonne = (mesures: Mesures) => Ecriture | undefined;
 
 const abonnes = new Set<Abonne>();
 let image = 0;
@@ -11,7 +14,12 @@ let branche = false;
 const tick = () => {
   image = 0;
   const mesures = { scrollY: window.scrollY, vw: window.innerWidth, vh: window.innerHeight };
-  abonnes.forEach((abonne) => abonne(mesures));
+  const ecritures: Ecriture[] = [];
+  abonnes.forEach((abonne) => {
+    const ecrire = abonne(mesures);
+    if (ecrire) ecritures.push(ecrire);
+  });
+  ecritures.forEach((ecrire) => ecrire());
 };
 
 const demander = () => {

@@ -79,20 +79,21 @@ const { projet, actif = false } = Astro.props;
     color: var(--ink-soft);
   }
 
-  /* Cercle au crayon : tracé de 640 px, dessiné quand l'élément devient actif */
+  /* Cercle au crayon autour du titre (300 px de large au plus, pour que le tracé reste plus court
+     que ses pointillés de 700 px), dessiné quand l'élément devient actif */
   .cercle {
     position: absolute;
     left: 30px;
     top: -8px;
-    width: calc(100% - 26px);
+    width: min(calc(100% - 26px), 300px);
     height: calc(100% + 16px);
     overflow: visible;
     pointer-events: none;
   }
 
   .cercle path {
-    stroke-dasharray: 640;
-    stroke-dashoffset: 640;
+    stroke-dasharray: 700;
+    stroke-dashoffset: 700;
     transition: stroke-dashoffset 0.7s ease;
   }
 

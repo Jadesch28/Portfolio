@@ -6,7 +6,7 @@ import '../styles/animations.css';
 import '../styles/transitions.css';
 import Footer from '../components/Footer.astro';
 import Header from '../components/Header.astro';
-import type { NavId } from '../data/site';
+import { site, type NavId } from '../data/site';
 
 interface Props {
   title: string;
@@ -17,6 +17,14 @@ interface Props {
   /** Lien qui remplace « Jade D. » dans l'en-tête mobile. */
   retourMobile?: { href: string; label: string };
   footer?: boolean;
+  /** Image de partage (Open Graph) ; par défaut /og.png, le tapis et la règle « JADE ». */
+  image?: { src: string; width: number; height: number; alt: string };
+  /** article pour une page projet. */
+  type?: 'website' | 'article';
+  /** Données structurées (JSON-LD). */
+  jsonLd?: object;
+  /** Page à ne pas indexer (404). */
+  noindex?: boolean;
 }
 
 const {
@@ -26,9 +34,19 @@ const {
   header = 'complet',
   retourMobile,
   footer = true,
+  image = {
+    src: '/og.png',
+    width: 1200,
+    height: 630,
+    alt: `${site.nom} — graphiste, motion designer & illustratrice`,
+  },
+  type = 'website',
+  jsonLd,
+  noindex = false,
 } = Astro.props;
 // Avec build.format 'file', le chemin finit par « .html » au build : on garde l'URL propre servie par Vercel.
 const canonical = new URL(Astro.url.pathname.replace(/(index)?\.html$/, ''), Astro.site);
+const imageUrl = new URL(image.src, Astro.site).href;
 ---
 
 <!doctype html>
@@ -42,23 +60,20 @@ const canonical = new URL(Astro.url.pathname.replace(/(index)?\.html$/, ''), Ast
          - arrivée sur un projet par transition : .vt-arrivee (le visuel arrive en volant) ;
          - projet → accueil : .retour-projet (pas d'apparitions, la photo revole à sa place). -->
     <script is:inline>
-      (function () {
-        var racine = document.documentElement;
+      {
+        const racine = document.documentElement;
         racine.classList.add('js');
-        window.addEventListener('load', function () {
-          setTimeout(function () {
-            racine.classList.add('defilement-doux');
-          }, 0);
+        window.addEventListener('load', () => {
+          setTimeout(() => racine.classList.add('defilement-doux'), 0);
         });
-        window.addEventListener('pagereveal', function (event) {
+        window.addEventListener('pagereveal', (event) => {
           racine.classList.remove('vers-projet', 'from-list', 'vt-arrivee', 'retour-projet');
           if (!event.viewTransition) return;
-          var activation = window.navigation && window.navigation.activation;
-          var depuis = (activation && activation.from && activation.from.url) || document.referrer;
+          const depuis = window.navigation?.activation?.from?.url || document.referrer;
           if (!depuis) return;
-          var avant = new URL(depuis).pathname.replace(/(index)?\.html$/, '');
-          var ici = location.pathname.replace(/(index)?\.html$/, '');
-          var projet = /^\/projets\//;
+          const avant = new URL(depuis).pathname.replace(/(index)?\.html$/, '');
+          const ici = location.pathname.replace(/(index)?\.html$/, '');
+          const projet = /^\/projets\//;
           if (projet.test(ici)) {
             racine.classList.add('vt-arrivee');
             if (avant === '/') racine.classList.add('from-list');
@@ -66,7 +81,7 @@ const canonical = new URL(Astro.url.pathname.replace(/(index)?\.html$/, ''), Ast
             racine.classList.add('retour-projet');
           }
         });
-      })();
+      }
     </script>
     <!-- Activation des transitions entre pages : déclarée dans la page elle-même pour être connue
          dès le premier rendu (dans une feuille externe, Chrome peut l'ignorer à l'arrivée). -->
@@ -77,8 +92,36 @@ const canonical = new URL(Astro.url.pathname.replace(/(index)?\.html$/, ''), Ast
     </style>
     <title>{title}</title>
     {description && <meta name="description" content={description} />}
+    {noindex && <meta name="robots" content="noindex" />}
     <link rel="canonical" href={canonical} />
     <meta name="theme-color" content="#24503D" />
+    <link rel="icon" href="/favicon.ico" sizes="32x32" />
+    <link rel="icon" href="/favicon.png" type="image/png" sizes="192x192" />
+    <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
+    <link rel="sitemap" href="/sitemap.xml" />
+
+    <!-- Partage (Open Graph, cartes Twitter/X) -->
+    <meta property="og:type" content={type} />
+    <meta property="og:site_name" content={site.nom} />
+    <meta property="og:locale" content="fr_BE" />
+    <meta property="og:title" content={title} />
+    {description && <meta property="og:description" content={description} />}
+    <meta property="og:url" content={canonical} />
+    <meta property="og:image" content={imageUrl} />
+    <meta property="og:image:width" content={String(image.width)} />
+    <meta property="og:image:height" content={String(image.height)} />
+    <meta property="og:image:alt" content={image.alt} />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content={title} />
+    {description && <meta name="twitter:description" content={description} />}
+    <meta name="twitter:image" content={imageUrl} />
+    <meta name="twitter:image:alt" content={image.alt} />
+    {jsonLd && (
+      <script
+        type="application/ld+json"
+        set:html={JSON.stringify(jsonLd).replace(/</g, '\\u003c')}
+      />
+    )}
     <Font cssVariable="--font-stencil" preload />
     <Font cssVariable="--font-text" preload />
     <Font cssVariable="--font-hand" />

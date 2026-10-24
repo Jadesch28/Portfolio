@@ -13,6 +13,7 @@ import ReadingProgress from '../../components/ReadingProgress.astro';
 import Visuel from '../../components/Visuel.astro';
 import WashiTape from '../../components/WashiTape.astro';
 import { deuxChiffres, getProjets, projetSuivant, type Projet } from '../../data/projets';
+import { avecContexte, personne } from '../../data/seo';
 import { pageProjet, site } from '../../data/site';
 import Base from '../../layouts/Base.astro';
 
@@ -37,6 +38,36 @@ const motLePlusLong = Math.max(...d.titre.split(/\s+/).map((mot) => mot.length))
 const debord = motLePlusLong <= 6 ? 2.5 : 2.1;
 const f = pageProjet.fiche;
 
+// Partage et données structurées : le visuel principal en 1200 px de large, en JPEG.
+const siteUrl = Astro.site ?? new URL(Astro.url.origin);
+const visuelPartage = d.visuelPrincipal?.src;
+const imagePartage = visuelPartage
+  ? await getImage({
+      src: visuelPartage,
+      width: Math.min(1200, visuelPartage.width),
+      format: 'jpg',
+    })
+  : undefined;
+const partage = imagePartage && {
+  src: imagePartage.src,
+  width: Number(imagePartage.attributes.width),
+  height: Number(imagePartage.attributes.height),
+  alt: d.visuelPrincipal?.alt ?? d.titre,
+};
+const jsonLd = avecContexte({
+  '@type': 'CreativeWork',
+  name: d.titre,
+  headline: d.titre,
+  description: d.resume,
+  genre: d.categorie,
+  inLanguage: 'fr',
+  url: new URL(`/projets/${projet.id}`, siteUrl).href,
+  image: imagePartage ? new URL(imagePartage.src, siteUrl).href : undefined,
+  dateCreated: d.annee ? String(d.annee) : undefined,
+  keywords: d.disciplines?.join(', '),
+  creator: personne(siteUrl),
+});
+
 // Préchargement du visuel principal : c'est l'image qui arrive en volant depuis l'accueil
 // (et le plus grand élément affiché). Mêmes paramètres que le <Picture> ou le poster de la vidéo.
 const largeursHero = [640, 960, 1280, 1600];
@@ -58,6 +89,9 @@ if (imageHero && d.video) {
   title={`${d.titre} — ${site.nom}`}
   description={d.resume}
   retourMobile={{ href: retour, label: pageProjet.retourCourt }}
+  image={partage}
+  type="article"
+  jsonLd={jsonLd}
 >
   {prechargement && (
     <link

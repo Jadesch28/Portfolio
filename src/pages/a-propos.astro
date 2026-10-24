@@ -5,10 +5,14 @@ import Polaroid from '../components/Polaroid.astro';
 import StickyNote from '../components/StickyNote.astro';
 import WashiTape from '../components/WashiTape.astro';
 import { getProjets, projetHref } from '../data/projets';
+import { avecContexte, personne } from '../data/seo';
 import { aPropos, contactCourt, photos, site } from '../data/site';
 import Base from '../layouts/Base.astro';
 
 const projets = await getProjets();
+const siteUrl = Astro.site ?? new URL(Astro.url.origin);
+const description = aPropos.bio[0]?.replaceAll('==', '');
+const jsonLd = avecContexte({ ...personne(siteUrl), description });
 const parSlug = new Map(projets.map((p) => [p.id, p]));
 const cartes = aPropos.ceQueJeFais.cartes.map((carte, i) => ({
   ...carte,
@@ -31,11 +35,7 @@ const segments = (paragraphe: string) =>
     );
 ---
 
-<Base
-  title={`À propos — ${site.nom}`}
-  description={aPropos.bio[0]?.replaceAll('==', '')}
-  current="a-propos"
->
+<Base title={`À propos — ${site.nom}`} description={description} current="a-propos" jsonLd={jsonLd}>
   <section class="hero">
     <div class="wrap hero-inner">
       <div class="hero-texte">
@@ -516,6 +516,14 @@ const segments = (paragraphe: string) =>
     .competence,
     mark {
       transition: none;
+    }
+  }
+
+  /* Petits écrans : la longue étiquette du rôle passe sur deux lignes */
+  @media (max-width: 420px) {
+    .etiquettes :global(.dymo) {
+      white-space: normal;
+      text-align: left;
     }
   }
 

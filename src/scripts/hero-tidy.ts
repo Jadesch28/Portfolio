@@ -42,24 +42,29 @@ if (scene && stage && !mouvementReduit()) {
     derniere = p;
 
     // Échelle des objets : min(largeur / 1440, hauteur / 900), bornée à [0,55 ; 1].
-    scene.style.setProperty('--sc', String(borner(Math.min(vw / 1440, stageH / 900), 0.55, 1)));
-    scene.style.setProperty('--p', p.toFixed(3));
+    const sc = String(borner(Math.min(vw / 1440, stageH / 900), 0.55, 1));
 
-    objets.forEach((o) => {
-      const e = o.portrait ? ease(borner(p / 0.9)) : ease(borner((p - o.index * 0.03) / 0.8));
-      const style = o.el.style;
-      style.setProperty('--x', lerp(o.x0, o.x1, e).toFixed(2));
-      style.setProperty('--y', lerp(o.y0, o.y1, e).toFixed(2));
-      style.setProperty('--r', lerp(o.r0, o.r1, e).toFixed(2));
-      style.setProperty('--s', lerp(1, o.portrait ? 1.02 : 0.9, e).toFixed(3));
-    });
+    // Écritures (après toutes les lectures de la boucle de scroll)
+    return () => {
+      scene.style.setProperty('--sc', sc);
+      scene.style.setProperty('--p', p.toFixed(3));
 
-    // « voilà, c'est rangé » : visible à partir de 75 %, cliquable au-delà de 80 %.
-    if (termine) {
-      const opacite = borner((p - 0.75) * 4);
-      termine.style.opacity = opacite.toFixed(3);
-      termine.style.visibility = opacite > 0 ? 'visible' : 'hidden';
-      termine.style.pointerEvents = p > 0.8 ? 'auto' : 'none';
-    }
+      objets.forEach((o) => {
+        const e = o.portrait ? ease(borner(p / 0.9)) : ease(borner((p - o.index * 0.03) / 0.8));
+        const style = o.el.style;
+        style.setProperty('--x', lerp(o.x0, o.x1, e).toFixed(2));
+        style.setProperty('--y', lerp(o.y0, o.y1, e).toFixed(2));
+        style.setProperty('--r', lerp(o.r0, o.r1, e).toFixed(2));
+        style.setProperty('--s', lerp(1, o.portrait ? 1.02 : 0.9, e).toFixed(3));
+      });
+
+      // « voilà, c'est rangé » : visible à partir de 75 %, cliquable au-delà de 80 %.
+      if (termine) {
+        const opacite = borner((p - 0.75) * 4);
+        termine.style.opacity = opacite.toFixed(3);
+        termine.style.visibility = opacite > 0 ? 'visible' : 'hidden';
+        termine.style.pointerEvents = p > 0.8 ? 'auto' : 'none';
+      }
+    };
   });
 }

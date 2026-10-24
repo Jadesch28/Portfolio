@@ -1,6 +1,7 @@
 ---
 // Formulaire de contact sur une page de carnet. Envoi en POST vers PUBLIC_FORM_ENDPOINT (Formspree…) ;
-// sans point d'envoi configuré, la page propose l'e-mail à la place.
+// par défaut le Formspree de Jade (site.formulaire) ; si on vide ce réglage, la page propose
+// l'e-mail à la place.
 // Le comportement (validation, envoi, tampon) vient de scripts/contact-form.ts.
 import { formulaire, site } from '../data/site';
 import DymoButton from './DymoButton.astro';
@@ -16,11 +17,7 @@ interface Props {
   prefixe?: string;
 }
 
-const {
-  endpoint = import.meta.env.PUBLIC_FORM_ENDPOINT,
-  etat = 'formulaire',
-  prefixe = '',
-} = Astro.props;
+const { endpoint = site.formulaire, etat = 'formulaire', prefixe = '' } = Astro.props;
 const mailto = `mailto:${site.email}`;
 ---
 

@@ -11,23 +11,26 @@ if (!mouvementReduit() && elements.length + heros.length > 0) {
   surScroll(({ scrollY, vw, vh }) => {
     const actif = vw >= 760;
 
-    elements.forEach((el) => {
-      if (!actif) {
-        el.style.transform = '';
-        return;
-      }
+    // Lectures : position de chaque élément, sans la translation déjà appliquée.
+    const positions = elements.map((el) => {
+      if (!actif) return '';
       const r = el.getBoundingClientRect();
-      // On mesure sans la translation déjà appliquée.
-      const decalage = Number(el.dataset.parallaxY ?? 0);
-      const centre = r.top - decalage + r.height / 2;
+      const centre = r.top - Number(el.dataset.parallaxY ?? 0) + r.height / 2;
       const q = borner((centre - vh / 2) / vh, -1, 1);
-      const y = q * Number(el.dataset.parallax);
-      el.dataset.parallaxY = y.toFixed(1);
-      el.style.transform = `translateY(${y.toFixed(1)}px)`;
+      return (q * Number(el.dataset.parallax)).toFixed(1);
     });
+    const hero = actif ? `translateY(${Math.min(120, scrollY * 0.18).toFixed(1)}px)` : '';
 
-    heros.forEach((el) => {
-      el.style.transform = actif ? `translateY(${Math.min(120, scrollY * 0.18).toFixed(1)}px)` : '';
-    });
+    // Écritures
+    return () => {
+      elements.forEach((el, i) => {
+        const y = positions[i] ?? '';
+        el.dataset.parallaxY = y || '0';
+        el.style.transform = y ? `translateY(${y}px)` : '';
+      });
+      heros.forEach((el) => {
+        el.style.transform = hero;
+      });
+    };
   });
 }

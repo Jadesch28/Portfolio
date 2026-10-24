@@ -32,6 +32,9 @@ if (carnet && cartes.length > 0) {
       const r = carte.getBoundingClientRect();
       if (r.top < vh * 0.55 && r.bottom > vh * 0.2) candidat = carte.dataset.projet;
     });
-    if (candidat) activer(candidat);
+    if (candidat && candidat !== actif) {
+      const id = candidat;
+      return () => activer(id);
+    }
   });
 }

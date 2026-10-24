@@ -7,13 +7,21 @@ import ProjectCard from '../components/ProjectCard.astro';
 import SectionHeading from '../components/SectionHeading.astro';
 import WashiTape from '../components/WashiTape.astro';
 import { deuxChiffres, getProjets } from '../data/projets';
-import { aProposCourt, contactCourt, photos, sectionProjets, site } from '../data/site';
+import { avecContexte, personne } from '../data/seo';
+import { aProposCourt, contactCourt, hero, photos, sectionProjets, site } from '../data/site';
 import Base from '../layouts/Base.astro';
 
 const projets = await getProjets();
+const siteUrl = Astro.site ?? new URL(Astro.url.origin);
+const jsonLd = avecContexte({
+  '@graph': [
+    personne(siteUrl),
+    { '@type': 'WebSite', name: site.nom, url: new URL('/', siteUrl).href, inLanguage: 'fr' },
+  ],
+});
 ---
 
-<Base title={`${site.nom} — Graphiste & motion designer`}>
+<Base title={`${site.nom} — Graphiste & motion designer`} description={hero.texte} jsonLd={jsonLd}>
   <HeroTidy />
 
   <section id="projets" class="projets" aria-labelledby="projets-titre">
