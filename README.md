@@ -56,6 +56,12 @@ En développement uniquement :
 
 Ces deux pages n'existent pas sur le site en ligne.
 
+Page d'essai (piste en cours, à comparer avec l'accueil actuel) : en développement et sur les
+aperçus Vercel des branches, jamais en production.
+
+- <http://localhost:4321/essais/corde> : l'accueil avec le hero « corde à linge » (les cartes du
+  prénom et le portrait pendent à une corde ; on les pousse, on les tire, ils se balancent).
+
 ---
 
 ## Ajouter un projet
@@ -395,7 +401,7 @@ src/
   pages/                   pages du site, sitemap.xml, robots.txt
   scripts/                 animations (une seule boucle de scroll), formulaire, vidéos
   styles/                  tokens, base, animations, transitions
-  dev/                     styleguide et image de partage (développement seulement)
+  dev/                     styleguide, image de partage, page d'essai (hors production)
 public/                    vidéos, favicons, image de partage
 ```
 

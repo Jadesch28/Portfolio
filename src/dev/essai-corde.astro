@@ -1,0 +1,13 @@
+---
+// Page d'essai : l'accueil avec le hero « corde à linge » à la place du hero « rangement ».
+// En développement et sur les aperçus Vercel seulement (voir astro.config.ts), jamais en production.
+import AccueilSuite from '../components/AccueilSuite.astro';
+import HeroCorde from '../components/HeroCorde.astro';
+import { hero, site } from '../data/site';
+import Base from '../layouts/Base.astro';
+---
+
+<Base title={`Essai : hero corde à linge — ${site.nom}`} description={hero.texte} noindex>
+  <HeroCorde />
+  <AccueilSuite />
+</Base>

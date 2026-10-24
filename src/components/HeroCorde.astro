@@ -1,0 +1,581 @@
+---
+// Hero « corde à linge » (essai) : comme des tirages qui sèchent à l'atelier, les cartes du prénom
+// et le portrait pendent à une corde, tenus par des pinces à linge. Au chargement, ils sont
+// accrochés un à un (la corde plie sous leur poids) ; on les pousse, on les tire, ils se balancent
+// (scripts/hero-corde.ts). Les lettres restent toujours dans l'ordre : le prénom reste lisible.
+// Aucun projet ici : ajouter un projet ne demande jamais de retoucher le hero.
+// Sans JavaScript ou avec prefers-reduced-motion : tout pend, immobile.
+import grain from '../assets/textures/grain.png';
+import { hero, photo, photos } from '../data/site';
+import DymoButton from './DymoButton.astro';
+import Polaroid from './Polaroid.astro';
+import WashiTape from './WashiTape.astro';
+
+// Cordes : hauteur aux bords et creux au milieu, en % de la zone de jeu (large, puis compacte)
+type Corde = { y: number; creux: number };
+const cordes: Record<'large' | 'compacte', Corde[]> = {
+  large: [{ y: 19, creux: 5 }],
+  compacte: [
+    { y: 7, creux: 3 },
+    { y: 43, creux: 3 },
+  ],
+};
+// Hauteur de la corde à l'abscisse x (en %) : parabole d'un bord à l'autre
+const hauteur = (c: Corde | undefined, x: number) =>
+  c ? c.y + c.creux * 4 * (x / 100) * (1 - x / 100) : 0;
+// Même courbe en SVG (viewBox 0 0 100 100) : Bézier quadratique, sommet au milieu
+const trace = (c: Corde) => `M 0 ${c.y} Q 50 ${c.y + 2 * c.creux} 100 ${c.y}`;
+
+type Accroche = { corde: number; x: number };
+type Piece = { d: Accroche; m?: Accroche } & (
+  { type: 'lettre'; lettre: string; fond: string } | { type: 'portrait' }
+);
+
+const fonds = ['var(--mustard)', 'var(--rust)', 'var(--paper)', '#9bab84'];
+// Abscisses paires : la corde a un point tous les 2 %
+const xLarge = [14, 28, 42, 56];
+const xCompacte = [
+  { corde: 0, x: 30 },
+  { corde: 0, x: 70 },
+  { corde: 1, x: 30 },
+  { corde: 1, x: 70 },
+];
+const pieces: Piece[] = [
+  ...[...hero.prenom].map((lettre, i): Piece => ({
+    type: 'lettre',
+    lettre,
+    fond: fonds[i % fonds.length] ?? 'var(--paper)',
+    d: { corde: 0, x: xLarge[i] ?? 14 + i * 14 },
+    m: xCompacte[i],
+  })),
+  { type: 'portrait', d: { corde: 0, x: 80 } },
+];
+
+const pose = (p: Piece) =>
+  [
+    `--x: ${p.d.x}`,
+    `--y: ${hauteur(cordes.large[p.d.corde], p.d.x).toFixed(2)}`,
+    p.m && `--xm: ${p.m.x}`,
+    p.m && `--ym: ${hauteur(cordes.compacte[p.m.corde], p.m.x).toFixed(2)}`,
+  ]
+    .filter(Boolean)
+    .join('; ');
+
+// Textes d'aide (absents des maquettes : à valider)
+const indice = 'psst… pousse-les, tire-les !';
+const indiceTactile = 'psst… touche les cartes !';
+---
+
+<section class="corde" data-corde style={`--grain: url(${grain.src})`}>
+  <h1 class="visually-hidden">{`${hero.prenom} ${hero.nom} — ${hero.role} ${hero.roleSuite}`}</h1>
+
+  <div class="scene" data-corde-scene>
+    <div
+      class="plan"
+      data-corde-plan
+      data-cordes-large={JSON.stringify(cordes.large)}
+      data-cordes-compacte={JSON.stringify(cordes.compacte)}
+    >
+      <!-- Les cordes (ombre, puis corde) ; le script redessine leur tracé -->
+      {(['ombre', 'fil'] as const).map((role) => (
+        <svg
+          class:list={['cordes', `cordes--${role}`]}
+          viewBox="0 0 100 100"
+          preserveAspectRatio="none"
+          aria-hidden="true"
+          data-corde-svg={role}
+        >
+          {cordes.large.map((c, i) => (
+            <path class="trace trace--large" d={trace(c)} data-corde-trace={`large-${i}`} />
+          ))}
+          {cordes.compacte.map((c, i) => (
+            <path class="trace trace--compacte" d={trace(c)} data-corde-trace={`compacte-${i}`} />
+          ))}
+        </svg>
+      ))}
+
+      <!-- Bouts de washi qui tiennent la corde aux bords -->
+      {cordes.large.map((c) => (
+        <>
+          <WashiTape
+            class="bout bout--large"
+            left="-34px"
+            top={`calc(${c.y}cqh - 14px)`}
+            width={90}
+            rotate={28}
+          />
+          <WashiTape
+            class="bout bout--large"
+            right="-34px"
+            top={`calc(${c.y}cqh - 14px)`}
+            width={90}
+            rotate={-28}
+            color="sauge"
+          />
+        </>
+      ))}
+      {cordes.compacte.map((c) => (
+        <>
+          <WashiTape
+            class="bout bout--compacte"
+            left="-30px"
+            top={`calc(${c.y}cqh - 12px)`}
+            width={70}
+            rotate={28}
+          />
+          <WashiTape
+            class="bout bout--compacte"
+            right="-30px"
+            top={`calc(${c.y}cqh - 12px)`}
+            width={70}
+            rotate={-28}
+            color="sauge"
+          />
+        </>
+      ))}
+
+      {pieces.map((p) => (
+        <div
+          class:list={['piece', `piece--${p.type}`, { 'piece--large': !p.m }]}
+          style={pose(p)}
+          data-corde-piece
+          data-d={`${p.d.corde},${p.d.x}`}
+          data-m={p.m ? `${p.m.corde},${p.m.x}` : undefined}
+          aria-hidden="true"
+        >
+          <div class="tombe">
+            <svg class="pince" viewBox="0 0 16 48" aria-hidden="true">
+              <rect x="1" y="0" width="14" height="48" rx="3" class="pince-bois" />
+              <rect x="7.4" y="2" width="1.2" height="44" class="pince-fente" />
+              <rect x="0" y="17" width="16" height="7" rx="1.5" class="pince-ressort" />
+              <rect x="0" y="18.2" width="16" height="1.4" class="pince-reflet" />
+            </svg>
+            {p.type === 'lettre' ? (
+              <span class="carte" style={`--fond: ${p.fond}`}>
+                {p.lettre}
+              </span>
+            ) : (
+              <Polaroid
+                visuel={photos.portrait}
+                placeholder={photos.portrait.alt}
+                caption={photo.legende}
+                rotate={0}
+                width="230px"
+                photoHeight="250px"
+                sizes="230px"
+                class="carte-portrait"
+              />
+            )}
+          </div>
+        </div>
+      ))}
+
+      <div class="roles">
+        <DymoButton as="span" class="role role--1">
+          {hero.role}
+        </DymoButton>
+        <DymoButton as="span" variant="rouille" class="role role--2">
+          {hero.roleSuite}
+        </DymoButton>
+      </div>
+
+      <p class="indice hand" aria-hidden="true">
+        <span class="indice-souris">{indice}</span>
+        <span class="indice-tactile">{indiceTactile}</span>
+      </p>
+    </div>
+
+    <div class="texte">
+      <p class="t-paragraphe">{hero.texte}</p>
+      <div class="t-boutons">
+        <DymoButton href="#projets" variant="rouille">
+          {hero.boutonProjets}
+        </DymoButton>
+        <DymoButton href="/a-propos">{hero.boutonAPropos}</DymoButton>
+      </div>
+    </div>
+  </div>
+</section>
+
+<script>
+  import '../scripts/hero-corde';
+</script>
+
+<style>
+  .corde {
+    position: relative;
+  }
+
+  .scene {
+    /* Disposition, lue aussi par le script : 0 = large, 1 = compacte (téléphone, tablette en
+       portrait). --carte : largeur des cartes du prénom. */
+    --mobile: 0;
+    --carte: clamp(100px, 11.5vw, 180px);
+    position: relative;
+    height: max(640px, 100svh);
+    overflow: hidden;
+  }
+
+  .plan {
+    position: absolute;
+    inset: 0;
+    container-type: size;
+  }
+
+  /* Corde : ficelle claire, et son ombre portée sur le tapis */
+  .cordes {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    overflow: visible;
+    pointer-events: none;
+  }
+
+  .trace {
+    fill: none;
+    stroke-linecap: round;
+    vector-effect: non-scaling-stroke;
+  }
+
+  .cordes--fil {
+    z-index: 3;
+  }
+
+  .cordes--fil .trace {
+    stroke: #d8c49a;
+    stroke-width: 2.6px;
+  }
+
+  .cordes--ombre {
+    z-index: 1;
+    opacity: 0.35;
+    transform: translate(7px, 12px);
+  }
+
+  .cordes--ombre .trace {
+    stroke: #000;
+    stroke-width: 3px;
+  }
+
+  .trace--compacte,
+  .plan :global(.bout--compacte) {
+    display: none;
+  }
+
+  /* Pièces suspendues : le haut de la pince est sur la corde (pivot) */
+  .piece {
+    position: absolute;
+    top: 0;
+    left: 0;
+    z-index: 2;
+    line-height: 0;
+    transform: translate(calc(var(--x) * 1cqw - 50%), calc(var(--y) * 1cqh - 8px));
+    transform-origin: 50% 8px;
+    touch-action: pan-y pinch-zoom;
+    will-change: transform;
+    user-select: none;
+    -webkit-user-select: none;
+  }
+
+  .tombe {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .pince {
+    position: relative;
+    z-index: 2;
+    width: 16px;
+    height: 48px;
+    margin-bottom: -26px;
+    filter: drop-shadow(1px 2px 1px rgba(0, 0, 0, 0.35));
+  }
+
+  .pince-bois {
+    fill: #c99b62;
+  }
+
+  .pince-fente {
+    fill: rgba(70, 40, 15, 0.45);
+  }
+
+  .pince-ressort {
+    fill: #9aa3a8;
+  }
+
+  .pince-reflet {
+    fill: rgba(255, 255, 255, 0.55);
+  }
+
+  /* Cartes du prénom : papier coloré, lettre évidée au pochoir */
+  .carte {
+    position: relative;
+    display: grid;
+    place-items: center;
+    width: var(--carte);
+    aspect-ratio: 5 / 6;
+    overflow: hidden;
+    border-radius: 4px;
+    background: var(--fond);
+    box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.28);
+    filter: drop-shadow(8px 16px 10px rgba(0, 0, 0, 0.32));
+    font-family: var(--f-stencil);
+    font-size: calc(var(--carte) * 1.27);
+    font-weight: 900;
+    line-height: 0.8;
+    color: var(--mat);
+    text-shadow:
+      0 -1px 0 rgba(0, 0, 0, 0.35),
+      0 1px 0 rgba(255, 255, 255, 0.18);
+  }
+
+  .carte::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background-image: var(--grain);
+    background-size: 256px;
+    mix-blend-mode: multiply;
+    opacity: 0.16;
+    pointer-events: none;
+  }
+
+  .tombe :global(.carte-portrait) {
+    filter: drop-shadow(8px 16px 10px rgba(0, 0, 0, 0.3));
+    box-shadow: none;
+  }
+
+  .piece :global(img) {
+    pointer-events: none;
+    -webkit-user-drag: none;
+  }
+
+  /* Animation : les pièces sont accrochées une à une par le script */
+  @media (prefers-reduced-motion: no-preference) {
+    :global(.js) .piece {
+      opacity: 0;
+      /* Filet de sécurité si le script ne tourne pas : tout apparaît après 3 s */
+      animation: piece-secours 0.01s 3s forwards;
+    }
+
+    :global(.corde.est-pilotee) .piece {
+      animation: none;
+    }
+
+    :global(.corde.est-pilotee) .piece:global(.est-accrochee) {
+      opacity: 1;
+    }
+
+    :global(.corde.est-pilotee) .piece:global(.est-accrochee) .tombe {
+      animation: piece-accroche 0.42s cubic-bezier(0.5, 0, 0.75, 0) backwards;
+    }
+
+    :global(.corde.est-pilotee) .piece {
+      cursor: grab;
+    }
+
+    :global(.corde.est-pilotee) .piece:global(.est-tenue) {
+      cursor: grabbing;
+    }
+  }
+
+  @keyframes piece-secours {
+    to {
+      opacity: 1;
+    }
+  }
+
+  @keyframes piece-accroche {
+    from {
+      opacity: 0;
+      transform: translateY(-140px) rotate(var(--penche, 6deg));
+    }
+
+    30% {
+      opacity: 1;
+    }
+  }
+
+  /* Étiquettes du métier, collées sur le tapis sous les cartes */
+  .roles {
+    position: absolute;
+    top: 58%;
+    left: 8%;
+    z-index: 2;
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 12px;
+  }
+
+  .roles :global(.role--1) {
+    transform: rotate(1.5deg);
+  }
+
+  .roles :global(.role--2) {
+    transform: rotate(-3deg);
+  }
+
+  /* Texte d'accueil */
+  .texte {
+    position: absolute;
+    left: 5%;
+    bottom: 7%;
+    z-index: 3;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 16px;
+    max-width: 500px;
+  }
+
+  .t-paragraphe {
+    font-size: 20px;
+    line-height: 1.55;
+  }
+
+  .t-boutons {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+  }
+
+  .indice {
+    position: absolute;
+    right: 5%;
+    bottom: 3%;
+    z-index: 3;
+    display: none;
+    margin: 0;
+    font-size: 22px;
+    color: var(--mustard);
+    pointer-events: none;
+    transition: opacity 0.6s ease;
+  }
+
+  .indice-tactile {
+    display: none;
+  }
+
+  @media (prefers-reduced-motion: no-preference) {
+    :global(.js) .indice {
+      display: block;
+    }
+  }
+
+  @media (hover: none) {
+    .indice-souris {
+      display: none;
+    }
+
+    .indice-tactile {
+      display: inline;
+    }
+  }
+
+  :global(.corde.a-joue) .indice {
+    opacity: 0;
+  }
+
+  /* Disposition compacte (téléphone, tablette en portrait) : deux cordes, la zone de jeu
+     s'arrête au-dessus du texte */
+  @media (max-width: 759.98px), (orientation: portrait) and (max-width: 1100px) {
+    .scene {
+      --mobile: 1;
+      --carte: min(30cqw, 17cqh);
+      display: flex;
+      flex-direction: column;
+    }
+
+    .plan {
+      position: relative;
+      inset: auto;
+      flex: 1 1 auto;
+      width: 100%;
+      max-width: 560px;
+      min-height: 0;
+      margin: 0 auto;
+    }
+
+    .trace--large,
+    .plan :global(.bout--large),
+    .piece--large {
+      display: none;
+    }
+
+    .trace--compacte,
+    .plan :global(.bout--compacte) {
+      display: initial;
+    }
+
+    .piece {
+      transform: translate(calc(var(--xm) * 1cqw - 50%), calc(var(--ym) * 1cqh - 8px));
+    }
+
+    .roles {
+      top: auto;
+      right: 16px;
+      bottom: 3%;
+      left: 16px;
+      justify-content: center;
+      gap: 8px;
+    }
+
+    .texte {
+      position: relative;
+      bottom: auto;
+      left: auto;
+      gap: 12px;
+      width: 100%;
+      max-width: 560px;
+      margin: 0 auto;
+      padding: 8px 16px 20px;
+    }
+
+    .t-paragraphe {
+      font-size: 17px;
+      line-height: 1.5;
+    }
+
+    .indice {
+      top: 0.6%;
+      right: auto;
+      bottom: auto;
+      left: 16px;
+      font-size: 17px;
+    }
+  }
+
+  /* Écrans larges mais petits (portable, tablette à l'horizontale) : portrait un peu réduit */
+  @media (min-width: 760px) and (max-width: 1300px) and (orientation: landscape) {
+    .tombe :global(.carte-portrait) {
+      zoom: 0.86;
+    }
+  }
+
+  @media (min-width: 760px) and (max-width: 1100px) and (orientation: landscape) {
+    .tombe :global(.carte-portrait) {
+      zoom: 0.72;
+    }
+  }
+
+  @media (min-width: 760px) and (orientation: portrait) and (max-width: 1100px) {
+    .scene {
+      padding-top: 80px;
+    }
+  }
+
+  @media (max-width: 759.98px) {
+    .scene {
+      height: max(560px, calc(100svh - 66px));
+    }
+
+    .roles :global(.dymo) {
+      padding: 8px 14px;
+      font-size: 14px;
+      letter-spacing: 0.16em;
+    }
+  }
+</style>
