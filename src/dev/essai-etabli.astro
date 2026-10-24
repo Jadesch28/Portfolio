@@ -1,0 +1,13 @@
+---
+// Page d'essai : l'accueil avec le hero « établi vivant » à la place du hero « rangement ».
+// En développement et sur les aperçus Vercel seulement (voir astro.config.ts), jamais en production.
+import AccueilSuite from '../components/AccueilSuite.astro';
+import HeroEtabli from '../components/HeroEtabli.astro';
+import { hero, site } from '../data/site';
+import Base from '../layouts/Base.astro';
+---
+
+<Base title={`Essai : hero établi — ${site.nom}`} description={hero.texte} noindex>
+  <HeroEtabli />
+  <AccueilSuite />
+</Base>

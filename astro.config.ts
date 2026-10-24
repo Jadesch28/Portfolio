@@ -11,6 +11,8 @@ const site =
 
 // Les pages /styleguide et /og (source de l'image de partage et du favicon) n'existent qu'en
 // développement : elles ne sont jamais générées au build.
+// Les pages d'essai (/essais/…) existent aussi sur les aperçus Vercel (branches autres que main),
+// jamais en production.
 const styleguideDevOnly = (): AstroIntegration => ({
   name: 'styleguide-dev-only',
   hooks: {
@@ -18,6 +20,9 @@ const styleguideDevOnly = (): AstroIntegration => ({
       if (command === 'dev') {
         injectRoute({ pattern: '/styleguide', entrypoint: './src/dev/styleguide.astro' });
         injectRoute({ pattern: '/og', entrypoint: './src/dev/og.astro' });
+      }
+      if (command === 'dev' || process.env.VERCEL_ENV === 'preview') {
+        injectRoute({ pattern: '/essais/etabli', entrypoint: './src/dev/essai-etabli.astro' });
       }
     },
   },

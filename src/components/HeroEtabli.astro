@@ -1,0 +1,404 @@
+---
+// Hero « établi vivant » (essai) : le prénom découpé au pochoir dans quatre cartes, les étiquettes
+// Dymo, le portrait et quelques outils tombent sur le tapis, puis obéissent à une vraie physique
+// (scripts/hero-etabli.ts) : on les attrape et on les lance ; au doigt, une pichenette.
+// Aucun projet ici : ajouter un projet ne demande jamais de retoucher le hero.
+// Sans JavaScript ou avec prefers-reduced-motion : objets posés à leur place, sans physique.
+import grain from '../assets/textures/grain.png';
+import { hero, photo, photos } from '../data/site';
+import DecoItem from './DecoItem.astro';
+import DymoButton from './DymoButton.astro';
+import Polaroid from './Polaroid.astro';
+import StickyNote from './StickyNote.astro';
+
+type Pose = [x: number, y: number, r: number];
+type Objet = {
+  /** Pose au repos en % de la scène : desktop, puis mobile (absent = caché sur mobile). */
+  d: Pose;
+  m?: Pose;
+  /** Délai de la chute sur le tapis, en secondes. */
+  delai: number;
+  forme?: 'cercle';
+} & (
+  | { type: 'lettre'; lettre: string; fond: string; encre: string }
+  | { type: 'dymo'; texte: string; variante?: 'noir' | 'rouille' }
+  | { type: 'portrait' | 'post-it' }
+  | { type: 'crayon' | 'gomme' | 'rouleau' | 'trombone' | 'feuille' | 'feuille-olive' }
+);
+
+// Cartes du prénom : papier coloré, lettre évidée (on voit le tapis à travers)
+const cartes = [
+  { fond: 'var(--mustard)', d: [12, 33, -7], m: [27, 18.5, -6] },
+  { fond: 'var(--rust)', d: [25.5, 30, 4], m: [70, 16.5, 5] },
+  { fond: 'var(--paper)', d: [39, 33, -3], m: [30, 37.5, 3] },
+  { fond: '#9bab84', d: [52.5, 30, 6], m: [71, 36.5, -5] },
+] as const;
+const lettres: Objet[] = [...hero.prenom].map((lettre, i) => {
+  const c = cartes[i % cartes.length] ?? cartes[0];
+  return {
+    type: 'lettre',
+    lettre,
+    fond: c.fond,
+    encre: 'var(--mat)',
+    d: [...c.d],
+    m: [...c.m],
+    delai: 0.25 + i * 0.14,
+  };
+});
+
+const objets: Objet[] = [
+  ...lettres,
+  { type: 'portrait', d: [76, 47, 5], delai: 0.5 },
+  { type: 'dymo', texte: hero.nom, d: [27, 54, -2], m: [50, 51.5, -2], delai: 0.95 },
+  { type: 'dymo', texte: hero.role, d: [19, 62.5, 1.5], m: [38, 58.5, 1], delai: 1.1 },
+  {
+    type: 'dymo',
+    texte: hero.roleSuite,
+    variante: 'rouille',
+    d: [41, 63, -3],
+    m: [72, 65, -3],
+    delai: 1.2,
+  },
+  { type: 'post-it', d: [91, 76, 8], delai: 1.35 },
+  { type: 'rouleau', d: [91, 22, 0], forme: 'cercle', delai: 1.25 },
+  { type: 'crayon', d: [63, 86, -10], delai: 1.5 },
+  { type: 'gomme', d: [64, 71, 22], delai: 1.45 },
+  { type: 'trombone', d: [65, 17, 40], delai: 1.6 },
+  { type: 'feuille', d: [6, 14, 25], m: [8, 70, 30], delai: 1.7 },
+  { type: 'feuille-olive', d: [54, 91, -40], delai: 1.8 },
+];
+
+const pose = (o: Objet) =>
+  [
+    `--x: ${o.d[0]}`,
+    `--y: ${o.d[1]}`,
+    `--r: ${o.d[2]}`,
+    o.m && `--xm: ${o.m[0]}`,
+    o.m && `--ym: ${o.m[1]}`,
+    o.m && `--rm: ${o.m[2]}`,
+    `--delai: ${o.delai}s`,
+  ]
+    .filter(Boolean)
+    .join('; ');
+
+// Textes d'aide (absents des maquettes : à valider)
+const indice = 'psst… tout bouge : attrape un objet et lance-le !';
+const indiceTactile = 'psst… touche les objets !';
+---
+
+<section class="etabli" data-etabli style={`--grain: url(${grain.src})`}>
+  <h1 class="visually-hidden">{`${hero.prenom} ${hero.nom} — ${hero.role} ${hero.roleSuite}`}</h1>
+
+  <div class="scene" data-etabli-scene>
+    {objets.map((o) => (
+      <div
+        class:list={['objet', `objet--${o.type}`, { 'objet--bureau': !o.m }]}
+        style={pose(o)}
+        data-etabli-objet
+        data-forme={o.forme ?? 'rect'}
+        aria-hidden="true"
+      >
+        <div class="corps">
+          {o.type === 'lettre' && (
+            <span class="lettre" style={`--fond: ${o.fond}; --encre: ${o.encre}`}>
+              {o.lettre}
+            </span>
+          )}
+          {o.type === 'dymo' && (
+            <DymoButton as="span" variant={o.variante ?? 'noir'}>
+              {o.texte}
+            </DymoButton>
+          )}
+          {o.type === 'portrait' && (
+            <Polaroid
+              visuel={photos.portrait}
+              placeholder={photos.portrait.alt}
+              caption={photo.legende}
+              rotate={0}
+              width="230px"
+              photoHeight="250px"
+              sizes="230px"
+            />
+          )}
+          {o.type === 'post-it' && (
+            <StickyNote width="130px" size="24px" rotate={0}>
+              {hero.postIt[0]}
+              <br />
+              {hero.postIt[1]}
+            </StickyNote>
+          )}
+          {o.type !== 'lettre' &&
+            o.type !== 'dymo' &&
+            o.type !== 'portrait' &&
+            o.type !== 'post-it' && <DecoItem type={o.type} lift />}
+        </div>
+      </div>
+    ))}
+
+    <div class="texte" data-etabli-fixe>
+      <p class="t-paragraphe">{hero.texte}</p>
+      <div class="t-boutons">
+        <DymoButton href="#projets" variant="rouille">
+          {hero.boutonProjets}
+        </DymoButton>
+        <DymoButton href="/a-propos">{hero.boutonAPropos}</DymoButton>
+      </div>
+    </div>
+
+    <p class="indice hand" aria-hidden="true" data-etabli-indice>
+      <span class="indice-souris">{indice}</span>
+      <span class="indice-tactile">{indiceTactile}</span>
+    </p>
+    <!-- Remplace l'indice dès qu'on a joué : tout revient à sa place -->
+    <DymoButton variant="ghost" size="sm" class="ranger" data-etabli-ranger>
+      ↺ {hero.postIt[1]}
+    </DymoButton>
+  </div>
+</section>
+
+<script>
+  import '../scripts/hero-etabli';
+</script>
+
+<style>
+  .etabli {
+    position: relative;
+  }
+
+  .scene {
+    position: relative;
+    height: max(640px, 100svh);
+    overflow: hidden;
+    container-type: size;
+  }
+
+  /* Pose au repos (sans JavaScript, mouvement réduit) ; le JS prend ensuite la main en px */
+  .objet {
+    position: absolute;
+    top: 0;
+    left: 0;
+    z-index: 2;
+    line-height: 0;
+    transform: translate(calc(var(--x) * 1cqw - 50%), calc(var(--y) * 1cqh - 50%))
+      rotate(calc(var(--r) * 1deg));
+    touch-action: pan-y;
+    will-change: transform;
+    user-select: none;
+    -webkit-user-select: none;
+  }
+
+  .corps {
+    transition:
+      transform 0.18s var(--e-lift),
+      filter 0.18s ease;
+  }
+
+  /* Objet tenu : il se soulève */
+  .objet:global(.est-tenu) {
+    z-index: 20;
+  }
+
+  .objet:global(.est-tenu) .corps {
+    filter: drop-shadow(0 18px 14px rgba(0, 0, 0, 0.35));
+    transform: scale(1.06);
+  }
+
+  /* Chute sur le tapis au chargement (le JS active la physique à l'atterrissage) */
+  @media (prefers-reduced-motion: no-preference) {
+    :global(.js) .corps {
+      animation: objet-tombe 0.55s cubic-bezier(0.5, 0, 0.75, 0) var(--delai) backwards;
+    }
+
+    :global(.js) .objet {
+      cursor: grab;
+    }
+
+    :global(.js) .objet:global(.est-tenu) {
+      cursor: grabbing;
+    }
+  }
+
+  @keyframes objet-tombe {
+    from {
+      opacity: 0;
+      filter: drop-shadow(0 40px 30px rgba(0, 0, 0, 0.25));
+      transform: scale(1.5) translateY(-30px);
+    }
+
+    40% {
+      opacity: 1;
+    }
+  }
+
+  /* Cartes-lettres : papier coloré, lettre évidée au pochoir */
+  .lettre {
+    position: relative;
+    display: grid;
+    place-items: center;
+    width: clamp(96px, 13vw, 200px);
+    aspect-ratio: 5 / 6;
+    overflow: hidden;
+    border-radius: 5px;
+    background: var(--fond);
+    box-shadow:
+      inset 0 0 0 1px rgba(255, 255, 255, 0.28),
+      0 1px 2px rgba(0, 0, 0, 0.3),
+      0 8px 14px rgba(0, 0, 0, 0.32);
+    font-family: var(--f-stencil);
+    font-size: clamp(120px, 16.5vw, 254px);
+    font-weight: 900;
+    line-height: 0.8;
+    color: var(--encre);
+    text-shadow:
+      0 -1px 0 rgba(0, 0, 0, 0.35),
+      0 1px 0 rgba(255, 255, 255, 0.18);
+  }
+
+  .lettre::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background-image: var(--grain);
+    background-size: 256px;
+    mix-blend-mode: multiply;
+    opacity: 0.16;
+    pointer-events: none;
+  }
+
+  /* Texte d'accueil : fixe, les objets rebondissent dessus */
+  .texte {
+    position: absolute;
+    left: 5%;
+    bottom: 7%;
+    z-index: 3;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 16px;
+    max-width: 500px;
+  }
+
+  .t-paragraphe {
+    font-size: 20px;
+    line-height: 1.55;
+  }
+
+  .t-boutons {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+  }
+
+  .indice {
+    position: absolute;
+    right: 5%;
+    bottom: 3%;
+    z-index: 3;
+    margin: 0;
+    font-size: 22px;
+    color: var(--mustard);
+    pointer-events: none;
+    transition: opacity 0.6s ease;
+  }
+
+  .indice-tactile,
+  .indice {
+    display: none;
+  }
+
+  @media (prefers-reduced-motion: no-preference) {
+    :global(.js) .indice {
+      display: block;
+    }
+  }
+
+  @media (hover: none) {
+    .indice-souris {
+      display: none;
+    }
+
+    .indice-tactile {
+      display: inline;
+    }
+  }
+
+  :global(.etabli.a-joue) .indice {
+    opacity: 0;
+  }
+
+  /* « ↺ ranger le bureau » : à la place de l'indice, une fois qu'on a joué */
+  .etabli :global(.ranger) {
+    position: absolute;
+    right: 5%;
+    bottom: 3%;
+    z-index: 4;
+    display: none;
+    visibility: hidden;
+    opacity: 0;
+    transition:
+      opacity 0.4s ease 0.3s,
+      visibility 0s linear 0.7s;
+  }
+
+  @media (prefers-reduced-motion: no-preference) {
+    :global(.js) .etabli :global(.ranger) {
+      display: inline-flex;
+    }
+  }
+
+  :global(.etabli.a-joue) :global(.ranger) {
+    visibility: visible;
+    opacity: 1;
+    transition: opacity 0.4s ease 0.3s;
+  }
+
+  @media (max-width: 759.98px) {
+    .scene {
+      height: max(560px, calc(100svh - 66px));
+    }
+
+    .objet {
+      transform: translate(calc(var(--xm) * 1cqw - 50%), calc(var(--ym) * 1cqh - 50%))
+        rotate(calc(var(--rm) * 1deg));
+    }
+
+    .objet--bureau {
+      display: none;
+    }
+
+    .lettre {
+      width: 122px;
+      font-size: 156px;
+    }
+
+    .objet--dymo :global(.dymo) {
+      padding: 8px 14px;
+      font-size: 14px;
+      letter-spacing: 0.16em;
+    }
+
+    .texte {
+      right: 16px;
+      bottom: 20px;
+      left: 16px;
+      gap: 12px;
+    }
+
+    .t-paragraphe {
+      font-size: 17px;
+      line-height: 1.5;
+    }
+
+    .indice,
+    .etabli :global(.ranger) {
+      top: 2%;
+      right: auto;
+      bottom: auto;
+      left: 16px;
+    }
+
+    .indice {
+      font-size: 18px;
+    }
+  }
+</style>
