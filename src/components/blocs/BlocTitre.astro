@@ -1,5 +1,5 @@
 ---
-// En-tête d'un bloc de page projet : étiquette Dymo rouille numérotée + note manuscrite facultative.
+// En-tête d'un bloc de page projet : étiquette Dymo d'accent + note manuscrite facultative.
 import DymoButton from '../DymoButton.astro';
 
 interface Props {
@@ -14,7 +14,7 @@ const { etiquette, note, noteMobile } = Astro.props;
 
 <div class="bloc-titre">
   <h2 class="rv3">
-    <DymoButton as="span" variant="rouille">
+    <DymoButton as="span" variant="accent">
       {etiquette}
     </DymoButton>
   </h2>

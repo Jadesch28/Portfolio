@@ -1,8 +1,7 @@
 ---
 // Les blocs d'une page projet, dans l'ordre des données.
-// Chaque bloc titré reçoit un numéro (« 01 — La boîte ») ; une palette sans titre
-// se range à droite du bloc texte qui la précède.
-import { deuxChiffres, type Bloc, type Projet } from '../../data/projets';
+// Une palette sans titre se range à droite du bloc texte qui la précède.
+import type { Bloc, Projet } from '../../data/projets';
 import BlockCards from './BlockCards.astro';
 import BlockGallery from './BlockGallery.astro';
 import BlockPalette from './BlockPalette.astro';
@@ -18,7 +17,6 @@ const { projet } = Astro.props;
 
 type Palette = Extract<Bloc, { type: 'palette' }>;
 const rendus: Array<{ bloc: Bloc; etiquette?: string; palette?: Palette }> = [];
-let numero = 0;
 
 for (const bloc of projet.data.blocs) {
   const precedent = rendus.at(-1);
@@ -26,8 +24,7 @@ for (const bloc of projet.data.blocs) {
     precedent.palette = bloc;
     continue;
   }
-  const titre = 'titre' in bloc ? bloc.titre : undefined;
-  rendus.push({ bloc, etiquette: titre ? `${deuxChiffres(++numero)} — ${titre}` : undefined });
+  rendus.push({ bloc, etiquette: 'titre' in bloc ? bloc.titre : undefined });
 }
 ---
 

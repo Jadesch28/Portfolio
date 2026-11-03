@@ -1,6 +1,6 @@
 ---
 // Carte projet de l'accueil : visuel encadré cliquable + petit polaroïd en parallaxe, puis les textes.
-import { deuxChiffres, projetHref, type Projet } from '../data/projets';
+import { projetHref, type Projet } from '../data/projets';
 import { sectionProjets } from '../data/site';
 import DymoButton from './DymoButton.astro';
 import Visuel from './Visuel.astro';
@@ -53,13 +53,10 @@ const secondaire = d.visuelSecondaire ?? (import.meta.env.DEV ? { alt: 'visuel 2
   </div>
 
   <div class="textes">
-    <DymoButton as="span" size="sm" class="rv3">
-      {deuxChiffres(d.numero)} · {d.titreCourt}
-    </DymoButton>
     <h3 class="stencil rv4">{d.titre}</h3>
     <p class="categorie rv4">{d.categorie}</p>
     <p class="resume rv4">{d.resume}</p>
-    <DymoButton href={href} size="sm" variant="rouille" class="rv4">
+    <DymoButton href={href} size="sm" variant="accent" class="rv4">
       {sectionProjets.voirProjet}
       <span class="visually-hidden">{d.titre}</span>
     </DymoButton>
@@ -142,13 +139,13 @@ const secondaire = d.visuelSecondaire ?? (import.meta.env.DEV ? { alt: 'visuel 2
     display: flex;
     flex-direction: column;
     align-items: flex-start;
-    gap: 14px;
+    gap: 20px;
     min-width: 0;
   }
 
   h3 {
     font-size: clamp(48px, 5vw, 76px);
-    line-height: 0.88;
+    line-height: 1.05;
   }
 
   .categorie {
@@ -161,7 +158,7 @@ const secondaire = d.visuelSecondaire ?? (import.meta.env.DEV ? { alt: 'visuel 2
 
   .resume {
     font-size: 17.5px;
-    line-height: 1.6;
+    line-height: 1.75;
   }
 
   @media (prefers-reduced-motion: reduce) {
@@ -175,7 +172,7 @@ const secondaire = d.visuelSecondaire ?? (import.meta.env.DEV ? { alt: 'visuel 2
       display: flex;
       flex-direction: column;
       align-items: flex-start;
-      gap: 12px;
+      gap: 18px;
       padding: 40px 0;
     }
 
@@ -214,7 +211,7 @@ const secondaire = d.visuelSecondaire ?? (import.meta.env.DEV ? { alt: 'visuel 2
 
     .resume {
       font-size: 16.5px;
-      line-height: 1.55;
+      line-height: 1.7;
     }
   }
 </style>

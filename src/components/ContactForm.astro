@@ -88,7 +88,7 @@ const mailto = `mailto:${site.email}`;
         </p>
         <div class="pied">
           <p class="obligatoires">{formulaire.obligatoires}</p>
-          <DymoButton type="submit" variant="rouille" data-envoyer data-envoi={formulaire.envoi}>
+          <DymoButton type="submit" variant="accent" data-envoyer data-envoi={formulaire.envoi}>
             {formulaire.envoyer}
           </DymoButton>
         </div>
@@ -106,7 +106,7 @@ const mailto = `mailto:${site.email}`;
     <div class="sans-formulaire">
       <h2 class="hand titre">{formulaire.titre}</h2>
       <p>{formulaire.sansFormulaire}</p>
-      <DymoButton href={mailto} variant="rouille">
+      <DymoButton href={mailto} variant="accent">
         {site.email}
       </DymoButton>
     </div>

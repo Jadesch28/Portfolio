@@ -10,8 +10,9 @@ interface Props {
   /** Libellé du Placeholder quand il n'y a pas de visuel du tout. */
   label?: string;
   tone?: 'clair' | 'sombre';
-  /** cover : remplit un cadre de hauteur fixe ; naturel : garde les proportions de l'image. */
-  fit?: 'cover' | 'naturel';
+  /** cover : remplit un cadre de hauteur fixe ; naturel : garde les proportions de l'image ;
+      contenu : image entière dans un cadre de hauteur fixe. */
+  fit?: 'cover' | 'naturel' | 'contenu';
   widths?: number[];
   sizes?: string;
   /** Visuel au-dessus de la ligne de flottaison : chargé tout de suite. */
@@ -72,6 +73,11 @@ if (src && largeurs.length === 0) largeurs.push(src.width);
   .visuel--cover {
     height: 100%;
     object-fit: cover;
+  }
+
+  .visuel--contenu {
+    height: 100%;
+    object-fit: contain;
   }
 
   .visuel--naturel {

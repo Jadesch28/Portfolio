@@ -98,15 +98,12 @@ const poses = (o: { s0: Pose; s1: Pose }) =>
         <DymoButton as="span" typeIn delay={1}>
           {hero.role}
         </DymoButton>
-        <DymoButton as="span" variant="rouille" typeIn delay={1.9}>
-          {hero.roleSuite}
-        </DymoButton>
       </div>
       <p class="h-paragraphe anim-fade" style="--delai: 2.3s">
         {hero.texte}
       </p>
       <div class="h-boutons anim-fade" style="--delai: 2.5s">
-        <DymoButton href="#projets" variant="rouille">
+        <DymoButton href="#projets" variant="accent">
           {hero.boutonProjets}
         </DymoButton>
         <DymoButton href="/a-propos">{hero.boutonAPropos}</DymoButton>
@@ -146,9 +143,6 @@ const poses = (o: { s0: Pose; s1: Pose }) =>
     <p class="hand hint" aria-hidden="true">
       {hero.indiceScroll}
     </p>
-    <a href="#projets" class="hand done">
-      {hero.range}
-    </a>
   </div>
 </section>
 
@@ -186,7 +180,7 @@ const poses = (o: { s0: Pose; s1: Pose }) =>
     display: flex;
     flex-direction: column;
     align-items: flex-start;
-    gap: 18px;
+    gap: 22px;
     width: min(560px, 40%);
   }
 
@@ -204,7 +198,7 @@ const poses = (o: { s0: Pose; s1: Pose }) =>
   .h-paragraphe {
     max-width: 470px;
     font-size: 20px;
-    line-height: 1.55;
+    line-height: 1.7;
   }
 
   .h-boutons {
@@ -243,29 +237,14 @@ const poses = (o: { s0: Pose; s1: Pose }) =>
     display: none;
   }
 
-  .hint,
-  .done {
+  .hint {
     position: absolute;
     left: 5%;
     bottom: 5%;
     z-index: 6;
     margin: 0;
-  }
-
-  .hint {
     font-size: 26px;
     opacity: calc(1 - var(--p) * 3);
-  }
-
-  .done {
-    font-size: 30px;
-    color: var(--mustard);
-    opacity: 0;
-    visibility: hidden;
-  }
-
-  .scene.is-range .done {
-    visibility: visible;
   }
 
   /* Échelle approximative selon la largeur et la hauteur de l'écran */
@@ -338,11 +317,6 @@ const poses = (o: { s0: Pose; s1: Pose }) =>
     .hint {
       visibility: hidden;
     }
-
-    .done {
-      opacity: 1;
-      visibility: visible;
-    }
   }
 
   /* Mobile : scène empilée (nom → photo → texte → boutons), pas d'épinglage */
@@ -364,8 +338,7 @@ const poses = (o: { s0: Pose; s1: Pose }) =>
 
     .stage > :global(.nums),
     .deco-o,
-    .hint,
-    .done {
+    .hint {
       display: none;
     }
 

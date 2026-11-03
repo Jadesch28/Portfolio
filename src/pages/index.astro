@@ -6,7 +6,7 @@ import Polaroid from '../components/Polaroid.astro';
 import ProjectCard from '../components/ProjectCard.astro';
 import SectionHeading from '../components/SectionHeading.astro';
 import WashiTape from '../components/WashiTape.astro';
-import { deuxChiffres, getProjets } from '../data/projets';
+import { getProjets } from '../data/projets';
 import { avecContexte, personne } from '../data/seo';
 import { aProposCourt, contactCourt, hero, photos, sectionProjets, site } from '../data/site';
 import Base from '../layouts/Base.astro';
@@ -25,12 +25,7 @@ const jsonLd = avecContexte({
   <HeroTidy />
 
   <section id="projets" class="projets" aria-labelledby="projets-titre">
-    <SectionHeading
-      id="projets-titre"
-      count={`${deuxChiffres(projets.length)} ${sectionProjets.compteur}`}
-      title={sectionProjets.titre}
-      note={sectionProjets.note}
-    />
+    <SectionHeading id="projets-titre" title={sectionProjets.titre} />
     <div class="pj">
       <Notebook projets={projets} />
       <div class="cartes">
@@ -57,9 +52,6 @@ const jsonLd = avecContexte({
             sizes="(max-width: 760px) 250px, 320px"
           />
           <WashiTape left="100px" top="-14px" width={120} rotate={-3} />
-          <DymoButton as="span" variant="rouille" class="age">
-            {site.age}
-          </DymoButton>
         </div>
       </div>
       <div class="apropos-texte">
@@ -83,14 +75,14 @@ const jsonLd = avecContexte({
 
   <section class="contact" aria-labelledby="contact-titre" data-reveal>
     <div class="contact-inner">
-      <DymoButton as="span" variant="rouille" class="rv3">
+      <DymoButton as="span" variant="accent" class="rv3">
         {contactCourt.etiquette}
       </DymoButton>
       <h2 class="hand rv4" id="contact-titre">
         {contactCourt.phrase}
       </h2>
       <div class="contact-liens rv4">
-        <DymoButton href="/contact" variant="rouille" class="ecrire">
+        <DymoButton href="/contact" variant="accent" class="ecrire">
           {contactCourt.bouton}
         </DymoButton>
         <DymoButton href={site.reseaux.instagram}>Instagram</DymoButton>
@@ -147,13 +139,6 @@ const jsonLd = avecContexte({
     position: relative;
   }
 
-  .polaroid-atelier :global(.age) {
-    position: absolute;
-    right: -30px;
-    bottom: 34px;
-    transform: rotate(6deg);
-  }
-
   .apropos-texte {
     display: flex;
     flex: 1 1 420px;
@@ -166,14 +151,14 @@ const jsonLd = avecContexte({
     position: relative;
     display: flex;
     flex-direction: column;
-    gap: 12px;
+    gap: 16px;
     max-width: 580px;
     padding: 26px 30px 24px;
     color: var(--ink);
     background-color: var(--paper);
     background-image:
       linear-gradient(var(--card-redline), var(--card-redline)),
-      repeating-linear-gradient(180deg, transparent 0 29px, rgba(110, 140, 120, 0.35) 29px 30px);
+      repeating-linear-gradient(180deg, transparent 0 33px, rgba(110, 140, 120, 0.35) 33px 34px);
     background-size:
       100% 2px,
       100% 100%;
@@ -188,12 +173,12 @@ const jsonLd = avecContexte({
   .fiche h2 {
     font-size: 38px;
     font-weight: 400;
-    line-height: 1;
+    line-height: 1.3;
   }
 
   .fiche p {
     font-size: 17px;
-    line-height: 30px;
+    line-height: 34px;
   }
 
   .fiche p:last-child {
@@ -218,7 +203,7 @@ const jsonLd = avecContexte({
     max-width: 900px;
     font-size: clamp(44px, 5.6vw, 80px);
     font-weight: 400;
-    line-height: 1;
+    line-height: 1.2;
   }
 
   .contact-liens {
@@ -269,11 +254,6 @@ const jsonLd = avecContexte({
       order: 4;
     }
 
-    .polaroid-atelier :global(.age) {
-      right: -18px;
-      bottom: 24px;
-    }
-
     .fiche {
       padding: 0;
       color: var(--cream);
@@ -287,7 +267,7 @@ const jsonLd = avecContexte({
     }
 
     .fiche p {
-      line-height: 1.6;
+      line-height: 1.75;
     }
 
     .contact {

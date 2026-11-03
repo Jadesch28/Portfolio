@@ -1,5 +1,5 @@
 ---
-// Titre de section : compteur Dymo rouille + grand titre pochoir + note manuscrite moutarde.
+// Titre de section : compteur Dymo d'accent + grand titre pochoir + note manuscrite moutarde.
 import DymoButton from './DymoButton.astro';
 
 interface Props {
@@ -15,7 +15,7 @@ const { count, title, note, id } = Astro.props;
 <div class="heading">
   <div class="titre">
     {count && (
-      <DymoButton as="span" size="sm" variant="rouille">
+      <DymoButton as="span" size="sm" variant="accent">
         {count}
       </DymoButton>
     )}
@@ -46,7 +46,7 @@ const { count, title, note, id } = Astro.props;
 
   h2 {
     font-size: clamp(72px, 9vw, 140px);
-    line-height: 0.82;
+    line-height: 1;
   }
 
   .note {

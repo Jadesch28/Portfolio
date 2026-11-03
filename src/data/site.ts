@@ -4,11 +4,21 @@
 // Dans `bio`, les passages entre ==…== sont surlignés au scroll.
 import type { ImageMetadata } from 'astro';
 import atelier from '../assets/jade/atelier.jpg';
+import paves from '../assets/jade/paves.jpg';
+import portrait from '../assets/jade/portrait.jpg';
 
 /** Photos de Jade. Sans `src`, un Placeholder s'affiche à la place. */
-export const photos: Record<'portrait' | 'atelier', { src?: ImageMetadata; alt: string }> = {
-  // À fournir : portrait vertical 4:5 en haute définition (src/assets/jade/portrait.jpg).
-  portrait: { alt: 'photo de Jade — portrait' },
+export const photos: Record<
+  'portrait' | 'aPropos' | 'atelier',
+  { src?: ImageMetadata; alt: string }
+> = {
+  // Haut de l'accueil
+  portrait: { src: portrait, alt: 'Portrait de Jade, souriante, en pull à motifs.' },
+  // Haut de la page à propos
+  aPropos: {
+    src: paves,
+    alt: 'Jade, accroupie sur des pavés, lève les yeux vers l’objectif en souriant.',
+  },
   // Provisoire : photo de l'ancien site, en attendant une vraie photo « à l'atelier ».
   atelier: { src: atelier, alt: 'Jade, souriante, tient son affiche du Doudou 2026.' },
 };
@@ -16,7 +26,6 @@ export const photos: Record<'portrait' | 'atelier', { src?: ImageMetadata; alt: 
 export const site = {
   nom: 'Jade Deschuyteneer',
   nomCourt: 'Jade D.',
-  age: '24 ans',
   email: import.meta.env.PUBLIC_CONTACT_EMAIL || 'deschuyteneerjade@gmail.com',
   /** Point d'envoi du formulaire (Formspree de Jade) ; PUBLIC_FORM_ENDPOINT le remplace si définie. */
   formulaire: import.meta.env.PUBLIC_FORM_ENDPOINT || 'https://formspree.io/f/meaaooyr',
@@ -29,7 +38,7 @@ export const site = {
 
 export type NavId = 'projets' | 'a-propos' | 'contact';
 
-/** Liens de l'en-tête (desktop) ; le dernier est en Dymo rouille. */
+/** Liens de l'en-tête (desktop) ; le dernier est en Dymo d'accent. */
 export const navigation: ReadonlyArray<{ id: NavId; label: string; href: string }> = [
   { id: 'projets', label: 'Mes projets', href: '/#projets' },
   { id: 'a-propos', label: 'À propos', href: '/a-propos' },
@@ -52,14 +61,12 @@ export const hero = {
   prenom: 'JADE',
   nom: 'DESCHUYTENEER',
   role: 'Graphiste · motion designer',
-  roleSuite: '& illustratrice',
   texte:
     'Je bidouille, j’explore et je construis des images depuis que je suis capable de tenir un crayon. Bienvenue sur mon établi.',
   boutonProjets: 'Mes projets ↓',
   boutonAPropos: 'Qui suis-je ?',
   postIt: ['à faire :', 'ranger le bureau'],
   indiceScroll: '↓ fais défiler — je range un peu avant les projets',
-  range: 'voilà, c’est rangé. place aux projets ↓',
 } as const;
 
 /** Photo retournable du hero. */
@@ -72,18 +79,16 @@ export const photo = {
   dos: {
     titre: 'Salut !',
     lignes: [
-      'Jade, 24 ans. Graphiste, motion designer & illustratrice.',
+      'Jade, 24 ans. Graphiste & motion designer.',
       'Je bidouille, j’explore et je construis des images depuis que je sais tenir un crayon.',
     ],
     retourner: '↺ clique pour retourner',
   },
 } as const;
 
-/** Accueil : section projets (le compteur et le sommaire sont calculés). */
+/** Accueil : section projets (le sommaire est calculé). */
 export const sectionProjets = {
-  compteur: 'projets',
   titre: 'MES PROJETS',
-  note: 'le carnet suit ta lecture — clique sur un titre pour y aller, sur une image pour ouvrir le projet.',
   sommaire: 'Sommaire',
   sommaireOuvrir: 'ouvrir ▼',
   sommaireFermer: 'fermer ▲',
@@ -107,7 +112,7 @@ export const aProposCourt = {
 export const contactCourt = {
   etiquette: 'Contact',
   phrase: 'Votre message pourrait être le début d’un beau projet.',
-  bouton: 'Écrire à Jade →',
+  bouton: 'M’écrire →',
 } as const;
 
 /** Page à propos. */
@@ -115,7 +120,7 @@ export const aPropos = {
   etiquette: 'À propos',
   salut: 'SALUT,',
   moi: 'moi c’est Jade.',
-  role: 'Graphiste · motion designer · illustratrice',
+  role: 'Graphiste · motion designer',
   postIt: 'j’aime : la papeterie, le scrapbooking & l’automne',
   bio: [
     'Je m’appelle Jade Deschuyteneer, j’ai 24 ans, et ==je bidouille, j’explore et je construis des images depuis que je suis capable de tenir un crayon.== L’art a toujours été mon terrain de jeu, un espace où je teste, j’expérimente et je transforme des idées en formes, en couleurs et en mouvement.',
@@ -124,7 +129,7 @@ export const aPropos = {
   ],
   ceQueJeFais: {
     titre: 'Ce que je fais',
-    note: 'trois casquettes, un même établi',
+    note: 'deux casquettes, un même établi',
     projetsLies: 'Projets liés',
     // `projets` : slugs (noms de fichiers dans src/content/projets/).
     cartes: [
@@ -138,32 +143,42 @@ export const aPropos = {
         titre: 'Motion design',
         texte:
           'Vidéos animées et animations pour installations — donner du rythme et vraiment donner vie à un univers.',
-        projets: ['tamagotchi-paradise', 'repetition-critique'],
-      },
-      {
-        titre: 'Illustration',
-        texte:
-          'Illustrations au trait, affiches illustrées et cartes de jeu — des images qui racontent sans trop en dire.',
-        projets: ['rituel', 'doudou-illustre'],
+        projets: ['tamagotchi-paradise', 'repetition-critique', 'nogozone'],
       },
     ],
   },
   parcours: {
     titre: 'Parcours',
     note: 'à mesurer à la règle',
+    voirProgramme: 'Voir le programme',
     // Repris de l'image « Parcours » de l'ancien site ; années à compléter.
+    // `lien` : page du programme d'études sur le site de l'école, à valider par Jade.
     etapes: [
-      { annee: undefined, ecole: 'St-Luc Mons', diplome: 'Secondaire', detail: 'Option art' },
+      {
+        annee: undefined,
+        ecole: 'St-Luc Mons',
+        diplome: 'Secondaire',
+        detail: 'Option art',
+        lien: 'https://www.istl.be/arts-plastiques',
+      },
       {
         annee: undefined,
         ecole: 'Arts²',
         diplome: 'Bachelier',
         detail: 'Architecture d’intérieur',
+        lien: 'https://www.artsaucarre.be/arts-visuels/options/architecture-dinterieur/presentation-de-loption/',
       },
-      { annee: undefined, ecole: 'HELHa', diplome: 'Bachelier', detail: 'Publicité' },
+      {
+        annee: undefined,
+        ecole: 'HELHa',
+        diplome: 'Bachelier',
+        detail: 'Publicité',
+        lien: 'https://www.helha.be/etude/arts-appliques-2/publicite/cours-de-publicite/',
+      },
     ],
   },
-  // Repris des images « Logiciels » et « Langues » de l'ancien site ; niveaux de langue à compléter.
+  // Repris des images « Logiciels » et « Langues » de l'ancien site. Niveaux de langue à fournir
+  // par Jade (A1, B1, B2…) : ils s'affichent dès qu'on remplit `niveau`.
   logiciels: {
     titre: 'Logiciels',
     liste: ['Illustrator', 'Photoshop', 'After Effects', 'Premiere Pro', 'InDesign'],
@@ -175,7 +190,7 @@ export const aPropos = {
       { langue: 'Anglais', niveau: undefined },
     ],
   },
-  voirProjets: 'Voir ses projets',
+  voirProjets: 'Voir mes projets',
 } as const;
 
 /** Page contact. */
@@ -196,11 +211,11 @@ export const formulaire = {
     message: 'Message',
   },
   erreurs: {
-    prenom: '↑ ton prénom, s’il te plaît',
-    email: '↑ il me faut un e-mail valide pour te répondre',
-    message: '↑ et ton message ?',
+    prenom: '↑ votre prénom, s’il vous plaît',
+    email: '↑ il me faut un e-mail valide pour vous répondre',
+    message: '↑ et votre message ?',
   },
-  obligatoires: 'Tous les champs sauf « Nom » sont obligatoires.',
+  obligatoires: '* Champ obligatoire',
   envoyer: 'Envoyer le message →',
   envoi: 'Envoi…',
   tampon: 'ENVOYÉ',
@@ -216,7 +231,6 @@ export const formulaire = {
 export const pageProjet = {
   retour: '← Retour à l’établi',
   retourCourt: '← Établi',
-  projet: 'Projet',
   leProjet: 'Le projet',
   ficheTechnique: 'Fiche technique',
   fiche: {

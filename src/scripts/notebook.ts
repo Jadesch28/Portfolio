@@ -8,7 +8,6 @@ const cartes = [...document.querySelectorAll<HTMLElement>('article[data-projet]'
 
 if (carnet && cartes.length > 0) {
   const liens = [...carnet.querySelectorAll<HTMLElement>('[data-toc]')];
-  const numero = carnet.querySelector<HTMLElement>('[data-toc-num]');
   const courant = carnet.querySelector<HTMLElement>('[data-toc-courant]');
   let actif: string | undefined;
 
@@ -22,7 +21,6 @@ if (carnet && cartes.length > 0) {
       else lien.removeAttribute('aria-current');
     });
     const lien = liens.find((l) => l.dataset.toc === id);
-    if (numero && lien?.dataset.tocNumero) numero.textContent = lien.dataset.tocNumero;
     if (courant && lien?.dataset.tocLibelle) courant.textContent = lien.dataset.tocLibelle;
   };
 

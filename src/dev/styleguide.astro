@@ -27,7 +27,7 @@ import SentStamp from '../components/SentStamp.astro';
 import StencilRuler from '../components/StencilRuler.astro';
 import StickyNote from '../components/StickyNote.astro';
 import WashiTape from '../components/WashiTape.astro';
-import { deuxChiffres, getProjets, projetHref, projetSuivant } from '../data/projets';
+import { getProjets, projetHref, projetSuivant } from '../data/projets';
 import { aPropos, formulaire, hero, pageProjet, photos, sectionProjets } from '../data/site';
 import Base from '../layouts/Base.astro';
 
@@ -50,8 +50,8 @@ const couleurs = [
   { nom: 'Bord photo', variable: '--photo', usage: 'Polaroïds et tirages' },
   { nom: 'Encre', variable: '--ink', usage: 'Texte sur papier' },
   { nom: 'Encre douce', variable: '--ink-soft', usage: 'Labels sur papier' },
-  { nom: 'Rouille', variable: '--rust', usage: 'Action principale, actif' },
-  { nom: 'Rouille survol', variable: '--rust-hover', usage: 'Survol des boutons rouille' },
+  { nom: 'Rouille', variable: '--rust', usage: 'Titres sur papier, élément actif, erreurs' },
+  { nom: 'Moutarde survol', variable: '--mustard-hover', usage: 'Survol des boutons d’accent' },
   { nom: 'Dymo', variable: '--dymo', usage: 'Étiquettes & boutons' },
   { nom: 'Ambre (règle)', variable: '--amber', usage: 'Règle pochoir, progression' },
   { nom: 'Washi', variable: '--washi', usage: 'Scotch décoratif' },
@@ -82,7 +82,7 @@ const mouvements = [
 
   <div class="intro">
     <div class="titre">
-      <DymoButton as="span" size="sm" variant="rouille">
+      <DymoButton as="span" size="sm" variant="accent">
         Design system
       </DymoButton>
       <h1 class="stencil">COMPOSANTS &amp; TOKENS</h1>
@@ -96,7 +96,7 @@ const mouvements = [
   <!-- 01 · Couleurs -->
   <section class="sec">
     <div class="sh">
-      <DymoButton as="span" size="sm" variant="rouille">
+      <DymoButton as="span" size="sm" variant="accent">
         01 · Couleurs
       </DymoButton>
       <span class="cname">src/styles/tokens.css</span>
@@ -113,14 +113,14 @@ const mouvements = [
     </div>
     <p class="cap">
       Contrastes vérifiés : crème sur tapis 7,4:1 · moutarde sur tapis 5,9:1 · encre sur papier ≈
-      14:1 · rouille sur papier 6,7:1 · texte clair sur rouille 5,9:1.
+      14:1 · rouille sur papier 6,7:1 · encre sur moutarde 10:1.
     </p>
   </section>
 
   <!-- 02 · Typographie -->
   <section class="sec">
     <div class="sh">
-      <DymoButton as="span" size="sm" variant="rouille">
+      <DymoButton as="span" size="sm" variant="accent">
         02 · Typographie
       </DymoButton>
       <span class="cname">3 familles auto-hébergées</span>
@@ -159,7 +159,7 @@ const mouvements = [
           Salut, moi c’est Jade.
         </span>
         <span class="hand" style="font-size: 30px; line-height: 1.1; color: var(--mustard)">
-          {hero.range}
+          {hero.indiceScroll}
         </span>
         <span class="cap">
           Annotations 22–38 px, titres manuscrits jusqu’à 92 px. Jamais pour un texte long ni pour
@@ -172,7 +172,7 @@ const mouvements = [
   <!-- 03 · Espaces, ombres & mouvements -->
   <section class="sec">
     <div class="sh">
-      <DymoButton as="span" size="sm" variant="rouille">
+      <DymoButton as="span" size="sm" variant="accent">
         03 · Espaces, ombres &amp; mouvements
       </DymoButton>
       <span class="cname">--s-* · --sh-* · --e-*</span>
@@ -229,11 +229,11 @@ const mouvements = [
   <!-- 04 · Étiquettes Dymo -->
   <section class="sec">
     <div class="sh">
-      <DymoButton as="span" size="sm" variant="rouille">
+      <DymoButton as="span" size="sm" variant="accent">
         04 · Étiquettes Dymo
       </DymoButton>
       <span class="cname">
-        &lt;DymoButton variant="noir | rouille | ghost | ghost-encre" size="md | sm" as?="span"&gt;
+        &lt;DymoButton variant="noir | accent | ghost | ghost-encre" size="md | sm" as?="span"&gt;
       </span>
     </div>
     <div class="rangee rangee--large">
@@ -248,7 +248,7 @@ const mouvements = [
       <div class="cell">
         <span class="cname">Rouille — action principale</span>
         <div class="rangee">
-          <DymoButton variant="rouille">Défaut</DymoButton>
+          <DymoButton variant="accent">Défaut</DymoButton>
         </div>
       </div>
       <div class="cell">
@@ -257,7 +257,7 @@ const mouvements = [
           <DymoButton size="sm" href="#">
             Mes projets
           </DymoButton>
-          <DymoButton size="sm" variant="rouille" href="#">
+          <DymoButton size="sm" variant="accent" href="#">
             Contact
           </DymoButton>
           <DymoButton size="sm" variant="ghost" href="#">
@@ -279,7 +279,7 @@ const mouvements = [
       <div class="cell">
         <span class="cname">Étiquette simple (as="span")</span>
         <div class="rangee">
-          <DymoButton as="span" size="sm" variant="rouille">
+          <DymoButton as="span" size="sm" variant="accent">
             05 projets
           </DymoButton>
           <DymoButton as="span" size="sm">
@@ -302,7 +302,7 @@ const mouvements = [
   <!-- 05 · Matières -->
   <section class="sec">
     <div class="sh">
-      <DymoButton as="span" size="sm" variant="rouille">
+      <DymoButton as="span" size="sm" variant="accent">
         05 · Matières
       </DymoButton>
       <span class="cname">
@@ -353,7 +353,7 @@ const mouvements = [
   <!-- 06 · Cadres photo -->
   <section class="sec">
     <div class="sh">
-      <DymoButton as="span" size="sm" variant="rouille">
+      <DymoButton as="span" size="sm" variant="accent">
         06 · Cadres photo
       </DymoButton>
       <span class="cname">
@@ -402,7 +402,7 @@ const mouvements = [
   <!-- 07 · Navigation -->
   <section class="sec">
     <div class="sh">
-      <DymoButton as="span" size="sm" variant="rouille">
+      <DymoButton as="span" size="sm" variant="accent">
         07 · Navigation
       </DymoButton>
       <span class="cname">&lt;Header&gt; · &lt;MobileMenu&gt; · &lt;Footer&gt;</span>
@@ -421,18 +421,14 @@ const mouvements = [
   <!-- 08 · Projets -->
   <section class="sec">
     <div class="sh">
-      <DymoButton as="span" size="sm" variant="rouille">
+      <DymoButton as="span" size="sm" variant="accent">
         08 · Projets
       </DymoButton>
       <span class="cname">
         &lt;SectionHeading&gt; · &lt;Notebook&gt; · &lt;TocItem&gt; · &lt;ProjectCard&gt;
       </span>
     </div>
-    <SectionHeading
-      count={`${deuxChiffres(projets.length)} ${sectionProjets.compteur}`}
-      title={sectionProjets.titre}
-      note={sectionProjets.note}
-    />
+    <SectionHeading title={sectionProjets.titre} />
     <div class="projets-demo">
       <div class="carnet-demo">
         <Notebook projets={projets} actif={2} />
@@ -448,7 +444,7 @@ const mouvements = [
   <!-- 09 · Page projet -->
   <section class="sec">
     <div class="sh">
-      <DymoButton as="span" size="sm" variant="rouille">
+      <DymoButton as="span" size="sm" variant="accent">
         09 · Page projet
       </DymoButton>
       <span class="cname">
@@ -508,7 +504,7 @@ const mouvements = [
   <!-- Blocs -->
   <section class="sec sec--blocs">
     <div class="sh">
-      <DymoButton as="span" size="sm" variant="rouille">
+      <DymoButton as="span" size="sm" variant="accent">
         Blocs · Rituel
       </DymoButton>
       <span class="cname">
@@ -533,7 +529,7 @@ const mouvements = [
   <!-- 10 · Formulaire -->
   <section class="sec">
     <div class="sh">
-      <DymoButton as="span" size="sm" variant="rouille">
+      <DymoButton as="span" size="sm" variant="accent">
         10 · Formulaire
       </DymoButton>
       <span class="cname">&lt;ContactForm&gt; · &lt;Field&gt; · &lt;SentStamp&gt;</span>
@@ -572,7 +568,7 @@ const mouvements = [
   <!-- 11 · Objets du bureau -->
   <section class="sec">
     <div class="sh">
-      <DymoButton as="span" size="sm" variant="rouille">
+      <DymoButton as="span" size="sm" variant="accent">
         11 · Objets du bureau
       </DymoButton>
       <span class="cname">
@@ -601,8 +597,8 @@ const mouvements = [
   <!-- Contenu -->
   <section class="sec">
     <div class="sh">
-      <DymoButton as="span" size="sm" variant="rouille">
-        Contenu · {deuxChiffres(projets.length)} projets
+      <DymoButton as="span" size="sm" variant="accent">
+        Contenu · {projets.length} projets
       </DymoButton>
       <span class="cname">src/content/projets/*.md · src/data/site.ts</span>
     </div>
@@ -625,8 +621,7 @@ const mouvements = [
             </div>
             <div class="infos">
               <p class="cname">
-                {deuxChiffres(d.numero)} · {d.titreCourt} → suivant :{' '}
-                {projetSuivant(projets, p).data.titreCourt}
+                {d.titreCourt} → suivant : {projetSuivant(projets, p).data.titreCourt}
               </p>
               <h3 class="stencil">
                 <a href={projetHref(p)}>{d.titre}</a>

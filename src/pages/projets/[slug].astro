@@ -12,7 +12,7 @@ import ProjectVideo from '../../components/ProjectVideo.astro';
 import ReadingProgress from '../../components/ReadingProgress.astro';
 import Visuel from '../../components/Visuel.astro';
 import WashiTape from '../../components/WashiTape.astro';
-import { deuxChiffres, getProjets, projetSuivant, type Projet } from '../../data/projets';
+import { getProjets, projetSuivant, type Projet } from '../../data/projets';
 import { avecContexte, personne } from '../../data/seo';
 import { pageProjet, site } from '../../data/site';
 import Base from '../../layouts/Base.astro';
@@ -113,9 +113,6 @@ if (imageHero && d.video) {
         <div class="etiquettes anim-fade" style="--delai: 0.1s">
           <DymoButton href={retour} size="sm" variant="ghost" class="retour">
             {pageProjet.retour}
-          </DymoButton>
-          <DymoButton as="span" size="sm">
-            {`${pageProjet.projet} ${deuxChiffres(d.numero)} / ${deuxChiffres(projets.length)}`}
           </DymoButton>
         </div>
         <h1
@@ -260,7 +257,7 @@ if (imageHero && d.video) {
     flex: 1 1 380px;
     flex-direction: column;
     align-items: flex-start;
-    gap: 20px;
+    gap: 26px;
     min-width: 0;
     container-type: inline-size;
   }
@@ -274,7 +271,7 @@ if (imageHero && d.video) {
   /* Le titre peut déborder un peu sous le visuel, comme dans la maquette (RITUEL) */
   .titre {
     font-size: min(clamp(110px, 14vw, 210px), 100cqi * var(--k) / var(--len));
-    line-height: 0.8;
+    line-height: 1;
     letter-spacing: 0.02em;
     text-transform: uppercase;
     overflow-wrap: normal;
@@ -291,7 +288,7 @@ if (imageHero && d.video) {
   .intro {
     max-width: 470px;
     font-size: 21px;
-    line-height: 1.55;
+    line-height: 1.7;
   }
 
   .annotation {
@@ -363,19 +360,19 @@ if (imageHero && d.video) {
   .contenu {
     display: flex;
     flex-direction: column;
-    gap: 22px;
+    gap: 30px;
   }
 
   .contenu :global(p) {
     font-size: 18px;
-    line-height: 1.7;
+    line-height: 1.85;
     opacity: 0.92;
   }
 
   /* Chapô */
   .contenu :global(p:first-child) {
     font-size: 26px;
-    line-height: 1.5;
+    line-height: 1.6;
     opacity: 1;
   }
 
@@ -435,22 +432,19 @@ if (imageHero && d.video) {
       padding: 20px 16px 30px;
     }
 
-    /* Ordre mobile : étiquette → titre → catégorie → visuel → intro */
+    /* Ordre mobile : titre → catégorie → visuel → intro */
     .hero-inner {
       flex-direction: column;
       align-items: stretch;
-      gap: 14px;
+      gap: 18px;
     }
 
     .hero-texte {
       display: contents;
     }
 
+    /* Le retour est dans l'en-tête mobile */
     .etiquettes {
-      order: 1;
-    }
-
-    .etiquettes :global(.retour) {
       display: none;
     }
 
@@ -529,13 +523,13 @@ if (imageHero && d.video) {
     }
 
     .contenu {
-      gap: 16px;
+      gap: 22px;
     }
 
     .contenu :global(p),
     .contenu :global(p:first-child) {
       font-size: 17px;
-      line-height: 1.6;
+      line-height: 1.75;
       opacity: 1;
     }
 

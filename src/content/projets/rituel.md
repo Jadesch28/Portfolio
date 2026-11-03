@@ -33,12 +33,18 @@ blocs:
     titre: Les cartes
     note: cinq cartes illustrées + leur dos commun — survole-les
     images:
-      - alt: carte 1
-      - alt: carte 2
-      - alt: carte 3
-      - alt: carte 4
-      - alt: carte 5
-      - alt: dos commun
+      - src: ../../assets/projets/rituel/carte-sceau.jpg
+        alt: 'Carte « Sceau » : un chien au corps de serpent enroulé sur une spirale rouge. Effet : bloque la prochaine attaque.'
+      - src: ../../assets/projets/rituel/carte-portail.jpg
+        alt: 'Carte « Portail » : une niche en bois surmontée d’un os, dont l’entrée est une spirale rouge. Effet : joue une carte bonus.'
+      - src: ../../assets/projets/rituel/carte-malediction.jpg
+        alt: 'Carte « Malédiction » : un os noir brisé sur une étoile rouge. Effet : fais passer un tour.'
+      - src: ../../assets/projets/rituel/carte-invocation.jpg
+        alt: 'Carte « Invocation » : une chaîne enroulée en spirale, reliée à un collier. Effet : pioche 2 cartes.'
+      - src: ../../assets/projets/rituel/carte-echange.jpg
+        alt: 'Carte « Échange » : deux pattes griffues de part et d’autre d’une saucisse, sur une étoile rouge. Effet : échange une carte.'
+      - src: ../../assets/projets/rituel/carte-dos.jpg
+        alt: 'Dos commun des cartes : le mot « Rituel » entre deux pattes griffues, entouré de runes, sur fond gris.'
   - type: texte
     titre: L’univers visuel
     texte: |
@@ -46,8 +52,15 @@ blocs:
 
       Chaque élément graphique, des icônes de cartes aux runes ornementales, a été pensé pour renforcer l’univers du jeu et créer une cohérence visuelle forte à travers tous les supports.
     images:
-      - alt: 'spécimen : typographie manuscrite'
-      - alt: runes & icônes de cartes
+      - src: ../../assets/projets/rituel/titre-noir.png
+        alt: Le titre « Rituel » en lettres manuscrites noires, dont le I et le L ont la forme d’un os.
+        fond: clair
+      - src: ../../assets/projets/rituel/titre-beige.png
+        alt: Le même titre « Rituel » en beige, tel qu’il apparaît sur fond noir.
+        fond: sombre
+      - src: ../../assets/projets/rituel/patte.png
+        alt: Une patte griffue dessinée au trait, au pelage noir et aux griffes rouges.
+        fond: clair
   # Couleurs relevées sur le visuel de la boîte : à confirmer par Jade.
   - type: palette
     couleurs:
@@ -58,7 +71,7 @@ blocs:
       - nom: Rouge sang
         hex: '#7B311B'
   - type: galerie
-    titre: Le livret & le roll-up
+    titre: Les supports
     images:
       - src: ../../assets/projets/rituel/livret-1.jpg
         alt: Le livret de règles de Rituel, plié en accordéon, posé sur un fond gris clair.
@@ -67,6 +80,8 @@ blocs:
         alt: Le livret de règles de Rituel vu de l’autre côté, avec la couverture et les icônes des cartes.
       - src: ../../assets/projets/rituel/roll-up.jpg
         alt: Le roll-up promotionnel de Rituel, dressé contre un mur clair, à côté d’une porte.
+      - src: ../../assets/projets/rituel/cartes-mockup.jpg
+        alt: Trois cartes du jeu Rituel en éventail, sur fond gris.
   - type: citation
     texte: Ce projet m’a permis de travailler sur la déclinaison d’une identité visuelle sur des supports variés, en conjuguant direction artistique, illustration, mise en page et design produit.
 ---

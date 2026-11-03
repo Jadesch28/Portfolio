@@ -1,6 +1,6 @@
 ---
 // Projet suivant : grand polaroïd + titre pochoir + flèche qui glisse au survol.
-import { deuxChiffres, projetHref, type Projet } from '../data/projets';
+import { projetHref, type Projet } from '../data/projets';
 import { pageProjet } from '../data/site';
 import DymoButton from './DymoButton.astro';
 import Visuel from './Visuel.astro';
@@ -12,12 +12,11 @@ interface Props {
 
 const { projet } = Astro.props;
 const d = projet.data;
-const numero = deuxChiffres(d.numero);
 ---
 
 <div class="suivant">
   <div class="entete">
-    <DymoButton as="span" variant="rouille" class="rv3">
+    <DymoButton as="span" variant="accent" class="rv3">
       {pageProjet.projetSuivant}
     </DymoButton>
     <DymoButton href="/#projets" size="sm" variant="ghost" class="rv4">
@@ -37,15 +36,13 @@ const numero = deuxChiffres(d.numero);
             sizes="(max-width: 760px) calc(100vw - 32px), 380px"
           />
         </div>
-        <span class="hand legende">
-          {numero} — {d.titreCourt}
-        </span>
+        <span class="hand legende">{d.titreCourt}</span>
       </div>
       <WashiTape left="40%" top="-12px" width={100} rotate={4} />
     </div>
     <div class="textes">
       <DymoButton as="span" size="sm">
-        {numero} · {d.categorie}
+        {d.categorie}
       </DymoButton>
       <a href={projetHref(projet)} class="stencil titre">
         <span class="visually-hidden">{pageProjet.projetSuivant} : </span>
@@ -145,12 +142,12 @@ const numero = deuxChiffres(d.numero);
     display: flex;
     flex-direction: column;
     align-items: flex-start;
-    gap: 16px;
+    gap: 22px;
   }
 
   .titre {
     font-size: clamp(64px, 7vw, 112px);
-    line-height: 0.85;
+    line-height: 1;
     text-transform: uppercase;
   }
 
@@ -166,7 +163,7 @@ const numero = deuxChiffres(d.numero);
   .intro {
     max-width: 460px;
     font-size: 18px;
-    line-height: 1.6;
+    line-height: 1.75;
   }
 
   @media (prefers-reduced-motion: reduce) {

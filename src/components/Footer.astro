@@ -6,21 +6,23 @@ const annee = new Date().getFullYear();
 
 <footer class="footer">
   <div class="inner">
-    <span class="stencil marque">JADE D.</span>
-    <ul class="reseaux">
-      <li>
-        <a href={site.reseaux.instagram}>Instagram</a>
-      </li>
-      <li>
-        <a href={site.reseaux.linkedin}>LinkedIn</a>
-      </li>
-    </ul>
-    <p>
+    <div class="ligne">
+      <span class="stencil marque">JADE D.</span>
+      <ul class="reseaux">
+        <li>
+          <a href={site.reseaux.instagram}>Instagram</a>
+        </li>
+        <li>
+          <a href={site.reseaux.linkedin}>LinkedIn</a>
+        </li>
+      </ul>
+      <a class="hand haut" href="#top">
+        {footer.retourEnHaut} <span aria-hidden="true">↑</span>
+      </a>
+    </div>
+    <p class="mentions">
       © {annee} {site.nom}
     </p>
-    <a class="hand haut" href="#top">
-      {footer.retourEnHaut} <span aria-hidden="true">↑</span>
-    </a>
   </div>
 </footer>
 
@@ -32,14 +34,24 @@ const annee = new Date().getFullYear();
 
   .inner {
     display: flex;
-    flex-wrap: wrap;
-    align-items: center;
-    justify-content: space-between;
-    gap: 18px;
+    flex-direction: column;
+    gap: 14px;
     max-width: var(--container);
     margin: 0 auto;
     font-size: 14px;
     letter-spacing: 0.08em;
+  }
+
+  .ligne {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: 18px;
+  }
+
+  .mentions {
+    text-align: center;
   }
 
   .marque {

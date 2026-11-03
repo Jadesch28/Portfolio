@@ -24,7 +24,6 @@ if (scene && stage && !mouvementReduit()) {
     y1: lire(el, '--y1'),
     r1: lire(el, '--r1'),
   }));
-  const termine = scene.querySelector<HTMLElement>('.done');
   let derniere = -1;
 
   surScroll(({ vw }) => {
@@ -57,14 +56,6 @@ if (scene && stage && !mouvementReduit()) {
         style.setProperty('--r', lerp(o.r0, o.r1, e).toFixed(2));
         style.setProperty('--s', lerp(1, o.portrait ? 1.02 : 0.9, e).toFixed(3));
       });
-
-      // « voilà, c'est rangé » : visible à partir de 75 %, cliquable au-delà de 80 %.
-      if (termine) {
-        const opacite = borner((p - 0.75) * 4);
-        termine.style.opacity = opacite.toFixed(3);
-        termine.style.visibility = opacite > 0 ? 'visible' : 'hidden';
-        termine.style.pointerEvents = p > 0.8 ? 'auto' : 'none';
-      }
     };
   });
 }

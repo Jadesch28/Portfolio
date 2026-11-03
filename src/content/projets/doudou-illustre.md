@@ -31,6 +31,8 @@ blocs:
         alt: Le flyer A5 du Doudou 2026 posé de biais sur un fond vert olive.
       - src: ../../assets/projets/doudou-illustre/jade-et-affiche.jpg
         alt: Jade, souriante, tient son affiche du Doudou 2026.
+      - src: ../../assets/projets/doudou-illustre/detail-dragon-tete.jpg
+        alt: Détail de l’affiche du Doudou, la tête et le corps du dragon vert aux pics rouges, à côté d’un panache noir.
       - src: ../../assets/projets/doudou-illustre/detail-2026.jpg
         alt: Détail de l’affiche du Doudou, le millésime « 2026 » en rouge et un chapeau noir.
       - src: ../../assets/projets/doudou-illustre/detail-personnages.jpg

@@ -1,6 +1,6 @@
 # Portfolio de Jade Deschuyteneer
 
-Site portfolio de Jade Deschuyteneer, graphiste, motion designer & illustratrice. Direction
+Site portfolio de Jade Deschuyteneer, graphiste & motion designer. Direction
 artistique « L'établi » : un tapis de découpe vert, des étiquettes Dymo, du washi tape, des
 polaroïds et un carnet à spirale.
 
@@ -152,8 +152,8 @@ lourd).
 
 ### 5. Les blocs de la page projet
 
-La liste `blocs` décrit la page, dans l'ordre. Chaque bloc titré reçoit une étiquette numérotée
-(« 01 — La boîte »).
+La liste `blocs` décrit la page, dans l'ordre. Chaque bloc titré reçoit une étiquette
+(« La boîte »).
 
 | Type         | Champs                                     | Rendu                                                   |
 | ------------ | ------------------------------------------ | ------------------------------------------------------- |
@@ -182,7 +182,7 @@ blocs:
     donnees: { couleur: '#E2B655' }
 ```
 
-Le composant reçoit le projet, l'étiquette numérotée, la note et les `donnees`. Le haut de la
+Le composant reçoit le projet, l'étiquette, la note et les `donnees`. Le haut de la
 page, la fiche technique et le « projet suivant » restent communs à tous les projets (ce sont
 eux qui portent la transition depuis l'accueil).
 
@@ -210,9 +210,8 @@ Un visuel sans image s'affiche comme un bloc hachuré libellé (« [ carte 1 ] �
       alt: Carte 1 du jeu Rituel, …
   ```
 
-- **Photos de Jade** (portrait du haut de l'accueil et de l'à propos, photo « à l'atelier ») :
-  dans `src/data/site.ts`, objet `photos`. Pour le portrait, déposer
-  `src/assets/jade/portrait.jpg` (vertical 4:5), puis :
+- **Photos de Jade** (haut de l'accueil, haut de l'à propos, photo « à l'atelier ») : déposer le
+  fichier dans `src/assets/jade/`, puis le déclarer dans `src/data/site.ts`, objet `photos` :
 
   ```ts
   import portrait from '../assets/jade/portrait.jpg';
@@ -346,15 +345,14 @@ viennent mot pour mot de l'ancien site, les phrases courtes viennent des maquett
 
 **Photos**
 
-- Portrait de Jade (vertical 4:5, haute définition) pour l'accueil et l'à propos.
-- Photo « à l'atelier » : provisoirement, la photo de Jade avec son affiche du Doudou.
+- Photo « à l'atelier » (à propos de l'accueil) : provisoirement, la photo de Jade avec son
+  affiche du Doudou.
 
 **Projets**
 
 - Année, outils et (pour Rituel, Tamagotchi, NogoZone) contexte de chaque projet.
-- Rituel : les 5 cartes et leur dos commun, le spécimen typographique, les runes et icônes de
-  cartes, la face arrière de la boîte en image séparée (aujourd'hui un seul visuel montre les
-  deux faces).
+- Rituel : les runes et icônes de cartes, les titres et la patte en haute définition, la face arrière de
+  la boîte en image séparée (aujourd'hui un seul visuel montre les deux faces).
 - Rituel : confirmer les couleurs du nuancier (relevées sur le visuel de la boîte : noir
   `#0B0A0C`, beige `#DBCAA9`, rouge sang `#7B311B`).
 - Visuels secondaires (« détail ») de Tamagotchi Paradise et de Répétition critique.
@@ -386,7 +384,7 @@ src/
   content/projets/*.md     un fichier par projet
   assets/                  images (optimisées au build)
   data/site.ts             petits textes, photos de Jade, liens, formulaire
-  data/projets.ts          tri, numérotation, projet suivant
+  data/projets.ts          tri, projet suivant
   data/seo.ts              données structurées pour les moteurs de recherche
   layouts/Base.astro       <head>, polices, en-tête, pied de page, transitions
   components/              composants (Dymo, polaroïd, carnet, blocs…)

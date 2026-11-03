@@ -12,6 +12,8 @@ const projets = defineCollection({
       src: image().optional(),
       alt: z.string(),
       legende: z.string().optional(),
+      // Élément détouré (logo, dessin) : montré en entier sur ce fond, sans recadrage.
+      fond: z.enum(['clair', 'sombre']).optional(),
     });
 
     const bloc = z.discriminatedUnion('type', [

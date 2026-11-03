@@ -1,6 +1,6 @@
 ---
-// Une ligne du carnet sommaire : numéro pochoir, titre, catégorie, cercle au crayon si actif.
-import { deuxChiffres, type Projet } from '../data/projets';
+// Une ligne du carnet sommaire : titre, catégorie, cercle au crayon si actif.
+import type { Projet } from '../data/projets';
 
 interface Props {
   projet: Projet;
@@ -15,10 +15,8 @@ const { projet, actif = false } = Astro.props;
   class:list={['toc', { 'is-active': actif }]}
   aria-current={actif ? 'true' : undefined}
   data-toc={projet.id}
-  data-toc-numero={deuxChiffres(projet.data.numero)}
-  data-toc-libelle={`${deuxChiffres(projet.data.numero)} · ${projet.data.titre}`}
+  data-toc-libelle={projet.data.titre}
 >
-  <span class="stencil num">{deuxChiffres(projet.data.numero)}</span>
   <span class="textes">
     <span class="titre">{projet.data.titre}</span>
     <span class="categorie">{projet.data.categorie}</span>
@@ -38,23 +36,16 @@ const { projet, actif = false } = Astro.props;
 <style>
   .toc {
     position: relative;
-    display: grid;
-    grid-template-columns: 36px minmax(0, 1fr);
+    display: flex;
     align-items: center;
-    gap: 8px;
-    min-height: 50px;
-    padding: 4px 6px;
+    min-height: 54px;
+    padding: 8px 18px 8px 26px;
     color: var(--ink);
     text-decoration: none;
   }
 
   .toc:hover,
   .toc.is-active {
-    color: var(--rust);
-  }
-
-  .num {
-    font-size: 22px;
     color: var(--rust);
   }
 
@@ -67,7 +58,7 @@ const { projet, actif = false } = Astro.props;
   .titre {
     font-size: 19px;
     font-weight: 700;
-    line-height: 1.15;
+    line-height: 1.25;
   }
 
   .categorie {
@@ -83,10 +74,10 @@ const { projet, actif = false } = Astro.props;
      que ses pointillés de 700 px), dessiné quand l'élément devient actif */
   .cercle {
     position: absolute;
-    left: 30px;
-    top: -8px;
-    width: min(calc(100% - 26px), 300px);
-    height: calc(100% + 16px);
+    left: 0;
+    top: -6px;
+    width: min(100%, 300px);
+    height: calc(100% + 12px);
     overflow: visible;
     pointer-events: none;
   }

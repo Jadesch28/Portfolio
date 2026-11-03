@@ -51,9 +51,6 @@ const segments = (paragraphe: string) =>
           </span>
         </h1>
         <div class="etiquettes anim-fade" style="--delai: 0.8s">
-          <DymoButton as="span" size="sm" variant="rouille">
-            {site.age}
-          </DymoButton>
           <DymoButton as="span" size="sm">
             {aPropos.role}
           </DymoButton>
@@ -62,7 +59,7 @@ const segments = (paragraphe: string) =>
       <div class="hero-photo">
         <div class="photo-cadre anim-land" style="--delai: 0.2s">
           <Polaroid
-            visuel={photos.portrait}
+            visuel={photos.aPropos}
             width="400px"
             photoHeight="440px"
             rotate={3}
@@ -98,7 +95,7 @@ const segments = (paragraphe: string) =>
     <div class="wrap">
       <div class="titre-section">
         <h2 id="ce-que-je-fais" class="rv3">
-          <DymoButton as="span" variant="rouille">
+          <DymoButton as="span" variant="accent">
             {aPropos.ceQueJeFais.titre}
           </DymoButton>
         </h2>
@@ -130,7 +127,7 @@ const segments = (paragraphe: string) =>
     <div class="wrap">
       <div class="titre-section">
         <h2 id="parcours" class="rv3">
-          <DymoButton as="span" variant="rouille">
+          <DymoButton as="span" variant="accent">
             {aPropos.parcours.titre}
           </DymoButton>
         </h2>
@@ -154,6 +151,14 @@ const segments = (paragraphe: string) =>
               <span>
                 {e.diplome} · {e.detail}
               </span>
+              <a class="programme" href={e.lien}>
+                {aPropos.parcours.voirProgramme}
+                <span class="visually-hidden">
+                  {' '}
+                  : {e.ecole}, {e.detail}
+                </span>
+                <span aria-hidden="true">↗</span>
+              </a>
             </li>
           ))}
         </ol>
@@ -165,7 +170,7 @@ const segments = (paragraphe: string) =>
     <div class="wrap outils">
       <div class="groupe">
         <h2 class="rv3">
-          <DymoButton as="span" variant="rouille">
+          <DymoButton as="span" variant="accent">
             {aPropos.logiciels.titre}
           </DymoButton>
         </h2>
@@ -181,14 +186,14 @@ const segments = (paragraphe: string) =>
       </div>
       <div class="groupe">
         <h2 class="rv3">
-          <DymoButton as="span" variant="rouille">
+          <DymoButton as="span" variant="accent">
             {aPropos.langues.titre}
           </DymoButton>
         </h2>
         <ul class="tags rv4">
           {aPropos.langues.liste.map((l) => (
             <li>
-              <DymoButton as="span" size="sm" variant="ghost">
+              <DymoButton as="span" size="sm">
                 {l.langue}
                 {l.niveau && ` · ${l.niveau}`}
               </DymoButton>
@@ -204,7 +209,7 @@ const segments = (paragraphe: string) =>
     <div class="wrap cta">
       <h2 class="hand rv4">{contactCourt.phrase}</h2>
       <div class="liens rv4">
-        <DymoButton href="/contact" variant="rouille">
+        <DymoButton href="/contact" variant="accent">
           {contactCourt.bouton}
         </DymoButton>
         <DymoButton href="/#projets">{aPropos.voirProjets}</DymoButton>
@@ -262,24 +267,25 @@ const segments = (paragraphe: string) =>
     flex: 1 1 460px;
     flex-direction: column;
     align-items: flex-start;
-    gap: 18px;
+    gap: 26px;
     min-width: 0;
   }
 
   h1 {
     display: flex;
     flex-direction: column;
+    gap: 14px;
   }
 
   .salut {
     font-size: clamp(110px, 13vw, 200px);
-    line-height: 0.8;
+    line-height: 1;
   }
 
   .moi {
     font-size: clamp(56px, 6vw, 92px);
     font-weight: 400;
-    line-height: 1;
+    line-height: 1.2;
     color: var(--mustard);
   }
 
@@ -300,10 +306,11 @@ const segments = (paragraphe: string) =>
     max-width: 100%;
   }
 
+  /* Le post-it déborde à côté du polaroïd : il ne cache jamais la photo */
   .post-it {
     position: absolute;
-    left: -60px;
-    bottom: -30px;
+    left: -176px;
+    bottom: 24px;
     z-index: 5;
   }
 
@@ -363,7 +370,7 @@ const segments = (paragraphe: string) =>
     position: relative;
     display: flex;
     flex-direction: column;
-    gap: 14px;
+    gap: 18px;
     padding: 28px 28px 26px;
     color: var(--ink);
     background: var(--paper);
@@ -379,13 +386,13 @@ const segments = (paragraphe: string) =>
 
   .competence h3 {
     font-size: 54px;
-    line-height: 0.9;
+    line-height: 1.05;
     color: var(--mat);
   }
 
   .competence p {
     font-size: 17px;
-    line-height: 1.55;
+    line-height: 1.7;
   }
 
   .competence .lies {
@@ -467,6 +474,17 @@ const segments = (paragraphe: string) =>
     font-weight: 700;
   }
 
+  .programme {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    min-height: 44px;
+    margin-top: auto;
+    font-weight: 700;
+    color: var(--rust);
+    --focus-color: var(--rust);
+  }
+
   /* Logiciels & langues */
   .outils {
     display: grid;
@@ -503,7 +521,7 @@ const segments = (paragraphe: string) =>
     max-width: 900px;
     font-family: var(--f-hand);
     font-size: clamp(44px, 5.4vw, 78px);
-    line-height: 1;
+    line-height: 1.2;
   }
 
   .liens {
@@ -546,9 +564,13 @@ const segments = (paragraphe: string) =>
       flex: 1 1 100%;
     }
 
+    /* Pas la place à côté : il passe sous le polaroïd, en mordant juste sur son bas blanc */
     .post-it {
-      left: -10px;
-      bottom: -40px;
+      position: relative;
+      bottom: auto;
+      left: auto;
+      width: fit-content;
+      margin: -22px auto 0;
     }
 
     .post-it :global(.sticky) {

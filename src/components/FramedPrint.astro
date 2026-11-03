@@ -32,14 +32,19 @@ const hauteur = height ?? (visuel?.src ? undefined : '460px');
 ---
 
 <div
-  class:list={['print', { 'print--fixe': hauteur }, className]}
+  class:list={[
+    'print',
+    { 'print--fixe': hauteur },
+    visuel?.fond && `print--${visuel.fond}`,
+    className,
+  ]}
   style={[`--r: ${rotate}deg`, hauteur && `--h: ${hauteur}`].filter(Boolean).join('; ')}
 >
   <Visuel
     visuel={visuel}
     label={placeholder}
     tone={tone}
-    fit={hauteur ? 'cover' : 'naturel'}
+    fit={visuel?.fond ? 'contenu' : hauteur ? 'cover' : 'naturel'}
     sizes={sizes}
     priority={priority}
   />
@@ -55,6 +60,17 @@ const hauteur = height ?? (visuel?.src ? undefined : '460px');
 
   .print--fixe {
     height: var(--h);
+  }
+
+  /* Élément détouré : montré en entier, avec un peu d'air */
+  .print--clair,
+  .print--sombre {
+    padding: 14px;
+    background: var(--paper);
+  }
+
+  .print--sombre {
+    background: var(--kraft-dark);
   }
 
   @media (max-width: 759.98px) {

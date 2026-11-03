@@ -35,7 +35,7 @@ const projets = (await getProjets()).map((p) => ({ titre: p.data.titre, href: pr
             <DymoButton
               href={lien.href}
               size="sm"
-              variant={lien.id === 'contact' ? 'rouille' : 'noir'}
+              variant={lien.id === 'contact' ? 'accent' : 'noir'}
               current={current === lien.id}
             >
               {lien.label}
@@ -45,7 +45,7 @@ const projets = (await getProjets()).map((p) => ({ titre: p.data.titre, href: pr
         <span class="menu-btn">
           <DymoButton
             size="sm"
-            variant="rouille"
+            variant="accent"
             aria-haspopup="dialog"
             aria-controls="menu-mobile"
             aria-expanded="false"

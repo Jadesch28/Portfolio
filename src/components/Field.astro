@@ -38,6 +38,11 @@ const aria = {
 <div class:list={['field', className]} data-field>
   <label class="lbl" for={id}>
     {label}
+    {required && (
+      <span class="requis" aria-hidden="true">
+        *
+      </span>
+    )}
   </label>
   {type === 'textarea' ? (
     <textarea
@@ -81,6 +86,10 @@ const aria = {
     letter-spacing: 0.14em;
     text-transform: uppercase;
     color: var(--ink-soft);
+  }
+
+  .requis {
+    color: var(--rust);
   }
 
   .inp,

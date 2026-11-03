@@ -6,7 +6,7 @@ export const personne = (siteUrl: URL) => ({
   '@type': 'Person',
   '@id': new URL('/#jade', siteUrl).href,
   name: site.nom,
-  jobTitle: 'Graphiste, motion designer & illustratrice',
+  jobTitle: 'Graphiste & motion designer',
   url: new URL('/', siteUrl).href,
   email: `mailto:${site.email}`,
   address: { '@type': 'PostalAddress', addressCountry: 'BE' },

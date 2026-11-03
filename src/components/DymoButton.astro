@@ -4,7 +4,7 @@
 // Simple étiquette (titres de section, tags, compteurs) : as="span".
 import type { HTMLAttributes } from 'astro/types';
 
-type Variant = 'noir' | 'rouille' | 'ghost' | 'ghost-encre';
+type Variant = 'noir' | 'accent' | 'ghost' | 'ghost-encre';
 
 interface Props extends Omit<HTMLAttributes<'a'> & HTMLAttributes<'button'>, 'type' | 'style'> {
   href?: string;
@@ -104,13 +104,17 @@ const delayStyle = delay === undefined ? undefined : `--dymo-delay: ${delay}s`;
     letter-spacing: 0.16em;
   }
 
-  .dymo--rouille {
-    background-color: var(--rust);
+  /* Accent : moutarde et lettres encre (le rouge évoquait l'urgence) */
+  .dymo.dymo--accent {
+    color: var(--ink);
+    background-color: var(--mustard);
+    text-shadow: 0 1px 0 rgba(255, 255, 255, 0.4);
   }
 
-  a.dymo--rouille:hover,
-  button.dymo--rouille:hover {
-    background-color: var(--rust-hover);
+  a.dymo.dymo--accent:hover,
+  button.dymo.dymo--accent:hover {
+    color: var(--ink);
+    background-color: var(--mustard-hover);
   }
 
   .dymo.dymo--ghost,
@@ -132,6 +136,12 @@ const delayStyle = delay === undefined ? undefined : `--dymo-delay: ${delay}s`;
     box-shadow:
       var(--sh-sm),
       0 0 0 2px var(--mustard);
+  }
+
+  .dymo.dymo--accent[aria-current='page'] {
+    box-shadow:
+      var(--sh-sm),
+      0 0 0 2px var(--cream);
   }
 
   .dymo:disabled {

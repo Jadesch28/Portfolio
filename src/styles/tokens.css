@@ -6,7 +6,8 @@
   --mat-line: rgba(214, 229, 203, 0.2); /* grille 190 px */
   --mat-line-soft: rgba(214, 229, 203, 0.07); /* grille 38 px */
   --cream: #ede6d3; /* texte sur le tapis */
-  --mustard: #f3c979; /* annotations, catégories, focus */
+  --mustard: #f3c979; /* boutons principaux, annotations, catégories, focus */
+  --mustard-hover: #f8d999;
   --paper: #f6f0e2; /* carnet, fiches, formulaires */
   --photo: #fbf8f1; /* bords de polaroïds / tirages */
   --ink: #2a2118; /* texte sur papier */

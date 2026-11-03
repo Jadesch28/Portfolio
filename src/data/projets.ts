@@ -1,4 +1,4 @@
-// Accès aux projets : tri, URL, numérotation, projet suivant.
+// Accès aux projets : tri, URL, projet suivant.
 import { getCollection, type CollectionEntry } from 'astro:content';
 
 export type Projet = CollectionEntry<'projets'>;
@@ -24,9 +24,6 @@ export async function getProjets(): Promise<Projet[]> {
 }
 
 export const projetHref = (projet: Projet) => `/projets/${projet.id}`;
-
-/** 1 → « 01 » : compteurs, carnet, étiquettes Dymo. */
-export const deuxChiffres = (n: number) => String(n).padStart(2, '0');
 
 /** Projet suivant dans l'ordre, avec retour au premier après le dernier. */
 export function projetSuivant(projets: Projet[], courant: Projet): Projet {
