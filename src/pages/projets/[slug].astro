@@ -35,6 +35,7 @@ const projets = await getProjets();
 const { Content } = await render(projet);
 const retour = `/#projet-${projet.id}`;
 const visuelHaut = d.visuelHaut ?? d.visuelPrincipal;
+const hautEntier = !d.video && visuelHaut?.entier ? visuelHaut.src : undefined;
 const detail =
   d.detailHaut ?? d.visuelSecondaire ?? (import.meta.env.DEV ? { alt: 'détail' } : undefined);
 // Longueur du mot le plus long : règle la taille du titre pour qu'il tienne dans sa colonne,
@@ -141,7 +142,11 @@ if (imageHero && d.video) {
         )}
       </div>
 
-      <div class="hero-visuel" data-parallax-hero>
+      <div
+        class:list={['hero-visuel', { 'hero-visuel--entier': hautEntier }]}
+        style={hautEntier ? `--ratio: ${hautEntier.width} / ${hautEntier.height}` : undefined}
+        data-parallax-hero
+      >
         <div class="cadre anim-land vt-photo" style={`--delai: 0.15s; --vt: projet-${projet.id}`}>
           {d.video ? (
             <ProjectVideo
@@ -155,6 +160,7 @@ if (imageHero && d.video) {
             <ImageZoom visuel={visuelHaut}>
               <Visuel
                 visuel={visuelHaut}
+                fit={hautEntier ? 'contenu' : 'cover'}
                 label={`visuel principal : ${d.titre}`}
                 sizes={sizesHero}
                 widths={largeursHero}
@@ -321,6 +327,17 @@ if (imageHero && d.video) {
     background: var(--photo);
     box-shadow: 0 16px 28px rgba(0, 0, 0, 0.35);
     transform: rotate(1.2deg);
+  }
+
+  /* Visuel jamais recadré : le cadre prend ses proportions */
+  .hero-visuel--entier {
+    flex: 0 1 560px;
+    margin-inline: auto;
+  }
+
+  .hero-visuel--entier .cadre {
+    height: auto;
+    aspect-ratio: var(--ratio);
   }
 
   .detail {

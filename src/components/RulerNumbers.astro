@@ -1,6 +1,7 @@
 ---
-// Graduations numérotées du tapis (1 à 38, tous les 38 px), en haut du hero.
-const nombres = Array.from({ length: 38 }, (_, i) => i + 1);
+// Graduations numérotées du tapis (tous les 38 px), en haut du hero : assez pour un écran de
+// 5120 px, le surplus est masqué.
+const nombres = Array.from({ length: 135 }, (_, i) => i + 1);
 ---
 
 <div class="nums" aria-hidden="true">
@@ -12,8 +13,10 @@ const nombres = Array.from({ length: 38 }, (_, i) => i + 1);
 <style>
   .nums {
     position: absolute;
+    right: 0;
     left: 0;
     top: 3px;
+    overflow: hidden;
     display: flex;
     font-size: 10px;
     line-height: 1;

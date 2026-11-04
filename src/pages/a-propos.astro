@@ -3,7 +3,6 @@ import ACompleter from '../components/ACompleter.astro';
 import DymoButton from '../components/DymoButton.astro';
 import Etiquette from '../components/Etiquette.astro';
 import Polaroid from '../components/Polaroid.astro';
-import StickyNote from '../components/StickyNote.astro';
 import WashiTape from '../components/WashiTape.astro';
 import { getProjets, projetHref } from '../data/projets';
 import { avecContexte, personne } from '../data/seo';
@@ -56,6 +55,13 @@ const segments = (paragraphe: string) =>
             {aPropos.role} · {site.age}
           </Etiquette>
         </div>
+        {aPropos.cv.fichier && (
+          <div class="anim-fade" style="--delai: 0.95s">
+            <DymoButton href={aPropos.cv.fichier} variant="accent" download>
+              {aPropos.cv.libelle}
+            </DymoButton>
+          </div>
+        )}
       </div>
       <div class="hero-photo">
         <div class="photo-cadre anim-land" style="--delai: 0.2s">
@@ -71,11 +77,6 @@ const segments = (paragraphe: string) =>
             priority
           />
           <WashiTape left="34%" top="-12px" width={130} rotate={-4} />
-          <div class="post-it anim-land" style="--delai: 0.7s">
-            <StickyNote width="180px" size="22px" rotate={-8} lifted>
-              {aPropos.postIt}
-            </StickyNote>
-          </div>
         </div>
       </div>
     </div>
@@ -167,9 +168,18 @@ const segments = (paragraphe: string) =>
     <div class="wrap outils">
       <div class="groupe">
         <h2 class="titre-outils rv3">{aPropos.logiciels.titre}</h2>
-        <ul class="tags rv4">
+        <ul class="logos rv4">
           {aPropos.logiciels.liste.map((l) => (
-            <li>{l}</li>
+            <li>
+              <img
+                src={l.logo.src}
+                alt={l.nom}
+                title={l.nom}
+                width="60"
+                height="60"
+                loading="lazy"
+              />
+            </li>
           ))}
         </ul>
       </div>
@@ -282,14 +292,6 @@ const segments = (paragraphe: string) =>
   .photo-cadre {
     position: relative;
     max-width: 100%;
-  }
-
-  /* Le post-it déborde à côté du polaroïd : il ne cache jamais la photo */
-  .post-it {
-    position: absolute;
-    left: -176px;
-    bottom: 24px;
-    z-index: 5;
   }
 
   /* Bio sur papier ligné */
@@ -491,6 +493,21 @@ const segments = (paragraphe: string) =>
     text-transform: uppercase;
   }
 
+  .logos {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 14px;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  .logos img {
+    display: block;
+    width: 60px;
+    height: 60px;
+  }
+
   .tags {
     display: flex;
     flex-wrap: wrap;
@@ -571,20 +588,6 @@ const segments = (paragraphe: string) =>
     .hero-texte,
     .hero-photo {
       flex: 1 1 100%;
-    }
-
-    /* Pas la place à côté : il passe sous le polaroïd, en mordant juste sur son bas blanc */
-    .post-it {
-      position: relative;
-      bottom: auto;
-      left: auto;
-      width: fit-content;
-      margin: -22px auto 0;
-    }
-
-    .post-it :global(.sticky) {
-      --w: 150px;
-      --fs: 18px;
     }
 
     .titre-section {

@@ -16,6 +16,8 @@ const projets = defineCollection({
       fond: z.enum(['clair', 'sombre']).optional(),
       // Galerie : tirage carré (l'image est recadrée, mais s'agrandit en entier).
       carre: z.boolean().optional(),
+      // Visuel principal jamais recadré : son cadre (accueil, page projet) prend ses proportions.
+      entier: z.boolean().optional(),
     });
 
     const bloc = z.discriminatedUnion('type', [

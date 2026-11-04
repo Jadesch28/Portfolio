@@ -4,6 +4,13 @@
 // Dans `bio`, les passages entre ==…== sont surlignés au scroll.
 import type { ImageMetadata } from 'astro';
 import atelier from '../assets/jade/atelier.jpg';
+import afterEffects from '../assets/logiciels/after-effects.svg';
+import figma from '../assets/logiciels/figma.svg';
+import illustrator from '../assets/logiciels/illustrator.svg';
+import indesign from '../assets/logiciels/indesign.svg';
+import krita from '../assets/logiciels/krita.svg';
+import photoshop from '../assets/logiciels/photoshop.svg';
+import premierePro from '../assets/logiciels/premiere-pro.svg';
 import paves from '../assets/jade/paves.jpg';
 import portrait from '../assets/jade/portrait.jpg';
 
@@ -13,12 +20,12 @@ export const photos: Record<
   { src?: ImageMetadata; alt: string }
 > = {
   // Haut de l'accueil
-  portrait: { src: portrait, alt: 'Portrait de Jade, souriante, en pull à motifs.' },
-  // Haut de la page à propos
-  aPropos: {
+  portrait: {
     src: paves,
     alt: 'Jade, accroupie sur des pavés, lève les yeux vers l’objectif en souriant.',
   },
+  // Haut de la page à propos
+  aPropos: { src: portrait, alt: 'Portrait de Jade, souriante, en pull à motifs.' },
   // Provisoire : photo de l'ancien site, en attendant une vraie photo « à l'atelier ».
   atelier: { src: atelier, alt: 'Jade, souriante, tient son affiche du Doudou 2026.' },
 };
@@ -122,7 +129,6 @@ export const aPropos = {
   salut: 'SALUT,',
   moi: 'moi c’est Jade.',
   role: 'Graphiste · motion designer',
-  postIt: 'inspirations : la papeterie, le collage & les teintes d’automne',
   bio: [
     'Je m’appelle Jade Deschuyteneer, j’ai 24 ans, et ==je bidouille, j’explore et je construis des images depuis que je suis capable de tenir un crayon.== L’art a toujours été mon terrain de jeu, un espace où je teste, j’expérimente et je transforme des idées en formes, en couleurs et en mouvement.',
     'Je travaille entre le design graphique et le motion design, avec une affection particulière pour les projets qui ont ==du rythme, du caractère et une petite étincelle en plus.== J’aime quand une image raconte quelque chose sans trop en dire, quand une identité visuelle trouve son ton juste, ou quand une animation donne vraiment vie à un univers.',
@@ -183,13 +189,13 @@ export const aPropos = {
   logiciels: {
     titre: 'Logiciels',
     liste: [
-      'Illustrator',
-      'InDesign',
-      'Photoshop',
-      'Premiere Pro',
-      'After Effects',
-      'Figma',
-      'Krita',
+      { nom: 'Illustrator', logo: illustrator },
+      { nom: 'InDesign', logo: indesign },
+      { nom: 'Photoshop', logo: photoshop },
+      { nom: 'Premiere Pro', logo: premierePro },
+      { nom: 'After Effects', logo: afterEffects },
+      { nom: 'Figma', logo: figma },
+      { nom: 'Krita', logo: krita },
     ],
   },
   langues: {
@@ -199,6 +205,9 @@ export const aPropos = {
       { langue: 'Anglais', niveau: undefined },
     ],
   },
+  // CV : déposer le PDF dans public/ et indiquer son chemin (ex. '/cv-jade-deschuyteneer.pdf').
+  // Tant que `fichier` est vide, le bouton n'apparaît pas.
+  cv: { fichier: undefined as string | undefined, libelle: 'Télécharger mon CV' },
   voirProjets: 'Voir mes projets',
 } as const;
 

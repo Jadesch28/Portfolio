@@ -16,6 +16,7 @@ const { projet, index } = Astro.props;
 const d = projet.data;
 const href = projetHref(projet);
 const pair = index % 2 === 0;
+const entier = d.visuelPrincipal?.entier ? d.visuelPrincipal.src : undefined;
 const secondaire = d.visuelSecondaire ?? (import.meta.env.DEV ? { alt: 'visuel 2' } : undefined);
 ---
 
@@ -28,9 +29,13 @@ const secondaire = d.visuelSecondaire ?? (import.meta.env.DEV ? { alt: 'visuel 2
 >
   <div class="visuels">
     <a href={href} class="lien-photo rv1" aria-label={`${sectionProjets.ouvrirProjet} ${d.titre}`}>
-      <div class="photo vt-photo" style={`--vt: projet-${projet.id}`}>
+      <div
+        class:list={['photo', 'vt-photo', { 'photo--entier': entier }]}
+        style={`--vt: projet-${projet.id}${entier ? `; --ratio: ${entier.width} / ${entier.height}` : ''}`}
+      >
         <Visuel
           visuel={d.visuelPrincipal}
+          fit={entier ? 'contenu' : 'cover'}
           label={`visuel principal : ${d.titre}`}
           sizes="(max-width: 760px) calc(100vw - 32px), (max-width: 1100px) 50vw, 420px"
         />
@@ -99,6 +104,14 @@ const secondaire = d.visuelSecondaire ?? (import.meta.env.DEV ? { alt: 'visuel 2
     transition:
       transform 0.4s var(--e-lift),
       box-shadow 0.4s ease;
+  }
+
+  /* Visuel jamais recadré : le cadre prend ses proportions */
+  .photo.photo--entier {
+    width: min(100%, 400px);
+    height: auto;
+    margin-inline: auto;
+    aspect-ratio: var(--ratio);
   }
 
   .lien-photo:hover .photo {

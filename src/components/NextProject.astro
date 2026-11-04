@@ -12,6 +12,7 @@ interface Props {
 
 const { projet } = Astro.props;
 const d = projet.data;
+const entier = d.visuelPrincipal?.entier ? d.visuelPrincipal.src : undefined;
 ---
 
 <div class="suivant">
@@ -27,9 +28,13 @@ const d = projet.data;
   <div class="next rv4">
     <div class="pol">
       <div class="cadre">
-        <div class="photo vt-photo" style={`--vt: projet-${projet.id}`}>
+        <div
+          class:list={['photo', 'vt-photo', { 'photo--entier': entier }]}
+          style={`--vt: projet-${projet.id}${entier ? `; --ratio: ${entier.width} / ${entier.height}` : ''}`}
+        >
           <Visuel
             visuel={d.visuelPrincipal}
+            fit={entier ? 'contenu' : 'cover'}
             label={d.titre}
             tone="clair"
             widths={[400, 700]}
@@ -123,6 +128,11 @@ const d = projet.data;
   .next:has(.titre:focus-visible) {
     outline: 2px solid var(--mustard);
     outline-offset: 10px;
+  }
+
+  .photo.photo--entier {
+    height: auto;
+    aspect-ratio: var(--ratio);
   }
 
   .textes {

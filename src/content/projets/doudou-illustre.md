@@ -18,10 +18,11 @@ disciplines:
   - Composition typographique
 visuelPrincipal:
   src: ../../assets/projets/doudou-illustre/affiche.jpg
+  entier: true
   alt: 'L’affiche « Doudou 2026 » : un dragon vert stylisé à côté du mot « Doudou » écrit à la verticale, avec en bas un casque doré, un chapeau et d’autres objets du folklore montois, dans un cadre rayé rouge et blanc.'
 visuelSecondaire:
-  src: ../../assets/projets/doudou-illustre/detail-dragon.jpg
-  alt: Détail de l’affiche du Doudou, les lettres vertes et le corps du dragon.
+  src: ../../assets/projets/doudou-illustre/detail-dragon-tete.jpg
+  alt: Zoom sur l’illustration de l’affiche du Doudou, la tête et le corps du dragon vert aux pics rouges.
 blocs:
   - type: galerie
     titre: Galerie
