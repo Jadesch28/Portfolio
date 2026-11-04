@@ -205,9 +205,6 @@ export const aPropos = {
       { langue: 'Anglais', niveau: undefined },
     ],
   },
-  // CV : déposer le PDF dans public/ et indiquer son chemin (ex. '/cv-jade-deschuyteneer.pdf').
-  // Tant que `fichier` est vide, le bouton n'apparaît pas.
-  cv: { fichier: undefined as string | undefined, libelle: 'Télécharger mon CV' },
   voirProjets: 'Voir mes projets',
 } as const;
 

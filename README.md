@@ -350,8 +350,6 @@ viennent mot pour mot de l'ancien site, les phrases courtes viennent des maquett
 
 **Photos**
 
-- CV en PDF : le déposer dans `public/`, puis indiquer son chemin dans `src/data/site.ts`
-  (`aPropos.cv.fichier`) ; le bouton « Télécharger mon CV » apparaît alors sur l'à propos.
 - Photo « à l'atelier » (à propos de l'accueil) : provisoirement, la photo de Jade avec son
   affiche du Doudou.
 

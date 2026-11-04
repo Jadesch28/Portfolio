@@ -55,13 +55,6 @@ const segments = (paragraphe: string) =>
             {aPropos.role} · {site.age}
           </Etiquette>
         </div>
-        {aPropos.cv.fichier && (
-          <div class="anim-fade" style="--delai: 0.95s">
-            <DymoButton href={aPropos.cv.fichier} variant="accent" download>
-              {aPropos.cv.libelle}
-            </DymoButton>
-          </div>
-        )}
       </div>
       <div class="hero-photo">
         <div class="photo-cadre anim-land" style="--delai: 0.2s">
