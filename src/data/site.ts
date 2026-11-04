@@ -182,7 +182,15 @@ export const aPropos = {
   // le test de Jade ; il s'affiche dès qu'on remplit `niveau`.
   logiciels: {
     titre: 'Logiciels',
-    liste: ['Illustrator', 'Photoshop', 'After Effects', 'Premiere Pro', 'InDesign'],
+    liste: [
+      'Illustrator',
+      'InDesign',
+      'Photoshop',
+      'Premiere Pro',
+      'After Effects',
+      'Figma',
+      'Krita',
+    ],
   },
   langues: {
     titre: 'Langues',
