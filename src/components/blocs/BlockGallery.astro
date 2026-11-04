@@ -1,7 +1,9 @@
 ---
-// Bloc « galerie » : tirages bordés en quinconce, washi alternés, légende manuscrite.
+// Bloc « galerie » : tirages bordés sur deux colonnes (gauche, droite, gauche…), washi alternés,
+// légende manuscrite. Trois images : la troisième est centrée sous les deux autres.
 import type { Visuel } from '../../data/projets';
 import FramedPrint from '../FramedPrint.astro';
+import ImageZoom from '../ImageZoom.astro';
 import WashiTape from '../WashiTape.astro';
 import BlocTitre from './BlocTitre.astro';
 
@@ -18,43 +20,79 @@ const washis = [
   { color: 'moutarde', left: '42%', rotate: 3 },
   { color: 'sauge', left: '36%', rotate: -4 },
 ] as const;
+
+// Position de chaque tirage dans la grille, en lignes de 1 % de la largeur de la galerie.
+const LARGEUR_COLONNE = 48;
+const ESPACE = 5;
+const hauteurs = [1, 1];
+const places = images.map((visuel, i) => {
+  const proportion = visuel.carre || !visuel.src ? 1 : visuel.src.height / visuel.src.width;
+  const lignes = Math.ceil(proportion * LARGEUR_COLONNE) + 2 + ESPACE + (visuel.legende ? 5 : 0);
+  const centre = images.length === 3 && i === 2;
+  const colonne = i % 2;
+  const ligne = centre ? Math.max(...hauteurs) : (hauteurs[colonne] ?? 1);
+  if (centre) hauteurs.fill(ligne + lignes);
+  else hauteurs[colonne] = ligne + lignes;
+  return {
+    centre,
+    style: `--col: ${centre ? '1 / -1' : colonne + 1}; --ligne: ${ligne}; --lignes: ${lignes}`,
+  };
+});
 ---
 
 <BlocTitre etiquette={etiquette} note={note} />
-<div class="galerie">
-  {images.map((visuel, i) => {
-    const w = washis[i % washis.length] ?? washis[0];
-    return (
-      <figure class:list={['item', i % 2 ? 'rv2' : 'rv1']}>
-        <div class="tirage" data-parallax={i === 0 && images.length > 1 ? '-40' : undefined}>
-          <FramedPrint
-            visuel={visuel}
-            rotate={rotations[i % rotations.length]}
-            sizes="(max-width: 760px) calc(100vw - 32px), 600px"
-          />
-          <WashiTape color={w.color} left={w.left} top="-12px" width={110} rotate={w.rotate} />
-        </div>
-        {visuel.legende && <figcaption class="hand">{visuel.legende}</figcaption>}
-      </figure>
-    );
-  })}
+<div class="cadre-galerie">
+  <div class="galerie">
+    {images.map((visuel, i) => {
+      const w = washis[i % washis.length] ?? washis[0];
+      const place = places[i];
+      return (
+        <figure
+          class:list={['item', i % 2 ? 'rv2' : 'rv1', { 'item--centre': place?.centre }]}
+          style={place?.style}
+        >
+          <div class="tirage" data-parallax={i === 0 && images.length > 1 ? '-40' : undefined}>
+            <ImageZoom visuel={visuel}>
+              <FramedPrint
+                visuel={visuel}
+                rotate={rotations[i % rotations.length]}
+                sizes="(max-width: 760px) calc(100vw - 32px), 600px"
+              />
+            </ImageZoom>
+            <WashiTape color={w.color} left={w.left} top="-12px" width={110} rotate={w.rotate} />
+          </div>
+          {visuel.legende && <figcaption class="hand">{visuel.legende}</figcaption>}
+        </figure>
+      );
+    })}
+  </div>
 </div>
 
 <style>
+  /* Repère des unités cqi de la grille */
+  .cadre-galerie {
+    container-type: inline-size;
+  }
+
+  /* Deux colonnes : lignes de 1 % de large, chaque tirage en occupe selon ses proportions */
   .galerie {
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(min(420px, 100%), 1fr));
+    grid-template-columns: repeat(2, 48cqi);
+    grid-auto-rows: 1cqi;
+    justify-content: space-between;
     align-items: start;
-    gap: 48px;
   }
 
   .item {
+    grid-column: var(--col);
+    grid-row: var(--ligne) / span var(--lignes);
     margin: 0;
   }
 
-  /* Quinconce : un tirage sur deux descend de 50 px */
-  .item:nth-child(even) {
-    margin-top: 50px;
+  /* Tirage seul sur sa rangée : centré */
+  .item--centre {
+    justify-self: center;
+    width: 48cqi;
   }
 
   .tirage {
@@ -69,13 +107,25 @@ const washis = [
     color: var(--mustard);
   }
 
+  /* Une colonne : ordre de lecture simple */
+  @media (max-width: 899.98px) {
+    .galerie {
+      grid-template-columns: minmax(0, 1fr);
+      grid-auto-rows: auto;
+      gap: 40px;
+    }
+
+    .item,
+    .item--centre {
+      grid-column: auto;
+      grid-row: auto;
+      width: auto;
+    }
+  }
+
   @media (max-width: 759.98px) {
     .galerie {
       gap: 26px;
-    }
-
-    .item:nth-child(even) {
-      margin-top: 0;
     }
 
     figcaption {

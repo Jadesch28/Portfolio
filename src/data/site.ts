@@ -26,6 +26,7 @@ export const photos: Record<
 export const site = {
   nom: 'Jade Deschuyteneer',
   nomCourt: 'Jade D.',
+  age: '24 ans',
   email: import.meta.env.PUBLIC_CONTACT_EMAIL || 'deschuyteneerjade@gmail.com',
   /** Point d'envoi du formulaire (Formspree de Jade) ; PUBLIC_FORM_ENDPOINT le remplace si définie. */
   formulaire: import.meta.env.PUBLIC_FORM_ENDPOINT || 'https://formspree.io/f/meaaooyr',
@@ -101,7 +102,7 @@ export const aProposCourt = {
   etiquette: 'À propos',
   titre: 'Salut, moi c’est Jade.',
   paragraphes: [
-    'Je travaille entre le design graphique, le motion design et l’illustration, avec une affection particulière pour les projets qui ont du rythme, du caractère et une petite étincelle en plus.',
+    'Je travaille entre le design graphique et le motion design, avec une affection particulière pour les projets qui ont du rythme, du caractère et une petite étincelle en plus.',
     'En bref, je crée des visuels qui cherchent à être à la fois clairs, vivants et un peu inattendus.',
   ],
   lireLaSuite: 'Lire la suite →',
@@ -111,7 +112,7 @@ export const aProposCourt = {
 /** Accroche de contact (accueil, à propos, contact). */
 export const contactCourt = {
   etiquette: 'Contact',
-  phrase: 'Votre message pourrait être le début d’un beau projet.',
+  phrase: 'Votre message pourrait être le début d’une belle collaboration.',
   bouton: 'M’écrire →',
 } as const;
 
@@ -121,10 +122,10 @@ export const aPropos = {
   salut: 'SALUT,',
   moi: 'moi c’est Jade.',
   role: 'Graphiste · motion designer',
-  postIt: 'j’aime : la papeterie, le scrapbooking & l’automne',
+  postIt: 'inspirations : la papeterie, le collage & les teintes d’automne',
   bio: [
     'Je m’appelle Jade Deschuyteneer, j’ai 24 ans, et ==je bidouille, j’explore et je construis des images depuis que je suis capable de tenir un crayon.== L’art a toujours été mon terrain de jeu, un espace où je teste, j’expérimente et je transforme des idées en formes, en couleurs et en mouvement.',
-    'Je travaille entre le design graphique, le motion design et l’illustration, avec une affection particulière pour les projets qui ont ==du rythme, du caractère et une petite étincelle en plus.== J’aime quand une image raconte quelque chose sans trop en dire, quand une identité visuelle trouve son ton juste, ou quand une animation donne vraiment vie à un univers.',
+    'Je travaille entre le design graphique et le motion design, avec une affection particulière pour les projets qui ont ==du rythme, du caractère et une petite étincelle en plus.== J’aime quand une image raconte quelque chose sans trop en dire, quand une identité visuelle trouve son ton juste, ou quand une animation donne vraiment vie à un univers.',
     'Mon approche mélange instinct, curiosité et précision : je passe facilement d’un logo à une vidéo animée, d’un univers ludique à quelque chose de plus conceptuel. En bref, je crée des visuels qui cherchent à être à la fois ==clairs, vivants et un peu inattendus.==',
   ],
   ceQueJeFais: {
@@ -177,8 +178,8 @@ export const aPropos = {
       },
     ],
   },
-  // Repris des images « Logiciels » et « Langues » de l'ancien site. Niveaux de langue à fournir
-  // par Jade (A1, B1, B2…) : ils s'affichent dès qu'on remplit `niveau`.
+  // Repris des images « Logiciels » et « Langues » de l'ancien site. Anglais : niveau à ajouter après
+  // le test de Jade ; il s'affiche dès qu'on remplit `niveau`.
   logiciels: {
     titre: 'Logiciels',
     liste: ['Illustrator', 'Photoshop', 'After Effects', 'Premiere Pro', 'InDesign'],
@@ -186,7 +187,7 @@ export const aPropos = {
   langues: {
     titre: 'Langues',
     liste: [
-      { langue: 'Français', niveau: undefined },
+      { langue: 'Français', niveau: 'Langue maternelle' },
       { langue: 'Anglais', niveau: undefined },
     ],
   },
@@ -195,7 +196,7 @@ export const aPropos = {
 
 /** Page contact. */
 export const contact = {
-  phrase: 'Votre message pourrait être le début d’un beau projet.',
+  phrase: 'Votre message pourrait être le début d’une belle collaboration.',
   sousTitre: 'N’hésitez pas à me contacter.',
   ailleurs: 'Ailleurs sur le web',
   emailDirect: 'E-mail direct :',
@@ -237,13 +238,15 @@ export const pageProjet = {
     projet: 'Projet',
     type: 'Type',
     supports: 'Supports',
-    disciplines: 'Disciplines',
-    annee: 'Année',
-    contexte: 'Contexte',
-    outils: 'Outils',
+    logiciels: 'Logiciels',
   },
   glisse: '← glisse →',
   // Absents des maquettes : à valider par Jade.
+  agrandir: 'Agrandir l’image',
+  imageAgrandie: 'Image agrandie',
+  imagePrecedente: 'Image précédente',
+  imageSuivante: 'Image suivante',
+  fermer: 'Fermer',
   videoPause: 'Pause',
   videoLecture: 'Lecture',
   videoSonActiver: 'Activer le son',

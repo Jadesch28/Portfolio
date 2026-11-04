@@ -1,6 +1,7 @@
 ---
 import ACompleter from '../components/ACompleter.astro';
 import DymoButton from '../components/DymoButton.astro';
+import Etiquette from '../components/Etiquette.astro';
 import Polaroid from '../components/Polaroid.astro';
 import StickyNote from '../components/StickyNote.astro';
 import WashiTape from '../components/WashiTape.astro';
@@ -39,9 +40,9 @@ const segments = (paragraphe: string) =>
   <section class="hero">
     <div class="wrap hero-inner">
       <div class="hero-texte">
-        <DymoButton as="span" typeIn delay={0.2}>
+        <Etiquette typeIn delay={0.2}>
           {aPropos.etiquette}
-        </DymoButton>
+        </Etiquette>
         <h1>
           <span class="stencil salut anim-fade" style="--delai: 0.3s">
             {aPropos.salut}
@@ -51,9 +52,9 @@ const segments = (paragraphe: string) =>
           </span>
         </h1>
         <div class="etiquettes anim-fade" style="--delai: 0.8s">
-          <DymoButton as="span" size="sm">
-            {aPropos.role}
-          </DymoButton>
+          <Etiquette size="sm">
+            {aPropos.role} · {site.age}
+          </Etiquette>
         </div>
       </div>
       <div class="hero-photo">
@@ -94,10 +95,8 @@ const segments = (paragraphe: string) =>
   <section class="sec" aria-labelledby="ce-que-je-fais" data-reveal>
     <div class="wrap">
       <div class="titre-section">
-        <h2 id="ce-que-je-fais" class="rv3">
-          <DymoButton as="span" variant="accent">
-            {aPropos.ceQueJeFais.titre}
-          </DymoButton>
+        <h2 id="ce-que-je-fais" class="titre-bloc rv3">
+          {aPropos.ceQueJeFais.titre}
         </h2>
         <p class="hand note rv4">{aPropos.ceQueJeFais.note}</p>
       </div>
@@ -126,10 +125,8 @@ const segments = (paragraphe: string) =>
   <section class="sec" aria-labelledby="parcours" data-reveal>
     <div class="wrap">
       <div class="titre-section">
-        <h2 id="parcours" class="rv3">
-          <DymoButton as="span" variant="accent">
-            {aPropos.parcours.titre}
-          </DymoButton>
+        <h2 id="parcours" class="titre-bloc rv3">
+          {aPropos.parcours.titre}
         </h2>
         <p class="hand note rv4">{aPropos.parcours.note}</p>
       </div>
@@ -169,35 +166,20 @@ const segments = (paragraphe: string) =>
   <section class="sec" data-reveal>
     <div class="wrap outils">
       <div class="groupe">
-        <h2 class="rv3">
-          <DymoButton as="span" variant="accent">
-            {aPropos.logiciels.titre}
-          </DymoButton>
-        </h2>
-        <ul class="tags rv4">
+        <h2 class="titre-bloc rv3">{aPropos.logiciels.titre}</h2>
+        <ul class="liste rv4">
           {aPropos.logiciels.liste.map((l) => (
-            <li>
-              <DymoButton as="span" size="sm">
-                {l}
-              </DymoButton>
-            </li>
+            <li>{l}</li>
           ))}
         </ul>
       </div>
       <div class="groupe">
-        <h2 class="rv3">
-          <DymoButton as="span" variant="accent">
-            {aPropos.langues.titre}
-          </DymoButton>
-        </h2>
-        <ul class="tags rv4">
+        <h2 class="titre-bloc rv3">{aPropos.langues.titre}</h2>
+        <ul class="liste rv4">
           {aPropos.langues.liste.map((l) => (
             <li>
-              <DymoButton as="span" size="sm">
-                {l.langue}
-                {l.niveau && ` · ${l.niveau}`}
-              </DymoButton>
-              {!l.niveau && <ACompleter />}
+              {l.langue}
+              {l.niveau && <span class="niveau">{l.niveau}</span>}
             </li>
           ))}
         </ul>
@@ -229,15 +211,11 @@ const segments = (paragraphe: string) =>
     padding: 90px var(--gutter);
   }
 
-  h2 {
-    font: inherit;
-  }
-
   .titre-section {
     display: flex;
     flex-wrap: wrap;
     align-items: baseline;
-    gap: 18px;
+    gap: 12px 24px;
     margin-bottom: 44px;
   }
 
@@ -404,8 +382,7 @@ const segments = (paragraphe: string) =>
     color: var(--ink-soft);
   }
 
-  .competence ul,
-  .tags {
+  .competence ul {
     display: flex;
     flex-wrap: wrap;
     gap: 8px;
@@ -457,7 +434,7 @@ const segments = (paragraphe: string) =>
     background: var(--paper);
     box-shadow: 0 6px 10px rgba(0, 0, 0, 0.2);
     font-size: 16px;
-    line-height: 1.4;
+    line-height: 1.6;
   }
 
   .annee {
@@ -499,10 +476,30 @@ const segments = (paragraphe: string) =>
     gap: 20px;
   }
 
-  .tags li {
+  /* Logiciels et langues : une simple liste, rien de cliquable */
+  .liste {
+    width: 100%;
+    max-width: 420px;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  .liste li {
     display: flex;
-    align-items: center;
-    gap: 8px;
+    flex-wrap: wrap;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 4px 16px;
+    padding: 12px 0;
+    border-bottom: 1px dashed var(--dashed);
+    font-size: 20px;
+    line-height: 1.4;
+  }
+
+  .niveau {
+    font-size: 16px;
+    color: var(--mustard);
   }
 
   /* Appel à l'action */
@@ -520,6 +517,7 @@ const segments = (paragraphe: string) =>
   .cta h2 {
     max-width: 900px;
     font-family: var(--f-hand);
+    font-weight: 400;
     font-size: clamp(44px, 5.4vw, 78px);
     line-height: 1.2;
   }
@@ -534,14 +532,6 @@ const segments = (paragraphe: string) =>
     .competence,
     mark {
       transition: none;
-    }
-  }
-
-  /* Petits écrans : la longue étiquette du rôle passe sur deux lignes */
-  @media (max-width: 420px) {
-    .etiquettes :global(.dymo) {
-      white-space: normal;
-      text-align: left;
     }
   }
 

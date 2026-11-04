@@ -1,0 +1,44 @@
+---
+// Rend une image de page projet agrandissable : un lien vers la grande image (sans JavaScript, il
+// l'ouvre simplement), que scripts/lightbox.ts affiche dans la visionneuse (Lightbox.astro).
+// Sans fichier image (Placeholder), le contenu reste tel quel.
+import { getImage } from 'astro:assets';
+import type { Visuel } from '../data/projets';
+import { pageProjet } from '../data/site';
+
+interface Props {
+  visuel?: Visuel;
+  class?: string;
+}
+
+const { visuel, class: className } = Astro.props;
+const src = visuel?.src;
+const grande = src
+  ? await getImage({ src, width: Math.min(2400, src.width), format: 'webp' })
+  : undefined;
+---
+
+{grande && visuel ? (
+  <a
+    class:list={['zoom', className]}
+    href={grande.src}
+    aria-label={`${pageProjet.agrandir} : ${visuel.alt}`}
+    data-zoom
+    data-alt={visuel.alt}
+    data-fond={visuel.fond}
+  >
+    <slot />
+  </a>
+) : (
+  <slot />
+)}
+
+<style>
+  .zoom {
+    display: block;
+    height: 100%;
+    color: inherit;
+    text-decoration: none;
+    cursor: zoom-in;
+  }
+</style>

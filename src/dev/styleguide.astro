@@ -9,6 +9,7 @@ import CardFan from '../components/CardFan.astro';
 import ContactForm from '../components/ContactForm.astro';
 import DecoItem from '../components/DecoItem.astro';
 import DymoButton from '../components/DymoButton.astro';
+import Etiquette from '../components/Etiquette.astro';
 import FactSheet from '../components/FactSheet.astro';
 import Field from '../components/Field.astro';
 import FlipPhoto from '../components/FlipPhoto.astro';
@@ -51,7 +52,8 @@ const couleurs = [
   { nom: 'Encre', variable: '--ink', usage: 'Texte sur papier' },
   { nom: 'Encre douce', variable: '--ink-soft', usage: 'Labels sur papier' },
   { nom: 'Rouille', variable: '--rust', usage: 'Titres sur papier, élément actif, erreurs' },
-  { nom: 'Moutarde survol', variable: '--mustard-hover', usage: 'Survol des boutons d’accent' },
+  { nom: 'Accent', variable: '--accent', usage: 'Boutons principaux' },
+  { nom: 'Accent survol', variable: '--accent-hover', usage: 'Survol des boutons principaux' },
   { nom: 'Dymo', variable: '--dymo', usage: 'Étiquettes & boutons' },
   { nom: 'Ambre (règle)', variable: '--amber', usage: 'Règle pochoir, progression' },
   { nom: 'Washi', variable: '--washi', usage: 'Scotch décoratif' },
@@ -82,9 +84,7 @@ const mouvements = [
 
   <div class="intro">
     <div class="titre">
-      <DymoButton as="span" size="sm" variant="accent">
-        Design system
-      </DymoButton>
+      <Etiquette size="sm">Design system</Etiquette>
       <h1 class="stencil">COMPOSANTS &amp; TOKENS</h1>
     </div>
     <p>
@@ -96,9 +96,7 @@ const mouvements = [
   <!-- 01 · Couleurs -->
   <section class="sec">
     <div class="sh">
-      <DymoButton as="span" size="sm" variant="accent">
-        01 · Couleurs
-      </DymoButton>
+      <Etiquette size="sm">01 · Couleurs</Etiquette>
       <span class="cname">src/styles/tokens.css</span>
     </div>
     <div class="rangee rangee--large-22">
@@ -113,16 +111,14 @@ const mouvements = [
     </div>
     <p class="cap">
       Contrastes vérifiés : crème sur tapis 7,4:1 · moutarde sur tapis 5,9:1 · encre sur papier ≈
-      14:1 · rouille sur papier 6,7:1 · encre sur moutarde 10:1.
+      14:1 · rouille sur papier 6,7:1 · blanc sur accent 4,6:1.
     </p>
   </section>
 
   <!-- 02 · Typographie -->
   <section class="sec">
     <div class="sh">
-      <DymoButton as="span" size="sm" variant="accent">
-        02 · Typographie
-      </DymoButton>
+      <Etiquette size="sm">02 · Typographie</Etiquette>
       <span class="cname">3 familles auto-hébergées</span>
     </div>
     <div class="typos">
@@ -172,9 +168,7 @@ const mouvements = [
   <!-- 03 · Espaces, ombres & mouvements -->
   <section class="sec">
     <div class="sh">
-      <DymoButton as="span" size="sm" variant="accent">
-        03 · Espaces, ombres &amp; mouvements
-      </DymoButton>
+      <Etiquette size="sm">03 · Espaces, ombres &amp; mouvements</Etiquette>
       <span class="cname">--s-* · --sh-* · --e-*</span>
     </div>
     <div class="espaces-grille">
@@ -229,11 +223,10 @@ const mouvements = [
   <!-- 04 · Étiquettes Dymo -->
   <section class="sec">
     <div class="sh">
-      <DymoButton as="span" size="sm" variant="accent">
-        04 · Étiquettes Dymo
-      </DymoButton>
+      <Etiquette size="sm">04 · Étiquettes Dymo</Etiquette>
       <span class="cname">
-        &lt;DymoButton variant="noir | accent | ghost | ghost-encre" size="md | sm" as?="span"&gt;
+        &lt;DymoButton variant="noir | accent | ghost | ghost-encre" size="md | sm"&gt; ·
+        &lt;Etiquette size="md | sm" typeIn?&gt;
       </span>
     </div>
     <div class="rangee rangee--large">
@@ -277,19 +270,15 @@ const mouvements = [
         </div>
       </div>
       <div class="cell">
-        <span class="cname">Étiquette simple (as="span")</span>
+        <span class="cname">Libellé non cliquable (Etiquette)</span>
         <div class="rangee">
-          <DymoButton as="span" size="sm" variant="accent">
-            05 projets
-          </DymoButton>
-          <DymoButton as="span" size="sm">
-            After Effects
-          </DymoButton>
+          <Etiquette size="sm">05 projets</Etiquette>
+          <Etiquette size="sm">After Effects</Etiquette>
         </div>
       </div>
       <div class="cell demo-type">
         <span class="cname">Animation « impression »</span>
-        <DymoButton as="span">Graphiste · motion designer</DymoButton>
+        <Etiquette>Graphiste · motion designer</Etiquette>
       </div>
     </div>
     <p class="cap">
@@ -302,9 +291,7 @@ const mouvements = [
   <!-- 05 · Matières -->
   <section class="sec">
     <div class="sh">
-      <DymoButton as="span" size="sm" variant="accent">
-        05 · Matières
-      </DymoButton>
+      <Etiquette size="sm">05 · Matières</Etiquette>
       <span class="cname">
         &lt;WashiTape&gt; · &lt;Placeholder&gt; · &lt;StencilRuler&gt; · &lt;RulerNumbers&gt;
       </span>
@@ -353,9 +340,7 @@ const mouvements = [
   <!-- 06 · Cadres photo -->
   <section class="sec">
     <div class="sh">
-      <DymoButton as="span" size="sm" variant="accent">
-        06 · Cadres photo
-      </DymoButton>
+      <Etiquette size="sm">06 · Cadres photo</Etiquette>
       <span class="cname">
         &lt;Polaroid&gt; · &lt;FramedPrint&gt; · &lt;FlipPhoto&gt; · &lt;StickyNote&gt;
       </span>
@@ -402,9 +387,7 @@ const mouvements = [
   <!-- 07 · Navigation -->
   <section class="sec">
     <div class="sh">
-      <DymoButton as="span" size="sm" variant="accent">
-        07 · Navigation
-      </DymoButton>
+      <Etiquette size="sm">07 · Navigation</Etiquette>
       <span class="cname">&lt;Header&gt; · &lt;MobileMenu&gt; · &lt;Footer&gt;</span>
     </div>
     <div class="cell">
@@ -421,9 +404,7 @@ const mouvements = [
   <!-- 08 · Projets -->
   <section class="sec">
     <div class="sh">
-      <DymoButton as="span" size="sm" variant="accent">
-        08 · Projets
-      </DymoButton>
+      <Etiquette size="sm">08 · Projets</Etiquette>
       <span class="cname">
         &lt;SectionHeading&gt; · &lt;Notebook&gt; · &lt;TocItem&gt; · &lt;ProjectCard&gt;
       </span>
@@ -444,9 +425,7 @@ const mouvements = [
   <!-- 09 · Page projet -->
   <section class="sec">
     <div class="sh">
-      <DymoButton as="span" size="sm" variant="accent">
-        09 · Page projet
-      </DymoButton>
+      <Etiquette size="sm">09 · Page projet</Etiquette>
       <span class="cname">
         &lt;ReadingProgress&gt; · &lt;FactSheet&gt; · &lt;CardFan&gt; · &lt;PaintChip&gt; ·
         &lt;Quote&gt; · &lt;NextProject&gt;
@@ -467,7 +446,7 @@ const mouvements = [
               { label: pageProjet.fiche.projet, valeur: rituel.data.titre },
               { label: pageProjet.fiche.type, valeur: rituel.data.categorie },
               { label: pageProjet.fiche.supports, valeur: rituel.data.supports?.join(', ') },
-              { label: pageProjet.fiche.annee, valeur: rituel.data.annee?.toString() },
+              { label: pageProjet.fiche.logiciels, valeur: rituel.data.outils?.join(', ') },
             ]}
           />
         </div>
@@ -504,9 +483,7 @@ const mouvements = [
   <!-- Blocs -->
   <section class="sec sec--blocs">
     <div class="sh">
-      <DymoButton as="span" size="sm" variant="accent">
-        Blocs · Rituel
-      </DymoButton>
+      <Etiquette size="sm">Blocs · Rituel</Etiquette>
       <span class="cname">
         &lt;Blocs&gt; : galerie · cartes · texte (+ palette) · citation · sur-mesure
       </span>
@@ -529,9 +506,7 @@ const mouvements = [
   <!-- 10 · Formulaire -->
   <section class="sec">
     <div class="sh">
-      <DymoButton as="span" size="sm" variant="accent">
-        10 · Formulaire
-      </DymoButton>
+      <Etiquette size="sm">10 · Formulaire</Etiquette>
       <span class="cname">&lt;ContactForm&gt; · &lt;Field&gt; · &lt;SentStamp&gt;</span>
     </div>
     <div class="rangee rangee--large-48 rangee--start">
@@ -568,9 +543,7 @@ const mouvements = [
   <!-- 11 · Objets du bureau -->
   <section class="sec">
     <div class="sh">
-      <DymoButton as="span" size="sm" variant="accent">
-        11 · Objets du bureau
-      </DymoButton>
+      <Etiquette size="sm">11 · Objets du bureau</Etiquette>
       <span class="cname">
         &lt;DecoItem type="crayon | gomme | rouleau | trombone | feuille | feuille-olive"&gt;
       </span>
@@ -597,9 +570,7 @@ const mouvements = [
   <!-- Contenu -->
   <section class="sec">
     <div class="sh">
-      <DymoButton as="span" size="sm" variant="accent">
-        Contenu · {projets.length} projets
-      </DymoButton>
+      <Etiquette size="sm">Contenu · {projets.length} projets</Etiquette>
       <span class="cname">src/content/projets/*.md · src/data/site.ts</span>
     </div>
     {liensCasses.length > 0 && (
@@ -940,7 +911,7 @@ const mouvements = [
   }
 
   /* Démos en boucle */
-  .demo-type :global(.dymo) {
+  .demo-type :global(.etiquette) {
     animation: demo-type 2.4s steps(20, end) infinite;
   }
 
@@ -987,7 +958,7 @@ const mouvements = [
   }
 
   @media (prefers-reduced-motion: reduce) {
-    .demo-type :global(.dymo),
+    .demo-type :global(.etiquette),
     .demo-stick :global(.washi),
     .demo-drop {
       animation: none;

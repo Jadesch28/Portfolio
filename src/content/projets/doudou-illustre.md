@@ -3,11 +3,16 @@ numero: 3
 titre: Doudou illustré
 titreCourt: Doudou
 categorie: Affiche · illustration · 2026
+categoriePage: Concours affiche du Doudou 2026
 resume: Proposition d’affiche pour le concours de l’identité visuelle du Doudou de Mons. Une lecture contemporaine d’un folklore à l’héritage fort, entre illustration et composition typographique.
 intro: Proposition d’affiche pour le concours de l’identité visuelle du Doudou de Mons.
+annotation: ↓ ai-je été sélectionnée ?
 contexte: Concours de l’identité visuelle du Doudou de Mons
 supports:
   - Affiche
+outils:
+  - Illustrator
+  - InDesign
 disciplines:
   - Illustration
   - Composition typographique
@@ -21,8 +26,6 @@ blocs:
   - type: galerie
     titre: Galerie
     images:
-      - src: ../../assets/projets/doudou-illustre/affiche-mur.jpg
-        alt: L’affiche du Doudou 2026 collée sur un mur gris clair.
       - src: ../../assets/projets/doudou-illustre/affiche-cadre.jpg
         alt: L’affiche du Doudou 2026 dans un cadre, accrochée à un mur baigné de lumière.
       - src: ../../assets/projets/doudou-illustre/affiche-palissade.jpg
@@ -30,13 +33,13 @@ blocs:
       - src: ../../assets/projets/doudou-illustre/flyer-a5.jpg
         alt: Le flyer A5 du Doudou 2026 posé de biais sur un fond vert olive.
       - src: ../../assets/projets/doudou-illustre/jade-et-affiche.jpg
-        alt: Jade, souriante, tient son affiche du Doudou 2026.
+        alt: Jade, souriante, à côté de son affiche du Doudou 2026 exposée sur un chevalet.
       - src: ../../assets/projets/doudou-illustre/detail-dragon-tete.jpg
         alt: Détail de l’affiche du Doudou, la tête et le corps du dragon vert aux pics rouges, à côté d’un panache noir.
-      - src: ../../assets/projets/doudou-illustre/detail-2026.jpg
-        alt: Détail de l’affiche du Doudou, le millésime « 2026 » en rouge et un chapeau noir.
       - src: ../../assets/projets/doudou-illustre/detail-personnages.jpg
         alt: Détail de l’affiche du Doudou, un casque doré à panache, un chapeau noir et un bâton.
+      - src: ../../assets/projets/doudou-illustre/detail-2026.jpg
+        alt: Détail de l’affiche du Doudou, le millésime « 2026 » en rouge et un chapeau noir.
 ---
 
 Création d’une proposition d’affiche pour le concours de l’identité visuelle du Doudou de Mons, événement emblématique du folklore montois. Ce projet revisite les codes de cette fête traditionnelle à travers une approche illustrée contemporaine, en mettant l’accent sur la symbolique, la narration visuelle et l’impact graphique.

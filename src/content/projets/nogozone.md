@@ -3,8 +3,15 @@ numero: 4
 titre: NogoZone
 titreCourt: NogoZone
 categorie: Logo · graphisme + motion
+typeFiche: Logotype, Identité visuelle, Motion design
 resume: 'Le logo de Nogozone, maison d’édition de jeux de société : un logotype simple et impactant, pensé pour vivre sur tous les supports, à la fois ludique, stratégique et accessible.'
 intro: 'Le logo d’une maison d’édition de jeux de société : simple, impactant, ludique et accessible.'
+annotation: ↓ venez jouer avec NogoZone
+supports:
+  - Logo · graphisme + motion
+outils:
+  - Illustrator
+  - After Effects
 disciplines:
   - Logotype
   - Identité visuelle
@@ -21,10 +28,13 @@ blocs:
   - type: galerie
     titre: Galerie
     images:
-      - src: ../../assets/projets/nogozone/banniere.jpg
-        alt: Bannière NogoZone, le logo entouré d’un pion, de dés, de cartes et d’un échiquier.
       - src: ../../assets/projets/nogozone/logo-declinaisons.jpg
         alt: Deux déclinaisons du logo NogoZone, l’une en orange, l’autre en bleu, sur fond beige.
+      - src: ../../assets/projets/nogozone/banniere.jpg
+        alt: Bannière NogoZone, le logo entouré d’un pion, de dés, de cartes et d’un échiquier.
+        carre: true
+      - src: ../../assets/projets/nogozone/logo-symbole.jpg
+        alt: Le symbole du logo NogoZone, deux cercles bleus qui forment un regard, sur fond beige.
 ---
 
 Création d’un logo pour Nogozone, une maison d’édition spécialisée dans les jeux de société. Ce projet vise à développer une identité visuelle forte et reconnaissable, capable de refléter un univers ludique, stratégique et accessible.

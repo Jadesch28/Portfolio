@@ -5,7 +5,10 @@ import { getImage } from 'astro:assets';
 import { render } from 'astro:content';
 import Blocs from '../../components/blocs/Blocs.astro';
 import DymoButton from '../../components/DymoButton.astro';
+import Etiquette from '../../components/Etiquette.astro';
 import FactSheet from '../../components/FactSheet.astro';
+import ImageZoom from '../../components/ImageZoom.astro';
+import Lightbox from '../../components/Lightbox.astro';
 import NextProject from '../../components/NextProject.astro';
 import Polaroid from '../../components/Polaroid.astro';
 import ProjectVideo from '../../components/ProjectVideo.astro';
@@ -32,10 +35,10 @@ const projets = await getProjets();
 const { Content } = await render(projet);
 const retour = `/#projet-${projet.id}`;
 const detail = d.visuelSecondaire ?? (import.meta.env.DEV ? { alt: 'détail' } : undefined);
-// Longueur du mot le plus long : règle la taille du titre pour qu'il tienne dans sa colonne.
-// Un mot court peut déborder sous le visuel (comme RITUEL dans la maquette), un mot long non.
-const motLePlusLong = Math.max(...d.titre.split(/\s+/).map((mot) => mot.length));
-const debord = motLePlusLong <= 6 ? 2.5 : 2.1;
+// Longueur du mot le plus long : règle la taille du titre pour qu'il tienne dans sa colonne,
+// sans jamais toucher le visuel.
+const titrePage = d.titrePage ?? d.titre;
+const motLePlusLong = Math.max(...titrePage.split(/\s+/).map((mot) => mot.length));
 const f = pageProjet.fiche;
 
 // Partage et données structurées : le visuel principal en 1200 px de large, en JPEG.
@@ -115,14 +118,11 @@ if (imageHero && d.video) {
             {pageProjet.retour}
           </DymoButton>
         </div>
-        <h1
-          class="stencil titre anim-reveal"
-          style={`--len: ${motLePlusLong}; --k: ${debord}; --delai: 0.3s`}
-        >
-          {d.titre}
+        <h1 class="stencil titre anim-reveal" style={`--len: ${motLePlusLong}; --delai: 0.3s`}>
+          {titrePage}
         </h1>
         <p class="categorie anim-fade" style="--delai: 0.6s">
-          {d.categorie}
+          {d.categoriePage ?? d.categorie}
         </p>
         <p class="intro anim-fade" style="--delai: 0.75s">
           {d.intro}
@@ -145,13 +145,15 @@ if (imageHero && d.video) {
               label={d.visuelPrincipal?.alt ?? d.titre}
             />
           ) : (
-            <Visuel
-              visuel={d.visuelPrincipal}
-              label={`visuel principal : ${d.titre}`}
-              sizes={sizesHero}
-              widths={largeursHero}
-              priority
-            />
+            <ImageZoom visuel={d.visuelPrincipal}>
+              <Visuel
+                visuel={d.visuelPrincipal}
+                label={`visuel principal : ${d.titre}`}
+                sizes={sizesHero}
+                widths={largeursHero}
+                priority
+              />
+            </ImageZoom>
           )}
         </div>
         <WashiTape class="w1" left="-24px" top="18px" width={120} rotate={-36} stick delay={0.9} />
@@ -176,17 +178,19 @@ if (imageHero && d.video) {
         />
         {detail && (
           <div class="detail anim-land" style="--delai: 0.6s">
-            <Polaroid
-              visuel={detail}
-              tone="sombre"
-              width="190px"
-              photoHeight="150px"
-              widthMobile="120px"
-              photoHeightMobile="90px"
-              rotate={-7}
-              frame="petit"
-              sizes="190px"
-            />
+            <ImageZoom visuel={detail}>
+              <Polaroid
+                visuel={detail}
+                tone="sombre"
+                width="190px"
+                photoHeight="150px"
+                widthMobile="120px"
+                photoHeightMobile="90px"
+                rotate={-7}
+                frame="petit"
+                sizes="190px"
+              />
+            </ImageZoom>
           </div>
         )}
       </div>
@@ -197,7 +201,7 @@ if (imageHero && d.video) {
     <div class="wrap le-projet">
       <div class="presentation">
         <h2 class="rv3">
-          <DymoButton as="span">{pageProjet.leProjet}</DymoButton>
+          <Etiquette ton="creme">{pageProjet.leProjet}</Etiquette>
         </h2>
         <div class="contenu rv4">
           <Content />
@@ -207,12 +211,9 @@ if (imageHero && d.video) {
         <FactSheet
           lignes={[
             { label: f.projet, valeur: d.titre },
-            { label: f.type, valeur: d.categorie },
+            { label: f.type, valeur: d.typeFiche ?? d.categorie },
             { label: f.supports, valeur: d.supports?.join(', ') },
-            { label: f.disciplines, valeur: d.disciplines?.join(', ') },
-            { label: f.annee, valeur: d.annee?.toString() },
-            { label: f.contexte, valeur: d.contexte },
-            { label: f.outils, valeur: d.outils?.join(', ') },
+            { label: f.logiciels, valeur: d.outils?.join(', ') },
           ]}
         />
       </div>
@@ -220,6 +221,7 @@ if (imageHero && d.video) {
   </section>
 
   <Blocs projet={projet} />
+  <Lightbox />
 
   <section class="sec sec--suivant" data-reveal>
     <div class="wrap">
@@ -245,8 +247,8 @@ if (imageHero && d.video) {
   .hero-inner {
     display: flex;
     flex-wrap: wrap;
-    align-items: center;
-    gap: 48px;
+    align-items: stretch;
+    gap: 64px;
     max-width: var(--container);
     margin: 0 auto;
     container-type: inline-size;
@@ -268,10 +270,10 @@ if (imageHero && d.video) {
     gap: 10px;
   }
 
-  /* Le titre peut déborder un peu sous le visuel, comme dans la maquette (RITUEL) */
+  /* Le titre tient dans sa colonne ; sur deux lignes, l'interligne garde les mots séparés */
   .titre {
-    font-size: min(clamp(110px, 14vw, 210px), 100cqi * var(--k) / var(--len));
-    line-height: 1;
+    font-size: min(clamp(110px, 14vw, 210px), 100cqi * 1.8 / var(--len));
+    line-height: 1.15;
     letter-spacing: 0.02em;
     text-transform: uppercase;
     overflow-wrap: normal;
@@ -291,10 +293,13 @@ if (imageHero && d.video) {
     line-height: 1.7;
   }
 
+  /* En bas de la colonne, au niveau du bas du visuel : invite à défiler */
   .annotation {
+    margin-top: auto;
     font-size: 28px;
     line-height: 1.2;
     color: var(--mustard);
+    text-transform: capitalize;
   }
 
   .hero-visuel {
@@ -354,7 +359,9 @@ if (imageHero && d.video) {
   }
 
   .presentation h2 {
+    margin: 0;
     font: inherit;
+    line-height: 0;
   }
 
   .contenu {
@@ -450,7 +457,7 @@ if (imageHero && d.video) {
 
     .titre {
       order: 2;
-      font-size: min(124px, 100cqi * 1.9 / var(--len));
+      font-size: min(124px, 100cqi * 1.8 / var(--len));
     }
 
     .categorie {
@@ -473,6 +480,7 @@ if (imageHero && d.video) {
 
     .annotation {
       order: 6;
+      margin-top: 28px;
       font-size: 24px;
     }
 

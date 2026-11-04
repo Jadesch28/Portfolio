@@ -1,20 +1,14 @@
 ---
-// Étiquette Dymo : plastique embossé, lettres capitales espacées.
-// Interactive : un vrai <a> (avec href) ou <button> (sans href).
-// Simple étiquette (titres de section, tags, compteurs) : as="span".
+// Bouton Dymo : plastique embossé, lettres capitales espacées. Toujours cliquable : un vrai <a>
+// (avec href) ou <button> (sans href). Un texte non cliquable passe par Etiquette.astro.
 import type { HTMLAttributes } from 'astro/types';
 
 type Variant = 'noir' | 'accent' | 'ghost' | 'ghost-encre';
 
 interface Props extends Omit<HTMLAttributes<'a'> & HTMLAttributes<'button'>, 'type' | 'style'> {
   href?: string;
-  as?: 'span';
   variant?: Variant;
   size?: 'md' | 'sm';
-  /** Animation « impression » (clip-path en escalier). */
-  typeIn?: boolean;
-  /** Délai de l'animation, en secondes. */
-  delay?: number;
   /** Lien de la page courante : anneau moutarde + aria-current. */
   current?: boolean;
   type?: 'button' | 'submit' | 'reset';
@@ -23,11 +17,8 @@ interface Props extends Omit<HTMLAttributes<'a'> & HTMLAttributes<'button'>, 'ty
 
 const {
   href,
-  as,
   variant = 'noir',
   size = 'md',
-  typeIn = false,
-  delay,
   current = false,
   type = 'button',
   class: className,
@@ -35,15 +26,14 @@ const {
   ...rest
 } = Astro.props;
 
-const Tag = as ?? (href ? 'a' : 'button');
-const delayStyle = delay === undefined ? undefined : `--dymo-delay: ${delay}s`;
+const Tag = href ? 'a' : 'button';
 ---
 
 <Tag
   href={href}
   type={Tag === 'button' ? type : undefined}
-  class:list={['dymo', `dymo--${variant}`, `dymo--${size}`, { 'dymo--type-in': typeIn }, className]}
-  style={[delayStyle, style].filter(Boolean).join('; ') || undefined}
+  class:list={['dymo', `dymo--${variant}`, `dymo--${size}`, className]}
+  style={style}
   aria-current={current ? 'page' : undefined}
   {...rest}
 >
@@ -87,10 +77,6 @@ const delayStyle = delay === undefined ? undefined : `--dymo-delay: ${delay}s`;
       background-color 0.15s ease;
   }
 
-  span.dymo {
-    cursor: default;
-  }
-
   a.dymo:hover,
   button.dymo:hover {
     color: #fff;
@@ -104,17 +90,17 @@ const delayStyle = delay === undefined ? undefined : `--dymo-delay: ${delay}s`;
     letter-spacing: 0.16em;
   }
 
-  /* Accent : moutarde et lettres encre (le rouge évoquait l'urgence) */
+  /* Accent : bouton principal (texte blanc, contraste 4,6:1) */
   .dymo.dymo--accent {
-    color: var(--ink);
-    background-color: var(--mustard);
-    text-shadow: 0 1px 0 rgba(255, 255, 255, 0.4);
+    color: #fff;
+    background-color: var(--accent);
+    background-image: none;
   }
 
   a.dymo.dymo--accent:hover,
   button.dymo.dymo--accent:hover {
-    color: var(--ink);
-    background-color: var(--mustard-hover);
+    color: #fff;
+    background-color: var(--accent-hover);
   }
 
   .dymo.dymo--ghost,
@@ -148,32 +134,6 @@ const delayStyle = delay === undefined ? undefined : `--dymo-delay: ${delay}s`;
     cursor: progress;
     opacity: 0.75;
     transform: none;
-  }
-
-  /* Étiquette qui « s'imprime » */
-  .dymo--type-in {
-    animation: dymo-type-in 1s steps(24, end) var(--dymo-delay, 0s) backwards;
-  }
-
-  @keyframes dymo-type-in {
-    from {
-      clip-path: inset(0 100% 0 0);
-    }
-    to {
-      clip-path: inset(0);
-    }
-  }
-
-  @keyframes dymo-fade {
-    from {
-      opacity: 0;
-    }
-  }
-
-  @media (prefers-reduced-motion: reduce) {
-    .dymo--type-in {
-      animation: dymo-fade 0.2s ease backwards;
-    }
   }
 
   @media (max-width: 759.98px) {

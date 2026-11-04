@@ -16,7 +16,7 @@ const d = projet.data;
 
 <div class="suivant">
   <div class="entete">
-    <DymoButton as="span" variant="accent" class="rv3">
+    <DymoButton href={projetHref(projet)} variant="accent" class="rv3">
       {pageProjet.projetSuivant}
     </DymoButton>
     <DymoButton href="/#projets" size="sm" variant="ghost" class="rv4">
@@ -36,17 +36,13 @@ const d = projet.data;
             sizes="(max-width: 760px) calc(100vw - 32px), 380px"
           />
         </div>
-        <span class="hand legende">{d.titreCourt}</span>
       </div>
       <WashiTape left="40%" top="-12px" width={100} rotate={4} />
     </div>
     <div class="textes">
-      <DymoButton as="span" size="sm">
-        {d.categorie}
-      </DymoButton>
       <a href={projetHref(projet)} class="stencil titre">
         <span class="visually-hidden">{pageProjet.projetSuivant} : </span>
-        {d.titre}{' '}
+        {d.titrePage ?? d.titre}{' '}
         <span class="fleche" aria-hidden="true">
           →
         </span>
@@ -108,15 +104,6 @@ const d = projet.data;
     height: 300px;
   }
 
-  .legende {
-    position: absolute;
-    left: 24px;
-    bottom: 16px;
-    font-size: 26px;
-    line-height: 1.2;
-    color: var(--ink);
-  }
-
   /* Le lien du titre couvre toute la zone (photo comprise) */
   .titre::after {
     content: '';
@@ -147,7 +134,7 @@ const d = projet.data;
 
   .titre {
     font-size: clamp(64px, 7vw, 112px);
-    line-height: 1;
+    line-height: 1.15;
     text-transform: uppercase;
   }
 

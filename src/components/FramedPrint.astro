@@ -28,13 +28,14 @@ const {
 } = Astro.props;
 
 // Un Placeholder a besoin d'une hauteur ; une image sans hauteur garde ses proportions.
-const hauteur = height ?? (visuel?.src ? undefined : '460px');
+const carre = visuel?.carre === true;
+const hauteur = height ?? (visuel?.src || carre ? undefined : '460px');
 ---
 
 <div
   class:list={[
     'print',
-    { 'print--fixe': hauteur },
+    { 'print--fixe': hauteur, 'print--carre': carre },
     visuel?.fond && `print--${visuel.fond}`,
     className,
   ]}
@@ -44,7 +45,7 @@ const hauteur = height ?? (visuel?.src ? undefined : '460px');
     visuel={visuel}
     label={placeholder}
     tone={tone}
-    fit={visuel?.fond ? 'contenu' : hauteur ? 'cover' : 'naturel'}
+    fit={visuel?.fond ? 'contenu' : hauteur || carre ? 'cover' : 'naturel'}
     sizes={sizes}
     priority={priority}
   />
@@ -60,6 +61,10 @@ const hauteur = height ?? (visuel?.src ? undefined : '460px');
 
   .print--fixe {
     height: var(--h);
+  }
+
+  .print--carre {
+    aspect-ratio: 1;
   }
 
   /* Élément détouré : montré en entier, avec un peu d'air */

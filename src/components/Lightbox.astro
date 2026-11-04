@@ -1,0 +1,102 @@
+---
+// Visionneuse des images de la page projet (une seule par page) : voir scripts/lightbox.ts.
+import { pageProjet } from '../data/site';
+import DymoButton from './DymoButton.astro';
+---
+
+<dialog class="lightbox" aria-label={pageProjet.imageAgrandie} data-lightbox>
+  <img class="image" alt="" data-lightbox-image />
+  <div class="commandes">
+    <DymoButton size="sm" variant="ghost" aria-label={pageProjet.imagePrecedente} data-precedente>
+      ←
+    </DymoButton>
+    <DymoButton size="sm" variant="ghost" aria-label={pageProjet.imageSuivante} data-suivante>
+      →
+    </DymoButton>
+    <DymoButton size="sm" variant="accent" autofocus data-fermer>
+      {pageProjet.fermer}
+    </DymoButton>
+  </div>
+</dialog>
+
+<script>
+  import '../scripts/lightbox';
+</script>
+
+<style>
+  .lightbox {
+    width: 100vw;
+    max-width: none;
+    height: 100dvh;
+    max-height: none;
+    margin: 0;
+    padding: 24px;
+    border: 0;
+    background: rgba(23, 22, 20, 0.95);
+  }
+
+  .lightbox[open] {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 16px;
+  }
+
+  .lightbox::backdrop {
+    background: transparent;
+  }
+
+  /* La page derrière ne défile plus */
+  :global(html:has(.lightbox[open])) {
+    overflow: hidden;
+  }
+
+  .image {
+    display: block;
+    flex: 0 1 auto;
+    min-height: 0;
+    max-width: 100%;
+    max-height: 100%;
+    object-fit: contain;
+  }
+
+  /* Élément détouré : sur son fond */
+  .lightbox[data-fond] .image {
+    padding: 24px;
+    background: var(--paper);
+  }
+
+  .lightbox[data-fond='sombre'] .image {
+    background: var(--kraft-dark);
+  }
+
+  .commandes {
+    display: flex;
+    flex: none;
+    gap: 10px;
+  }
+
+  .lightbox[data-seule] :global([data-precedente]),
+  .lightbox[data-seule] :global([data-suivante]) {
+    display: none;
+  }
+
+  @media (prefers-reduced-motion: no-preference) {
+    .lightbox[open] {
+      animation: lightbox-fondu 0.2s ease;
+    }
+  }
+
+  @keyframes lightbox-fondu {
+    from {
+      opacity: 0;
+    }
+  }
+
+  @media (max-width: 759.98px) {
+    .lightbox {
+      padding: 12px;
+    }
+  }
+</style>

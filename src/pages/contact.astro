@@ -2,6 +2,7 @@
 import ContactForm from '../components/ContactForm.astro';
 import DecoItem from '../components/DecoItem.astro';
 import DymoButton from '../components/DymoButton.astro';
+import Etiquette from '../components/Etiquette.astro';
 import { contact, contactCourt, site } from '../data/site';
 import Base from '../layouts/Base.astro';
 ---
@@ -10,9 +11,9 @@ import Base from '../layouts/Base.astro';
   <section class="contact">
     <div class="inner">
       <div class="texte">
-        <DymoButton as="span" variant="accent" class="anim-fade" style="--delai: 0.1s">
+        <Etiquette class="anim-fade" style="--delai: 0.1s">
           {contactCourt.etiquette}
-        </DymoButton>
+        </Etiquette>
         <h1 class="hand anim-fade" style="--delai: 0.25s">
           {contact.phrase}
         </h1>

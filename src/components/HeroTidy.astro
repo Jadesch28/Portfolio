@@ -6,6 +6,7 @@
 import { hero, photos } from '../data/site';
 import DecoItem from './DecoItem.astro';
 import DymoButton from './DymoButton.astro';
+import Etiquette from './Etiquette.astro';
 import FlipPhoto from './FlipPhoto.astro';
 import RulerNumbers from './RulerNumbers.astro';
 import StencilRuler from './StencilRuler.astro';
@@ -95,9 +96,9 @@ const poses = (o: { s0: Pose; s1: Pose }) =>
         />
       </div>
       <div class="h-roles">
-        <DymoButton as="span" typeIn delay={1}>
+        <Etiquette typeIn delay={1}>
           {hero.role}
-        </DymoButton>
+        </Etiquette>
       </div>
       <p class="h-paragraphe anim-fade" style="--delai: 2.3s">
         {hero.texte}
@@ -359,12 +360,6 @@ const poses = (o: { s0: Pose; s1: Pose }) =>
       order: 2;
       gap: 8px;
       margin-top: 0;
-    }
-
-    .h-roles :global(.dymo) {
-      padding: 6px 12px;
-      font-size: 13px;
-      letter-spacing: 0.14em;
     }
 
     .ko--portrait {

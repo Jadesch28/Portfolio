@@ -17,11 +17,17 @@ document.querySelectorAll<HTMLElement>('[data-video]').forEach((cadre) => {
 
   const majBouton = () => {
     const lecture = !video.paused;
-    bouton.textContent = (lecture ? bouton.dataset.pause : bouton.dataset.lecture) ?? '';
+    bouton.classList.toggle('est-actif', lecture);
+    bouton.setAttribute(
+      'aria-label',
+      (lecture ? bouton.dataset.pause : bouton.dataset.lecture) ?? '',
+    );
   };
 
   const majSon = () => {
-    if (son) son.textContent = (video.muted ? son.dataset.activer : son.dataset.couper) ?? '';
+    if (!son) return;
+    son.classList.toggle('est-actif', !video.muted);
+    son.setAttribute('aria-label', (video.muted ? son.dataset.activer : son.dataset.couper) ?? '');
   };
 
   const synchroniser = () => {

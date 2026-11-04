@@ -14,6 +14,8 @@ const projets = defineCollection({
       legende: z.string().optional(),
       // Élément détouré (logo, dessin) : montré en entier sur ce fond, sans recadrage.
       fond: z.enum(['clair', 'sombre']).optional(),
+      // Galerie : tirage carré (l'image est recadrée, mais s'agrandit en entier).
+      carre: z.boolean().optional(),
     });
 
     const bloc = z.discriminatedUnion('type', [
@@ -64,14 +66,20 @@ const projets = defineCollection({
       /** Ordre d'affichage (1, 2, 3…). */
       numero: z.number().int().positive(),
       titre: z.string(),
+      /** Titre en grand sur la page projet et dans « Projet suivant », si différent de `titre`. */
+      titrePage: z.string().optional(),
       /** Pour les étiquettes Dymo et le carnet. */
       titreCourt: z.string(),
       categorie: z.string(),
+      /** Ligne sous le titre de la page projet, si différente de `categorie`. */
+      categoriePage: z.string().optional(),
+      /** Ligne « Type » de la fiche technique, si différente de `categorie`. */
+      typeFiche: z.string().optional(),
       /** 2–3 lignes pour la carte de l'accueil. */
       resume: z.string(),
       /** Chapô du haut de la page projet. */
       intro: z.string(),
-      /** Petite phrase manuscrite sous l'intro (ex. « ↓ on ouvre la boîte »). */
+      /** Phrase manuscrite en bas du haut de page, pour inviter à défiler (ex. « ↓ ouvre la boîte »). */
       annotation: z.string().optional(),
       annee: z.number().int().optional(),
       /** École, concours, client, perso… */

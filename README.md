@@ -82,7 +82,7 @@ titreCourt: Mon projet # pour les étiquettes Dymo et le carnet
 categorie: Affiche · illustration
 resume: Deux ou trois lignes pour la carte de l'accueil.
 intro: Une phrase d'accroche pour le haut de la page projet.
-annotation: ↓ une petite phrase manuscrite (facultatif)
+annotation: ↓ une petite phrase manuscrite, en bas du haut de page (facultatif)
 annee: 2026 # facultatif
 contexte: École, concours, client, perso… # facultatif
 supports: # facultatif
@@ -152,8 +152,11 @@ lourd).
 
 ### 5. Les blocs de la page projet
 
-La liste `blocs` décrit la page, dans l'ordre. Chaque bloc titré reçoit une étiquette
-(« La boîte »).
+La liste `blocs` décrit la page, dans l'ordre. Le `titre` d'un bloc s'affiche tel quel au-dessus
+du bloc (« La boîte »).
+
+Sur les pages projet, toutes les images s'agrandissent au clic (sauf les vidéos), sans rien à
+configurer.
 
 | Type         | Champs                                     | Rendu                                                   |
 | ------------ | ------------------------------------------ | ------------------------------------------------------- |
@@ -351,10 +354,8 @@ viennent mot pour mot de l'ancien site, les phrases courtes viennent des maquett
 **Projets**
 
 - Année, outils et (pour Rituel, Tamagotchi, NogoZone) contexte de chaque projet.
-- Rituel : les runes et icônes de cartes, les titres et la patte en haute définition, la face arrière de
-  la boîte en image séparée (aujourd'hui un seul visuel montre les deux faces).
-- Rituel : confirmer les couleurs du nuancier (relevées sur le visuel de la boîte : noir
-  `#0B0A0C`, beige `#DBCAA9`, rouge sang `#7B311B`).
+- Rituel : la face arrière de la boîte en image séparée (un emplacement l'attend dans la galerie),
+  le titre et la patte en haute définition.
 - Visuels secondaires (« détail ») de Tamagotchi Paradise et de Répétition critique.
 - NogoZone et Répétition critique : les vidéos reprises de l'ancien site ont une piste son
   vide. Si une version avec son existe, la compresser, remplacer le fichier et ajouter
@@ -362,7 +363,7 @@ viennent mot pour mot de l'ancien site, les phrases courtes viennent des maquett
 
 **À propos**
 
-- Années du parcours, niveaux de langue.
+- Années du parcours, niveau d'anglais (après le test de Jade).
 
 **Textes à valider**
 

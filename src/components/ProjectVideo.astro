@@ -30,21 +30,34 @@ const image = poster ? await getImage({ src: poster, width: 1600, format: 'webp'
       <button
         type="button"
         class="bascule"
+        aria-label={pageProjet.videoSonActiver}
         data-video-son
         data-activer={pageProjet.videoSonActiver}
         data-couper={pageProjet.videoSonCouper}
       >
-        {pageProjet.videoSonActiver}
+        <svg viewBox="0 0 24 24" aria-hidden="true">
+          <path d="M4 9.5v5h3.5L12 18.5v-13L7.5 9.5z" fill="currentColor"></path>
+          <path class="icone-coupe" d="M15.5 9.5l5 5m0-5l-5 5"></path>
+          <path class="icone-active" d="M15 9a4.2 4.2 0 0 1 0 6m2.6-8.6a8 8 0 0 1 0 11.2"></path>
+        </svg>
       </button>
     )}
     <button
       type="button"
       class="bascule"
+      aria-label={pageProjet.videoLecture}
       data-video-toggle
       data-pause={pageProjet.videoPause}
       data-lecture={pageProjet.videoLecture}
     >
-      {pageProjet.videoLecture}
+      <svg viewBox="0 0 24 24" aria-hidden="true">
+        <path class="icone-lecture" d="M8 5.5v13l10.5-6.5z" fill="currentColor"></path>
+        <path
+          class="icone-pause"
+          d="M7.5 5.5h3.2v13H7.5zm5.8 0h3.2v13h-3.2z"
+          fill="currentColor"
+        ></path>
+      </svg>
     </button>
   </div>
 </div>
@@ -85,18 +98,41 @@ const image = poster ? await getImage({ src: poster, width: 1600, format: 'webp'
     min-width: 44px;
     pointer-events: auto;
     min-height: 44px;
-    padding: 6px 12px;
+    display: grid;
+    place-items: center;
+    padding: 0;
     border: 0;
     border-radius: 3px;
     background-color: rgba(23, 22, 20, 0.85);
     color: var(--dymo-text);
-    font-family: var(--f-text);
-    font-size: 13px;
-    font-weight: 700;
-    letter-spacing: 0.14em;
-    text-transform: uppercase;
     box-shadow: var(--sh-sm);
     cursor: pointer;
+  }
+
+  .bascule svg {
+    width: 24px;
+    height: 24px;
+    fill: none;
+    stroke: currentColor;
+    stroke-width: 1.8;
+    stroke-linecap: round;
+  }
+
+  .bascule svg [fill] {
+    stroke: none;
+  }
+
+  /* Icône selon l'état, posé par scripts/videos.ts */
+  .icone-pause,
+  .icone-active,
+  .est-actif .icone-lecture,
+  .est-actif .icone-coupe {
+    display: none;
+  }
+
+  .est-actif .icone-pause,
+  .est-actif .icone-active {
+    display: inline;
   }
 
   .bascule:hover {

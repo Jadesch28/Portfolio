@@ -1,0 +1,99 @@
+---
+// Libellé non cliquable : petites capitales espacées, sans fond ni contour.
+// Tout ce qui a la forme d'un bouton (DymoButton) doit être cliquable : un texte qui ne l'est pas
+// passe par ce composant.
+interface Props {
+  size?: 'md' | 'sm';
+  ton?: 'moutarde' | 'creme';
+  /** Animation « impression » (clip-path en escalier). */
+  typeIn?: boolean;
+  /** Délai de l'animation, en secondes. */
+  delay?: number;
+  class?: string;
+  style?: string;
+}
+
+const {
+  size = 'md',
+  ton = 'moutarde',
+  typeIn = false,
+  delay,
+  class: className,
+  style,
+} = Astro.props;
+const delayStyle = delay === undefined ? undefined : `--etiquette-delay: ${delay}s`;
+---
+
+<span
+  class:list={[
+    'etiquette',
+    `etiquette--${size}`,
+    `etiquette--${ton}`,
+    { 'etiquette--type-in': typeIn },
+    className,
+  ]}
+  style={[delayStyle, style].filter(Boolean).join('; ') || undefined}
+>
+  <slot />
+</span>
+
+<style>
+  .etiquette {
+    display: inline-block;
+    font-family: var(--f-text);
+    font-weight: 700;
+    line-height: 1.4;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: var(--mustard);
+  }
+
+  .etiquette--creme {
+    color: var(--cream);
+  }
+
+  .etiquette--md {
+    font-size: 16px;
+  }
+
+  .etiquette--sm {
+    font-size: 14px;
+  }
+
+  .etiquette--type-in {
+    animation: etiquette-type-in 1s steps(24, end) var(--etiquette-delay, 0s) backwards;
+  }
+
+  @keyframes etiquette-type-in {
+    from {
+      clip-path: inset(0 100% 0 0);
+    }
+    to {
+      clip-path: inset(0);
+    }
+  }
+
+  @keyframes etiquette-fade {
+    from {
+      opacity: 0;
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .etiquette--type-in {
+      animation: etiquette-fade 0.2s ease backwards;
+    }
+  }
+
+  @media (max-width: 759.98px) {
+    .etiquette--md {
+      font-size: 14px;
+      letter-spacing: 0.14em;
+    }
+
+    .etiquette--sm {
+      font-size: 13px;
+      letter-spacing: 0.14em;
+    }
+  }
+</style>

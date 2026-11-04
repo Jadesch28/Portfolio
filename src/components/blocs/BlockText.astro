@@ -2,6 +2,7 @@
 // Bloc « texte » : paragraphes à gauche ; à droite, la palette rattachée et les visuels d'accompagnement.
 import type { Visuel } from '../../data/projets';
 import FramedPrint from '../FramedPrint.astro';
+import ImageZoom from '../ImageZoom.astro';
 import PaintChip from '../PaintChip.astro';
 import WashiTape from '../WashiTape.astro';
 import BlocTitre from './BlocTitre.astro';
@@ -43,13 +44,15 @@ const rotationsImages = [1, -2, 1.5, -1];
         <div class="visuels rv2">
           {images.map((visuel, i) => (
             <div class="visuel">
-              <FramedPrint
-                visuel={visuel}
-                tone={i % 2 ? 'sombre' : 'clair'}
-                height="180px"
-                rotate={rotationsImages[i % rotationsImages.length]}
-                sizes="(max-width: 760px) calc(100vw - 32px), 300px"
-              />
+              <ImageZoom visuel={visuel}>
+                <FramedPrint
+                  visuel={visuel}
+                  tone={i % 2 ? 'sombre' : 'clair'}
+                  height="180px"
+                  rotate={rotationsImages[i % rotationsImages.length]}
+                  sizes="(max-width: 760px) calc(100vw - 32px), 300px"
+                />
+              </ImageZoom>
               {i % 2 === 1 && (
                 <WashiTape color="sauge" left="30%" top="-12px" width={90} rotate={4} />
               )}

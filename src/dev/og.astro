@@ -6,7 +6,7 @@ import { Font } from 'astro:assets';
 import '../styles/tokens.css';
 import '../styles/base.css';
 import DecoItem from '../components/DecoItem.astro';
-import DymoButton from '../components/DymoButton.astro';
+import Etiquette from '../components/Etiquette.astro';
 import StencilRuler from '../components/StencilRuler.astro';
 import WashiTape from '../components/WashiTape.astro';
 import { hero } from '../data/site';
@@ -28,7 +28,7 @@ import { hero } from '../data/site';
         <StencilRuler title={hero.prenom} subtitle={hero.nom} size="168px" rotate={-3} />
       </div>
       <div class="roles">
-        <DymoButton as="span">{hero.role}</DymoButton>
+        <Etiquette>{hero.role}</Etiquette>
       </div>
       <WashiTape left="452px" top="96px" width={130} rotate={34} />
       <WashiTape color="sauge" left="78px" top="118px" width={120} rotate={-36} />

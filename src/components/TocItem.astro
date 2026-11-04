@@ -23,7 +23,7 @@ const { projet, actif = false } = Astro.props;
   </span>
   <svg class="cercle" viewBox="0 0 300 60" preserveAspectRatio="none" aria-hidden="true">
     <path
-      d="M20 34 C 22 10, 150 2, 270 10 C 300 14, 298 46, 250 52 C 160 60, 40 58, 14 44 C 4 38, 12 22, 40 16"
+      d="M4 32 C 2 14, 60 4, 150 4 C 220 4, 300 6, 296 30 C 294 52, 200 58, 110 57 C 50 56, 6 52, 2 36 C 0 26, 6 16, 26 9"
       fill="none"
       stroke="var(--rust)"
       stroke-width="2.4"
@@ -39,7 +39,7 @@ const { projet, actif = false } = Astro.props;
     display: flex;
     align-items: center;
     min-height: 54px;
-    padding: 8px 18px 8px 26px;
+    padding: 8px 18px 8px 0;
     color: var(--ink);
     text-decoration: none;
   }
@@ -71,10 +71,10 @@ const { projet, actif = false } = Astro.props;
   }
 
   /* Cercle au crayon autour du titre (300 px de large au plus, pour que le tracé reste plus court
-     que ses pointillés de 700 px), dessiné quand l'élément devient actif */
+     que ses pointillés de 760 px), dessiné quand l'élément devient actif */
   .cercle {
     position: absolute;
-    left: 0;
+    left: -10px;
     top: -6px;
     width: min(100%, 300px);
     height: calc(100% + 12px);
@@ -83,8 +83,8 @@ const { projet, actif = false } = Astro.props;
   }
 
   .cercle path {
-    stroke-dasharray: 700;
-    stroke-dashoffset: 700;
+    stroke-dasharray: 760;
+    stroke-dashoffset: 760;
     transition: stroke-dashoffset 0.7s ease;
   }
 

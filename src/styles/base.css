@@ -105,6 +105,16 @@ a:hover {
   font-weight: 900;
 }
 
+/* Titre d'une section ou d'un bloc */
+.titre-bloc {
+  font-family: var(--f-stencil);
+  font-size: clamp(44px, 5vw, 72px);
+  font-weight: 900;
+  line-height: 1.05;
+  letter-spacing: 0.02em;
+  color: var(--cream);
+}
+
 .hand {
   font-family: var(--f-hand);
   font-weight: 400;

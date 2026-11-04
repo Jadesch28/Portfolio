@@ -1,6 +1,6 @@
 ---
-// En-tête d'un bloc de page projet : étiquette Dymo d'accent + note manuscrite facultative.
-import DymoButton from '../DymoButton.astro';
+// En-tête d'un bloc de page projet : libellé + note manuscrite facultative.
+import Etiquette from '../Etiquette.astro';
 
 interface Props {
   etiquette: string;
@@ -14,9 +14,7 @@ const { etiquette, note, noteMobile } = Astro.props;
 
 <div class="bloc-titre">
   <h2 class="rv3">
-    <DymoButton as="span" variant="accent">
-      {etiquette}
-    </DymoButton>
+    <Etiquette>{etiquette}</Etiquette>
   </h2>
   {note && <p class="hand note rv4">{note}</p>}
   {noteMobile && <p class="hand note note--mobile rv4">{noteMobile}</p>}
@@ -32,11 +30,14 @@ const { etiquette, note, noteMobile } = Astro.props;
   }
 
   h2 {
+    margin: 0;
     font: inherit;
+    line-height: 0;
   }
 
   .note {
     font-size: 26px;
+    text-transform: capitalize;
     line-height: 1.2;
     color: var(--mustard);
   }
@@ -50,12 +51,6 @@ const { etiquette, note, noteMobile } = Astro.props;
       justify-content: space-between;
       gap: 10px;
       margin-bottom: 16px;
-    }
-
-    .bloc-titre :global(.dymo) {
-      padding: 6px 12px;
-      font-size: 13px;
-      letter-spacing: 0.14em;
     }
 
     .note {
