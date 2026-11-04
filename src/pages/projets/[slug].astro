@@ -34,7 +34,9 @@ const d = projet.data;
 const projets = await getProjets();
 const { Content } = await render(projet);
 const retour = `/#projet-${projet.id}`;
-const detail = d.visuelSecondaire ?? (import.meta.env.DEV ? { alt: 'détail' } : undefined);
+const visuelHaut = d.visuelHaut ?? d.visuelPrincipal;
+const detail =
+  d.detailHaut ?? d.visuelSecondaire ?? (import.meta.env.DEV ? { alt: 'détail' } : undefined);
 // Longueur du mot le plus long : règle la taille du titre pour qu'il tienne dans sa colonne,
 // sans jamais toucher le visuel.
 const titrePage = d.titrePage ?? d.titre;
@@ -73,9 +75,14 @@ const jsonLd = avecContexte({
 
 // Préchargement du visuel principal : c'est l'image qui arrive en volant depuis l'accueil
 // (et le plus grand élément affiché). Mêmes paramètres que le <Picture> ou le poster de la vidéo.
-const largeursHero = [640, 960, 1280, 1600];
 const sizesHero = '(max-width: 760px) calc(100vw - 32px), 760px';
-const imageHero = d.video ? (d.video.poster ?? d.visuelPrincipal?.src) : d.visuelPrincipal?.src;
+const imageHero = d.video ? (d.video.poster ?? d.visuelPrincipal?.src) : visuelHaut?.src;
+// Une image moins large que 1600 px est aussi servie à sa taille d'origine (nette sur Retina).
+const largeursHero = [640, 960, 1280, 1600];
+if (imageHero && imageHero.width < 1600 && !largeursHero.includes(imageHero.width)) {
+  largeursHero.push(imageHero.width);
+  largeursHero.sort((a, b) => a - b);
+}
 let prechargement: { href?: string; srcset?: string; type: string } | undefined;
 if (imageHero && d.video) {
   const poster = await getImage({ src: imageHero, width: 1600, format: 'webp' });
@@ -145,9 +152,9 @@ if (imageHero && d.video) {
               label={d.visuelPrincipal?.alt ?? d.titre}
             />
           ) : (
-            <ImageZoom visuel={d.visuelPrincipal}>
+            <ImageZoom visuel={visuelHaut}>
               <Visuel
-                visuel={d.visuelPrincipal}
+                visuel={visuelHaut}
                 label={`visuel principal : ${d.titre}`}
                 sizes={sizesHero}
                 widths={largeursHero}

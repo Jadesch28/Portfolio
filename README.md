@@ -98,6 +98,8 @@ visuelPrincipal:
 visuelSecondaire: # petit polaroïd « détail » (facultatif)
   src: ../../assets/projets/mon-projet/detail.jpg
   alt: Description du détail.
+# Facultatif : `visuelHaut` et `detailHaut` (mêmes champs `src` et `alt`) remplacent ces deux
+# images en haut de la page projet seulement ; l'accueil garde les deux ci-dessus.
 blocs:
   - type: galerie
     titre: Galerie

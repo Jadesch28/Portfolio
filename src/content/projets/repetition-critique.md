@@ -10,6 +10,9 @@ contexte: Concours d’art contemporain
 supports:
   - Vidéo
   - Télévision altérée
+outils:
+  - After Effects
+  - Premiere Pro
 disciplines:
   - Animation
   - Installation

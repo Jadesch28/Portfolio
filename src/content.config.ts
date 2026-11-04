@@ -89,6 +89,9 @@ const projets = defineCollection({
       outils: z.array(z.string()).optional(),
       visuelPrincipal: visuel.optional(),
       visuelSecondaire: visuel.optional(),
+      /** Haut de la page projet seulement, si différents de `visuelPrincipal` et `visuelSecondaire`. */
+      visuelHaut: visuel.optional(),
+      detailHaut: visuel.optional(),
       /** Projets motion : la vidéo remplace le visuel principal (fichiers dans public/videos/). */
       video: z
         .object({

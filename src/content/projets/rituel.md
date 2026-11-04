@@ -28,6 +28,13 @@ visuelPrincipal:
 visuelSecondaire:
   src: ../../assets/projets/rituel/cartes-mockup.jpg
   alt: Trois cartes du jeu Rituel en éventail, sur fond gris.
+# Haut de la page projet ; l'accueil et « Projet suivant » gardent la boîte et les cartes en éventail.
+visuelHaut:
+  src: ../../assets/projets/rituel/carte-sceau.jpg
+  alt: 'Carte « Sceau » : un chien au corps de serpent enroulé sur une spirale rouge. Effet : bloque la prochaine attaque.'
+detailHaut:
+  src: ../../assets/projets/rituel/carte-echange.jpg
+  alt: 'Carte « Échange » : deux pattes griffues de part et d’autre d’une saucisse, sur une étoile rouge. Effet : échange une carte.'
 blocs:
   - type: galerie
     titre: La boîte
