@@ -33,6 +33,8 @@ export const photos: Record<
 export const site = {
   nom: 'Jade Deschuyteneer',
   nomCourt: 'Jade D.',
+  /** Vérification de la propriété https://www.jadedeschuyteneer.be dans Google Search Console. */
+  googleVerification: 'IFgMR2frlCC_6RvENYqhyrxGZaMguhYo_9J9jmjeuUc',
   age: '24 ans',
   email: import.meta.env.PUBLIC_CONTACT_EMAIL || 'deschuyteneerjade@gmail.com',
   /** Point d'envoi du formulaire (Formspree de Jade) ; PUBLIC_FORM_ENDPOINT le remplace si définie. */
