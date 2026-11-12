@@ -42,8 +42,8 @@ blocs:
     images:
       - src: ../../assets/projets/rituel/boite-mockup.jpg
         alt: La boîte de jeu Rituel vue de face et de dos, posée sur un fond beige.
-      # À fournir : la face arrière de la boîte en image séparée.
-      - alt: face arrière de la boîte
+      - src: ../../assets/projets/rituel/boite-face-arriere.jpg
+        alt: 'La face arrière de la boîte Rituel, en deux versions côte à côte : deux pattes griffues, un court texte qui présente le jeu, la liste du contenu (15 cartes sacrées, 1 livret de rituel) et trois cartes en éventail.'
   - type: cartes
     titre: Les cartes
     note: les cartes + le dos commun

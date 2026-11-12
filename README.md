@@ -356,8 +356,7 @@ viennent mot pour mot de l'ancien site, les phrases courtes viennent des maquett
 **Projets**
 
 - Année, outils et (pour Rituel, Tamagotchi, NogoZone) contexte de chaque projet.
-- Rituel : la face arrière de la boîte en image séparée (un emplacement l'attend dans la galerie),
-  le titre et la patte en haute définition.
+- Rituel : le titre et la patte en haute définition.
 - Visuels secondaires (« détail ») de Tamagotchi Paradise et de Répétition critique.
 - NogoZone et Répétition critique : les vidéos reprises de l'ancien site ont une piste son
   vide. Si une version avec son existe, la compresser, remplacer le fichier et ajouter
